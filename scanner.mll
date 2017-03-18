@@ -40,6 +40,10 @@ rule token = parse
  	| "rules" { RULES }
  	| "func"  { FUNCTION }
  	| "return" { RETURN }
+ 	| "init"	{ INIT }
+ 	| "clr"		{ CLR }
+ 	| "size" 	{ SIZE }
+ 	| "mov" 	{ MOV }
  	| "->"    { DO }
  	| "><"    { COLLIDE }
  	| ['0'-'9']*'.'['0'-'9']+ | ['0'-'9'}+'.'['0'-'9']* as lxm { FLOAT_LITERAL(float_of_string lxm)}

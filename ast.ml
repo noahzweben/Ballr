@@ -1,11 +1,10 @@
 type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | And | Or | Mod | Coll
 type uop = Neg | Not
 type typ = Int | Float | Bool | Color | Vector
-type bind = typ * string
 
 
 type expr = Literal of int
-		| Literal of float
+		| FLiteral of float
 		| BoolLit of bool
 		| Clr of int * int * int
 		| Vec of int * int 
@@ -24,17 +23,17 @@ type stmt = Block of stmt list
 		| Return of expr
 
 
-type event = Event of expr * stmt
+type event = Event of expr * stmt list
 
 type func_decl = {
 	typ : typ;
 	fname : string;
-	formals : bind list;
-	locals : bind list;
+	formals : typ * string list;
+	locals : typ * string list;
 	body : stmt list;
 }
 
-type var_decl = bind * expr
+type var_decl = VarInit of typ * string * expr
 
 (* should the RHS be Color/Clr/?... *)
 type ent_decl = {
