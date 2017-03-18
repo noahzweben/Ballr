@@ -1,0 +1,26 @@
+%{ open Ast %}
+
+%token LBRACE RBRACE COMMA LPAREN RPAREN PLUS MINUS TIMES DIVIDE MOD
+%token ASSIGN GT LT ISEQ NEQ LEQ GEQ AND OR NOT PERIOD TRUE FALSE IF ELSE 
+%token WHILE INT BOOL FLOAT COLOR VECTOR GBOARD ENT RULES FUNCTION RETURN 
+%token DO COLLIDE EOF SEMI
+
+%token <float> FLOAT_LITERAL
+%token <int> INT_LITERAL
+%token <string> ID
+
+
+%right ASSIGN
+%left OR
+%left AND
+%left EQ NEQ 
+%left LT GT LEQ GEQ
+%left PLUS MINUS
+%left TIMES DIVIDE MOD
+%right NOT
+%left ACCESS
+
+%start program
+%type < Ast.expr> program
+
+%%
