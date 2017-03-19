@@ -2,4 +2,8 @@ Need to change include in hello_world.c to include path to SDL.h on your machine
 
 Also make sure SDL and all libraries are installed. 
 
-Compile with gcc -o hello_world movement.c `/Users/Jessie/Desktop/SDL_PLT/SDL/build/sdl2-config --cflags --libs` if make doesn't work -- but obviously change paths (also probably need to change paths in makefile). 
+Compile with gcc -o hello_world hello_world.c `/Users/Jessie/Desktop/SDL_PLT/SDL/build/sdl2-config --cflags --libs` if make doesn't work -- but obviously change paths (also change paths in makefile). 
+
+run with ./hello world
+
+Move rectangle with up/down/left/right keys.
