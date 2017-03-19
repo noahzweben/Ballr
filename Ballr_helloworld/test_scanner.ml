@@ -1,6 +1,3 @@
-# 1 "test_scanner.mll"
-  print_string "open Parser "
-# 4 "test_scanner.ml"
 let __ocaml_lex_tables = {
   Lexing.lex_base = 
    "\000\000\205\255\206\255\078\000\155\000\165\000\240\000\059\001\
@@ -1609,277 +1606,277 @@ and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
       | 0 ->
 # 4 "test_scanner.mll"
                       ( token lexbuf)
-# 1613 "test_scanner.ml"
+# 1610 "test_scanner.ml"
 
   | 1 ->
 # 5 "test_scanner.mll"
              ( comment lexbuf)
-# 1618 "test_scanner.ml"
+# 1615 "test_scanner.ml"
 
   | 2 ->
 # 6 "test_scanner.mll"
         ( print_string "LBRACE ")
-# 1623 "test_scanner.ml"
+# 1620 "test_scanner.ml"
 
   | 3 ->
 # 7 "test_scanner.mll"
        ( print_string "RBRACE ")
-# 1628 "test_scanner.ml"
+# 1625 "test_scanner.ml"
 
   | 4 ->
 # 8 "test_scanner.mll"
        ( print_string "COMMA ")
-# 1633 "test_scanner.ml"
+# 1630 "test_scanner.ml"
 
   | 5 ->
 # 9 "test_scanner.mll"
        ( print_string "LPAREN ")
-# 1638 "test_scanner.ml"
+# 1635 "test_scanner.ml"
 
   | 6 ->
 # 10 "test_scanner.mll"
        ( print_string "RPAREN ")
-# 1643 "test_scanner.ml"
+# 1640 "test_scanner.ml"
 
   | 7 ->
 # 11 "test_scanner.mll"
        ( print_string "SEMI ")
-# 1648 "test_scanner.ml"
+# 1645 "test_scanner.ml"
 
   | 8 ->
 # 12 "test_scanner.mll"
        ( print_string "PLUS ")
-# 1653 "test_scanner.ml"
+# 1650 "test_scanner.ml"
 
   | 9 ->
 # 13 "test_scanner.mll"
        ( print_string "MINUS ")
-# 1658 "test_scanner.ml"
+# 1655 "test_scanner.ml"
 
   | 10 ->
 # 14 "test_scanner.mll"
        ( print_string "TIMES ")
-# 1663 "test_scanner.ml"
+# 1660 "test_scanner.ml"
 
   | 11 ->
 # 15 "test_scanner.mll"
        ( print_string "DIVIDE ")
-# 1668 "test_scanner.ml"
+# 1665 "test_scanner.ml"
 
   | 12 ->
 # 16 "test_scanner.mll"
        ( print_string "MOD ")
-# 1673 "test_scanner.ml"
+# 1670 "test_scanner.ml"
 
   | 13 ->
 # 17 "test_scanner.mll"
         ( print_string "ASSIGN ")
-# 1678 "test_scanner.ml"
+# 1675 "test_scanner.ml"
 
   | 14 ->
 # 18 "test_scanner.mll"
        ( print_string "GT ")
-# 1683 "test_scanner.ml"
+# 1680 "test_scanner.ml"
 
   | 15 ->
 # 19 "test_scanner.mll"
        ( print_string "LT ")
-# 1688 "test_scanner.ml"
+# 1685 "test_scanner.ml"
 
   | 16 ->
 # 20 "test_scanner.mll"
         ( print_string "ISEQ ")
-# 1693 "test_scanner.ml"
+# 1690 "test_scanner.ml"
 
   | 17 ->
 # 21 "test_scanner.mll"
         ( print_string "NEQ ")
-# 1698 "test_scanner.ml"
+# 1695 "test_scanner.ml"
 
   | 18 ->
 # 22 "test_scanner.mll"
         ( print_string "LEQ ")
-# 1703 "test_scanner.ml"
+# 1700 "test_scanner.ml"
 
   | 19 ->
 # 23 "test_scanner.mll"
         ( print_string "GEQ ")
-# 1708 "test_scanner.ml"
+# 1705 "test_scanner.ml"
 
   | 20 ->
 # 24 "test_scanner.mll"
         ( print_string "AND ")
-# 1713 "test_scanner.ml"
+# 1710 "test_scanner.ml"
 
   | 21 ->
 # 25 "test_scanner.mll"
         ( print_string "OR ")
-# 1718 "test_scanner.ml"
+# 1715 "test_scanner.ml"
 
   | 22 ->
 # 26 "test_scanner.mll"
        ( print_string "NOT ")
-# 1723 "test_scanner.ml"
+# 1720 "test_scanner.ml"
 
   | 23 ->
 # 27 "test_scanner.mll"
        ( print_string "PERIOD ")
-# 1728 "test_scanner.ml"
+# 1725 "test_scanner.ml"
 
   | 24 ->
 # 28 "test_scanner.mll"
           ( print_string "TRUE ")
-# 1733 "test_scanner.ml"
+# 1730 "test_scanner.ml"
 
   | 25 ->
 # 29 "test_scanner.mll"
            ( print_string "FALSE ")
-# 1738 "test_scanner.ml"
+# 1735 "test_scanner.ml"
 
   | 26 ->
 # 30 "test_scanner.mll"
           ( print_string "IF ")
-# 1743 "test_scanner.ml"
+# 1740 "test_scanner.ml"
 
   | 27 ->
 # 31 "test_scanner.mll"
           ( print_string "ELSE ")
-# 1748 "test_scanner.ml"
+# 1745 "test_scanner.ml"
 
   | 28 ->
 # 32 "test_scanner.mll"
            ( print_string "WHILE ")
-# 1753 "test_scanner.ml"
+# 1750 "test_scanner.ml"
 
   | 29 ->
 # 33 "test_scanner.mll"
            ( print_string "INT ")
-# 1758 "test_scanner.ml"
+# 1755 "test_scanner.ml"
 
   | 30 ->
 # 34 "test_scanner.mll"
            ( print_string "BOOL ")
-# 1763 "test_scanner.ml"
+# 1760 "test_scanner.ml"
 
   | 31 ->
 # 35 "test_scanner.mll"
            ( print_string "FLOAT ")
-# 1768 "test_scanner.ml"
+# 1765 "test_scanner.ml"
 
   | 32 ->
 # 36 "test_scanner.mll"
             ( print_string "COLOR ")
-# 1773 "test_scanner.ml"
+# 1770 "test_scanner.ml"
 
   | 33 ->
 # 37 "test_scanner.mll"
           ( print_string "VECTOR ")
-# 1778 "test_scanner.ml"
+# 1775 "test_scanner.ml"
 
   | 34 ->
 # 38 "test_scanner.mll"
                ( print_string "GBOARD ")
-# 1783 "test_scanner.ml"
+# 1780 "test_scanner.ml"
 
   | 35 ->
 # 39 "test_scanner.mll"
                ( print_string "ENT ")
-# 1788 "test_scanner.ml"
+# 1785 "test_scanner.ml"
 
   | 36 ->
 # 40 "test_scanner.mll"
             ( print_string "RULES ")
-# 1793 "test_scanner.ml"
+# 1790 "test_scanner.ml"
 
   | 37 ->
 # 41 "test_scanner.mll"
             ( print_string "FUNCTION ")
-# 1798 "test_scanner.ml"
+# 1795 "test_scanner.ml"
 
   | 38 ->
 # 42 "test_scanner.mll"
              ( print_string "RETURN ")
-# 1803 "test_scanner.ml"
+# 1800 "test_scanner.ml"
 
   | 39 ->
 # 43 "test_scanner.mll"
            ( print_string "INIT ")
-# 1808 "test_scanner.ml"
+# 1805 "test_scanner.ml"
 
   | 40 ->
 # 44 "test_scanner.mll"
            ( print_string "CLR ")
-# 1813 "test_scanner.ml"
+# 1810 "test_scanner.ml"
 
   | 41 ->
 # 45 "test_scanner.mll"
             ( print_string "SIZE ")
-# 1818 "test_scanner.ml"
+# 1815 "test_scanner.ml"
 
   | 42 ->
 # 46 "test_scanner.mll"
            ( print_string "MOV ")
-# 1823 "test_scanner.ml"
+# 1820 "test_scanner.ml"
 
   | 43 ->
 # 47 "test_scanner.mll"
             ( print_string "DO ")
-# 1828 "test_scanner.ml"
+# 1825 "test_scanner.ml"
 
   | 44 ->
 # 48 "test_scanner.mll"
             ( print_string "COLLIDE ")
-# 1833 "test_scanner.ml"
+# 1830 "test_scanner.ml"
 
   | 45 ->
 # 49 "test_scanner.mll"
             ( print_string "FUNC ")
-# 1838 "test_scanner.ml"
+# 1835 "test_scanner.ml"
 
   | 46 ->
 let
 # 50 "test_scanner.mll"
                                                          lxm
-# 1844 "test_scanner.ml"
+# 1841 "test_scanner.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 50 "test_scanner.mll"
                                                              ( print_string "FLOAT_LITERAL ")
-# 1848 "test_scanner.ml"
+# 1845 "test_scanner.ml"
 
   | 47 ->
 let
 # 51 "test_scanner.mll"
                  lxm
-# 1854 "test_scanner.ml"
+# 1851 "test_scanner.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 51 "test_scanner.mll"
                      ( print_string "INT_LITERAL ")
-# 1858 "test_scanner.ml"
+# 1855 "test_scanner.ml"
 
   | 48 ->
 let
 # 52 "test_scanner.mll"
                                                       lxm
-# 1864 "test_scanner.ml"
+# 1861 "test_scanner.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 52 "test_scanner.mll"
                                                           ( print_string "ID ")
-# 1868 "test_scanner.ml"
+# 1865 "test_scanner.ml"
 
   | 49 ->
 # 53 "test_scanner.mll"
-        ( raise (Failure("EOF")))
-# 1873 "test_scanner.ml"
+        ( print_endline "EOF"; exit 0)
+# 1870 "test_scanner.ml"
 
   | 50 ->
 let
 # 54 "test_scanner.mll"
         char
-# 1879 "test_scanner.ml"
+# 1876 "test_scanner.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
 # 54 "test_scanner.mll"
              (raise (Failure("illegal character " ^ Char.escaped char)))
-# 1883 "test_scanner.ml"
+# 1880 "test_scanner.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_token_rec lexbuf __ocaml_lex_state
@@ -1891,12 +1888,12 @@ and __ocaml_lex_comment_rec lexbuf __ocaml_lex_state =
       | 0 ->
 # 58 "test_scanner.mll"
        ( token lexbuf )
-# 1895 "test_scanner.ml"
+# 1892 "test_scanner.ml"
 
   | 1 ->
 # 59 "test_scanner.mll"
        ( comment lexbuf)
-# 1900 "test_scanner.ml"
+# 1897 "test_scanner.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
       __ocaml_lex_comment_rec lexbuf __ocaml_lex_state
@@ -1913,4 +1910,4 @@ and __ocaml_lex_comment_rec lexbuf __ocaml_lex_state =
 
 
 
-# 1917 "test_scanner.ml"
+# 1914 "test_scanner.ml"

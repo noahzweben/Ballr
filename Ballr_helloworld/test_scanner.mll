@@ -1,4 +1,4 @@
-{ print_string "open Parser "}
+{}
 
 rule token = parse
 	[' ' '\t' '\r' '\n'] { token lexbuf} (* Whitespace *)
@@ -50,7 +50,7 @@ rule token = parse
  	| ['0'-'9']*'.'['0'-'9']+ | ['0'-'9']+'.'['0'-'9']* as lxm { print_string "FLOAT_LITERAL "}
 	| ['0'-'9']+ as lxm { print_string "INT_LITERAL "}
 	| ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { print_string "ID "}
-	| eof 	{ raise (Failure("EOF"))}
+	| eof 	{ print_endline "EOF"; exit 0}
 	| _ as char {raise (Failure("illegal character " ^ Char.escaped char))}
 
 
