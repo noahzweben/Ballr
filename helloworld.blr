@@ -1,0 +1,27 @@
+
+color blue = (0,0,255);
+color green = (0,255,0);
+
+
+entity player {
+	size = (50,50);
+	clr = blue;
+}
+
+entity endzone {
+	size = (100,100);
+	clr = green;
+}
+
+gameboard board1 {
+	size = (500,500);
+	clr = red;
+	init -> {
+		add(player,(100,100));
+		add(endzone,(300,300));
+	}
+}
+
+rules {
+	keypress(up) -> { player.pos.y = player.pos.y + 5;}
+}
