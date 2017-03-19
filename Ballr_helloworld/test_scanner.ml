@@ -1790,7 +1790,7 @@ and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
 
   | 37 ->
 # 41 "test_scanner.mll"
-            ( print_string "FUNCTION ")
+            ( print_string "FUNC ")
 # 1795 "test_scanner.ml"
 
   | 38 ->

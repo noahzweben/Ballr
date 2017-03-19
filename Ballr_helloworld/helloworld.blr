@@ -2,11 +2,15 @@
 color blue = (0,0,255);
 color green = (0,255,0);
 
+func color test(int help, int dog){return help+dog;}
+
 
 entity player {
 	size = (50,50);
 	clr = blue;
 }
+
+
 
 entity endzone {
 	size = (100,100);
@@ -24,4 +28,5 @@ gameboard board1 {
 
 rules {
 	keypress(up) -> { player.pos.y = player.pos.y + 5;}
+	player >< endzone -> { if (player.pos.x > 200) {restart();} }
 }

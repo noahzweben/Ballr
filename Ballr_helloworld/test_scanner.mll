@@ -38,7 +38,7 @@ rule token = parse
 	| "gameboard" { print_string "GBOARD "}
  	| "entity"	  { print_string "ENT "}
  	| "rules" { print_string "RULES "}
- 	| "func"  { print_string "FUNCTION "}
+ 	| "func"  { print_string "FUNC "}
  	| "return" { print_string "RETURN "}
  	| "init"	{ print_string "INIT "}
  	| "clr"		{ print_string "CLR "}
