@@ -3,7 +3,7 @@
 %token LBRACE RBRACE COMMA LPAREN RPAREN PLUS MINUS TIMES DIVIDE MOD
 %token ASSIGN GT LT ISEQ NEQ LEQ GEQ AND OR NOT PERIOD TRUE FALSE IF ELSE 
 %token WHILE INT BOOL FLOAT COLOR VECTOR GBOARD ENT RULES FUNCTION RETURN 
-%token DO COLLIDE EOF SEMI CLR MOV SIZE INIT
+%token DO COLLIDE EOF SEMI CLR MOV SIZE INIT FUNC
 
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -16,6 +16,7 @@
 %left AND
 %left EQ NEQ 
 %left LT GT LEQ GEQ
+%left COLLIDE
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
 %right NOT NEG
@@ -38,7 +39,7 @@ prim_type:
         | COLOR		{ Color}
         | VECTOR 	{ Vector }
 
-arg: prim_type ID 	{  } /******************/
+/*arg: prim_type ID 	{  } UNSURE IF NECESSARY */
 
 var_decl_list: 	/* nothing */               	{ [] }
         		| var_decl_list var_decl 		{ $2 :: $1 }
@@ -50,13 +51,13 @@ func_decl_list:
         | func_decl_list func_decl 				{ $2 :: $1 }
 
 func_decl:
-        prim_type ID LPAREN formal_list_opt RPAREN LBRACE var_decl_list stmt_list RBRACE
+        FUNC prim_type ID LPAREN formal_list_opt RPAREN LBRACE var_decl_list stmt_list RBRACE
         { {    
-                typ = $1;
-				fname = $2;
-				formals = $4;
-				locals = List.rev $7;
-				body = List.rev $8;  
+                typ = $2;
+				fname = $3;
+				formals = $5;
+				locals = List.rev $8;
+				body = List.rev $9;  
         } }
 
 formal_list_opt:
