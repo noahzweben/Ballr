@@ -1,4 +1,4 @@
 test_scanner.cmi
 test_scanner.cmo
 test_scanner.ml
-_build
+_build/
