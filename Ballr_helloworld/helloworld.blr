@@ -26,6 +26,5 @@ gameboard board1 {
 }
 
 rules {
-	keypress(up) -> { player.pos.y = player.pos.y + 5;}
-	player >< endzone -> { if (player.pos.x > 200) {restart();} }
+	player >< endzone -> { if (player.pos[10+x] > 200) {restart();} }
 }

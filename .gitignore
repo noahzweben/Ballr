@@ -3,3 +3,8 @@ parser.mli
 parser.output
 run.bat
 scanner.ml
+ast.cmi
+ast.mli
+parser.cmi
+scanner.cmi
+scanner.cmo

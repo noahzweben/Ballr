@@ -3,7 +3,7 @@
 %token LBRACE RBRACE COMMA LPAREN RPAREN PLUS MINUS TIMES DIVIDE MOD
 %token ASSIGN GT LT ISEQ NEQ LEQ GEQ AND OR NOT PERIOD TRUE FALSE IF ELSE 
 %token WHILE INT BOOL FLOAT COLOR VECTOR GBOARD ENT RULES FUNCTION RETURN 
-%token DO COLLIDE EOF SEMI CLR MOV SIZE INIT FUNC
+%token DO COLLIDE EOF SEMI CLR MOV SIZE INIT FUNC LSQUARE RSQUARE
 
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -23,7 +23,7 @@
 %left ACCESS
 
 %start program
-%type < Ast.expr> program
+%type < Ast.program> program
 
 %%
 /* QUESTIONS: time? vec/clr assignment? */
@@ -61,7 +61,7 @@ func_decl:
         } }
 
 formal_list_opt:
-        /* nothing */                           { [] }
+        /* nothing */                           { [] } 
         | formal_list                           { List.rev $1 }
 
 formal_list:
@@ -128,7 +128,8 @@ expr:
 	| FLOAT_LITERAL 				{ FLiteral($1) }
 	| TRUE							{ BoolLit(true) }
 	| FALSE							{ BoolLit(false) }
-	| member 						{ $1 } /* Need to fix this somehow*/
+	| member 						{ $1 } /* don't understand this*/
+	| tmember 						{ $1 } /* this too */
 	| expr PLUS expr                { Binop($1, Add, $3) }
     | expr MINUS expr               { Binop($1, Sub, $3) }
     | expr TIMES expr 				{ Binop($1, Mult, $3) }
@@ -147,14 +148,19 @@ expr:
     | MINUS expr %prec NEG 			{ Unop(Neg, $2) }
     | LPAREN expr RPAREN 			{ $2 }
     | ID LPAREN actuals_opt RPAREN 	{ Call($1, $3) }
-    | member ASSIGN expr 			{ Assign($1, $3)}
+    | member ASSIGN expr 				{ Assign($1, $3)} 
+    | tmember ASSIGN expr 			{ ArrayAssign($1,$3)}
     | LPAREN expr COMMA expr RPAREN 			{ Vec($2, $4) }
     | LPAREN expr COMMA expr COMMA expr RPAREN  { Clr($2, $4, $6) }
 
 member:
-	ID  				{ Id($1) } /*check with Julie */
-	| ID PERIOD member  { Access($1, $3) }
+	ID  				{ Id($1) } 
+	| ID PERIOD ID  { Access($1, $3) }
 
+tmember:
+	| member LSQUARE expr RSQUARE 	{ArrayAccess($1,$3)}						
+
+	
 actuals_opt:
 	/* nothing */ {[]}
 	| actuals_list { List.rev $1}

@@ -5,6 +5,8 @@ rule token = parse
  	| "/*"     { comment lexbuf} 
  	| '{'	{ print_string "LBRACE "}			
 	| '}'	{ print_string "RBRACE "}
+	| '['	{ print_string "LSQUARE "}					
+	| ']'	{ print_string "RSQUARE "}
 	| ','	{ print_string "COMMA "}
 	| '('	{ print_string "LPAREN "}			
 	| ')'	{ print_string "RPAREN "}
