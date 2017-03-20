@@ -1,7 +1,6 @@
 parser.ml
 parser.mli
 parser.output
-run.bat
 scanner.ml
 ast.cmi
 ast.mli
