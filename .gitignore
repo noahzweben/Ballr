@@ -13,3 +13,4 @@ ast.o
 ballr.cmi
 ballr.cmo
 parser.cmo
+ballr
