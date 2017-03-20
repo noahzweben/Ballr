@@ -39,7 +39,7 @@ parser.ml parser.mli : parser.mly
 	ocamlc -c $<
 
 %.cmx : %.ml
-	ocamlopt -c $<
+	ocamlc -c $<
 
 # Testing the "printbig" example
 
