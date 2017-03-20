@@ -10,3 +10,6 @@ scanner.cmo
 ast.cmo
 ast.cmx
 ast.o
+ballr.cmi
+ballr.cmo
+parser.cmo
