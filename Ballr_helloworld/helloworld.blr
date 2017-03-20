@@ -30,8 +30,8 @@ gameboard board1 {
 rules {
 	player >< endzone -> 
 		{ if (player.pos[10] > 200) {
-		restart();
-		x + 10;
+		player.pos = (10,10);
+		player.pos[1] = 15;
 		} 
 	}
 
