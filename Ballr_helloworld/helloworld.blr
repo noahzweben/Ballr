@@ -1,6 +1,8 @@
 
-color blue = (0,0,255);
-color green = (0,255,0);
+color blue = (6,10,10);
+color green = (5,255,5);
+int x = 10;
+vec y = (10,20);
 
 func color test(int help, int dog){return help+dog;}
 
@@ -26,5 +28,11 @@ gameboard board1 {
 }
 
 rules {
-	player >< endzone -> { if (player.pos[10+x] > 200) {restart();} }
+	player >< endzone -> 
+		{ if (player.pos[10] > 200) {
+		restart();
+		x + 10;
+		} 
+	}
+
 }

@@ -30,7 +30,7 @@
 
 program:	
 		var_decl_list func_decl_list ent_decl_list gboard rules EOF         
-        { ($1, $2, $3, $4, $5) }
+        { (List.rev $1, List.rev $2, List.rev $3, $4, $5) }
 
 prim_type:
         INT 		{ Int }

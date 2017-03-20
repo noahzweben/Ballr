@@ -90,8 +90,8 @@ let rec string_of_expr = function
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Noexpr -> ""
-  | Clr(e1,e2,e3) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e1 ^ ", " ^ string_of_expr e1 ^ ")"
-  | Vec(e1,e2) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e1 ^ ")"
+  | Clr(e1,e2,e3) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e2 ^ ", " ^ string_of_expr e3 ^ ")"
+  | Vec(e1,e2) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e2 ^ ")"
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -113,33 +113,37 @@ let string_of_typ = function
 let string_of_vdecl = function
 	VarInit(tt, str, e1) -> string_of_typ tt ^ " " ^ str ^ " = " ^ string_of_expr e1 ^ ";\n"
 
+let string_of_bind (t,v) = string_of_typ t ^ " " ^ v
+
 let string_of_fdecl fdecl =
-  string_of_typ fdecl.typ ^ " " ^
-  fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^
+  "\nfunc " ^ string_of_typ fdecl.typ ^ " " ^
+  fdecl.fname ^ "(" ^ String.concat ", " (List.map string_of_bind fdecl.formals) ^
   ")\n{\n" ^
   String.concat "" (List.map string_of_vdecl fdecl.locals) ^
   String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
 
 let string_of_entdecl edecl =
-	"entity " ^ edecl.ename ^ " " ^
+	"\nentity " ^ edecl.ename ^ " " ^
 	"{\n" ^
 	String.concat "" (List.map string_of_vdecl edecl.members) ^ 
 	"}\n"
 
 let string_of_gboard gdecl =
-	"gameboard " ^ gdecl.gname ^ " " ^
+	"\ngameboard " ^ gdecl.gname ^ " " ^
 	"{\n" ^
 	String.concat "" (List.map string_of_vdecl gdecl.members) ^
-	"init -> " ^ String.concat "" (List.map string_of_stmt gdecl.init) ^
-	"}\n"
+	"init -> {" ^ String.concat "" (List.map string_of_stmt gdecl.init) ^
+	"}\n}\n"
 
 let string_of_event  = function
-	Event(e,a) ->  string_of_expr e ^ " -> " ^
-	 String.concat "" (List.map string_of_stmt a) ^ "\n"
+	Event(e,a) ->  string_of_expr e ^ " -> {\n" ^
+	 String.concat "" (List.map string_of_stmt a) ^ "}\n"
 
 let string_of_rules rdecl = 
+  "\nrules {\n" ^
 	String.concat "" (List.map string_of_event rdecl.events)
+  ^ "}\n"
 
 let string_of_program (vars, funcs, ents, game, rules) =
   String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
