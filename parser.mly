@@ -60,14 +60,6 @@ func_decl:
 				body = List.rev $9;  
         } }
 
-formal_list_opt:
-        /* nothing */                           { [] } 
-        | formal_list                           { List.rev $1 }
-
-formal_list:
-        prim_type ID                            { [($1, $2)] }
-        | formal_list COMMA prim_type ID        { ($3, $4) :: $1 }
-
 
 ent_decl_list: 
 		/* nothing */               			{ [] }
@@ -149,7 +141,7 @@ expr:
     | LPAREN expr RPAREN 			{ $2 }
     | ID LPAREN actuals_opt RPAREN 	{ Call($1, $3) }
     | member ASSIGN expr 				{ Assign($1, $3)} 
-    | tmember ASSIGN expr 			{ ArrayAssign($1,$3)}
+    | tmember ASSIGN expr 			{ Assign($1,$3)}
     | LPAREN expr COMMA expr RPAREN 			{ Vec($2, $4) }
     | LPAREN expr COMMA expr COMMA expr RPAREN  { Clr($2, $4, $6) }
 
@@ -168,4 +160,12 @@ actuals_opt:
 actuals_list:
 	expr 	{[$1]}
 	| actuals_list COMMA expr { $3 :: $1 }
+
+formal_list_opt:
+        /* nothing */                           { [] } 
+        | formal_list                           { List.rev $1 }
+
+formal_list:
+        prim_type ID                            { [($1, $2)] }
+        | formal_list COMMA prim_type ID        { ($3, $4) :: $1 }
 

@@ -6,11 +6,11 @@ type typ = Int | Float | Bool | Color | Vector
 type expr = Literal of int
 		| FLiteral of float
 		| BoolLit of bool
-		| Clr of int * int * int
-		| Vec of int * int 
+		| Clr of expr * expr * expr
+		| Vec of expr * expr 
 		| Id of string
 		| Binop of expr * op * expr
-		| Assign of string * expr
+		| Assign of expr * expr
 		| Access of string * string (* p.name *)
 		| ArrayAccess of expr * expr (*p[0]*)
 		| Unop of uop * expr
