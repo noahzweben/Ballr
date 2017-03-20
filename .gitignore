@@ -7,3 +7,6 @@ ast.mli
 parser.cmi
 scanner.cmi
 scanner.cmo
+ast.cmo
+ast.cmx
+ast.o
