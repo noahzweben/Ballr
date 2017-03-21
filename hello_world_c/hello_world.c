@@ -89,8 +89,6 @@ int main( int argc, char ** argv )
 
 		while ( SDL_PollEvent( &e ) != 0 ) {
 
-			
-
 			SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
 			SDL_FillRect( screenSurface, &endZone, SDL_MapRGB( screenSurface->format, 0x00, 0xFF, 0x00 ));
 			SDL_FillRect( screenSurface, &block, SDL_MapRGB( screenSurface->format, 0xFF, 0x00, 0x00 ));
