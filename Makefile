@@ -20,7 +20,7 @@ clean :
 
 # More detailed: build using ocamlc/ocamlopt + ocamlfind to locate LLVM
 
-OBJS = ast.cmx parser.cmx scanner.cmx ballr.cmx
+OBJS = ast.cmo parser.cmo scanner.cmo ballr.cmo
 
 ballr : $(OBJS)
 	ocamlc $(OBJS) -o ballr
@@ -38,7 +38,7 @@ parser.ml parser.mli : parser.mly
 	ocamlc -c $<
 
 %.cmx : %.ml
-	ocamlc -c $<
+	ocamlc -c $< -o $@
 
 # Testing the "printbig" example
 
