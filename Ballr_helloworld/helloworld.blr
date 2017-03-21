@@ -4,7 +4,6 @@ entity player {
 }
 
 
-
 gameboard board1 {
 	size = (500,500);
 	clr = (255,255,255);
