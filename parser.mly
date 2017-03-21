@@ -3,7 +3,7 @@
 %token LBRACE RBRACE COMMA LPAREN RPAREN PLUS MINUS TIMES DIVIDE MOD
 %token ASSIGN GT LT ISEQ NEQ LEQ GEQ AND OR NOT PERIOD TRUE FALSE IF ELSE 
 %token WHILE INT BOOL FLOAT COLOR VECTOR GBOARD ENT RULES FUNCTION RETURN 
-%token DO COLLIDE EOF SEMI CLR MOV SIZE INIT
+%token DO COLLIDE EOF SEMI CLR MOV SIZE INIT FUNC LSQUARE RSQUARE
 
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -14,22 +14,23 @@
 %right ASSIGN
 %left OR
 %left AND
-%left EQ NEQ 
+%left ISEQ NEQ 
 %left LT GT LEQ GEQ
+%left COLLIDE
 %left PLUS MINUS
 %left TIMES DIVIDE MOD
 %right NOT NEG
 %left ACCESS
 
 %start program
-%type < Ast.expr> program
+%type < Ast.program> program
 
 %%
 /* QUESTIONS: time? vec/clr assignment? */
 
 program:	
 		var_decl_list func_decl_list ent_decl_list gboard rules EOF         
-        { ($1, $2, $3, $4, $5) }
+        { (List.rev $1, List.rev $2, List.rev $3, $4, $5) }
 
 prim_type:
         INT 		{ Int }
@@ -38,7 +39,7 @@ prim_type:
         | COLOR		{ Color}
         | VECTOR 	{ Vector }
 
-arg: prim_type ID 	{  } /******************/
+/*arg: prim_type ID 	{  } UNSURE IF NECESSARY */
 
 var_decl_list: 	/* nothing */               	{ [] }
         		| var_decl_list var_decl 		{ $2 :: $1 }
@@ -50,22 +51,14 @@ func_decl_list:
         | func_decl_list func_decl 				{ $2 :: $1 }
 
 func_decl:
-        prim_type ID LPAREN formal_list_opt RPAREN LBRACE var_decl_list stmt_list RBRACE
+        FUNC prim_type ID LPAREN formal_list_opt RPAREN LBRACE var_decl_list stmt_list RBRACE
         { {    
-                typ = $1;
-				fname = $2;
-				formals = $4;
-				locals = List.rev $7;
-				body = List.rev $8;  
+                typ = $2;
+				fname = $3;
+				formals = $5;
+				locals = List.rev $8;
+				body = List.rev $9;  
         } }
-
-formal_list_opt:
-        /* nothing */                           { [] }
-        | formal_list                           { List.rev $1 }
-
-formal_list:
-        prim_type ID                            { [($1, $2)] }
-        | formal_list COMMA prim_type ID        { ($3, $4) :: $1 }
 
 
 ent_decl_list: 
@@ -127,12 +120,13 @@ expr:
 	| FLOAT_LITERAL 				{ FLiteral($1) }
 	| TRUE							{ BoolLit(true) }
 	| FALSE							{ BoolLit(false) }
-	| member 						{ $1 }
+	| member 						{ $1 } /* don't understand this*/
+	| tmember 						{ $1 } /* this too */
 	| expr PLUS expr                { Binop($1, Add, $3) }
     | expr MINUS expr               { Binop($1, Sub, $3) }
     | expr TIMES expr 				{ Binop($1, Mult, $3) }
     | expr DIVIDE expr 				{ Binop($1, Div, $3) }
-    | expr EQ expr 					{ Binop($1, Equal, $3) }
+    | expr ISEQ expr 					{ Binop($1, Equal, $3) }
     | expr NEQ expr 				{ Binop($1, Neq, $3) }
     | expr LT expr  				{ Binop($1, Less, $3) }
     | expr LEQ expr  				{ Binop($1, Leq, $3) }
@@ -146,14 +140,19 @@ expr:
     | MINUS expr %prec NEG 			{ Unop(Neg, $2) }
     | LPAREN expr RPAREN 			{ $2 }
     | ID LPAREN actuals_opt RPAREN 	{ Call($1, $3) }
-    | member ASSIGN expr 			{ Assign($1, $3)}
+    | member ASSIGN expr 				{ Assign($1, $3)} 
+    | tmember ASSIGN expr 			{ Assign($1,$3)}
     | LPAREN expr COMMA expr RPAREN 			{ Vec($2, $4) }
     | LPAREN expr COMMA expr COMMA expr RPAREN  { Clr($2, $4, $6) }
 
 member:
-	ID  				{ $1 }
-	| ID PERIOD member  { Access($1, $3) }
+	ID  				{ Id($1) } 
+	| ID PERIOD ID  { Access($1, $3) }
 
+tmember:
+	| member LSQUARE expr RSQUARE 	{ArrayAccess($1,$3)}						
+
+	
 actuals_opt:
 	/* nothing */ {[]}
 	| actuals_list { List.rev $1}
@@ -161,4 +160,12 @@ actuals_opt:
 actuals_list:
 	expr 	{[$1]}
 	| actuals_list COMMA expr { $3 :: $1 }
+
+formal_list_opt:
+        /* nothing */                           { [] } 
+        | formal_list                           { List.rev $1 }
+
+formal_list:
+        prim_type ID                            { [($1, $2)] }
+        | formal_list COMMA prim_type ID        { ($3, $4) :: $1 }
 

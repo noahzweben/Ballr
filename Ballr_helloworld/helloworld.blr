@@ -1,0 +1,38 @@
+
+color blue = (6,10,10);
+color green = (5,255,5);
+int x = 10;
+vec y = (10,20);
+
+func color test(int help, int dog){return help+dog;}
+
+
+entity player {
+	size = (50,50);
+	clr = blue;
+}
+
+
+entity endzone {
+	size = (100,100);
+	clr = green;
+}
+
+gameboard board1 {
+	size = (500,500);
+	clr = red;
+	init -> {
+		add(player,(100,100));
+		add(endzone,(300,300));
+	}
+}
+
+rules {
+	player >< endzone -> 
+		{ if (player.pos[10] > 200) {
+		player.pos = (10,10);
+		player.pos[1] = 15;
+		} 
+	}
+
+}

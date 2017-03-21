@@ -1,0 +1,1 @@
+ocamllex scanner.mll && ocamlyacc parser.mly && ocamlc -c ast.ml && ocamlc -c parser.mli && ocamlc -c scanner.ml && ocamlc -c parser.ml && ocamlc -c ballr.ml && ocamlc -o ballr parser.cmo scanner.cmo ast.cmo ballr.cmo
