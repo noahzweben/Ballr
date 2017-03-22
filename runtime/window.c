@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "SDL2/SDL.h"
+// #include "SDL2/SDL.h"
+#include "/Users/Jessie/Desktop/SDL_PLT/SDL/include/SDL.h"
 #include "window.h"
 
 #define MS_PER_FRAME 17
@@ -93,14 +94,14 @@ int inEndZone( SDL_Rect block, SDL_Rect endZone )
 
 void draw_entity(entity_t *e) {
     SDL_Rect r;
-    r.x = e->pos[X];
-    r.y = e->pos[Y];
-    r.w = e->size[WIDTH];
-    r.h = e->size[HEIGHT];
+    r.x = e->pos.x;
+    r.y = e->pos.y;
+    r.w = e->size.w;
+    r.h = e->size.h;
 
-    int red = e->color[RED];
-    int green = e->color[GREEN];
-    int blue = e->color[BLUE];
+    int red = e->color.r;
+    int green = e->color.g;
+    int blue = e->color.b;
 
     SDL_FillRect(screenSurface, &r, SDL_MapRGB(screenSurface->format, red, green, blue));
 }
@@ -124,8 +125,8 @@ int run_loop()
 
         SDL_PumpEvents();
 
-        int* c = current_board->color;
-        Uint32 bg_color_sdl = SDL_MapRGB(screenSurface->format, c[RED], c[GREEN], c[BLUE]);
+        blr_color_t c = current_board->color;
+        Uint32 bg_color_sdl = SDL_MapRGB(screenSurface->format, c.r, c.g, c.b);
         SDL_FillRect(screenSurface, NULL, bg_color_sdl);
         kb_state = SDL_GetKeyboardState(NULL);
 
