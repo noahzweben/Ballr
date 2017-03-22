@@ -1,10 +1,7 @@
-
-
 entity player {
 	size = (50,50);
 	clr = (0,0,255);
 }
-
 
 
 gameboard board1 {
@@ -16,5 +13,3 @@ gameboard board1 {
 }
 
 rules {}
-
-}
