@@ -1,5 +1,5 @@
-CFLAGS = -Wall 
-LFLAGS = `/Users/Jessie/Desktop/SDL_PLT/SDL/build/sdl2-config --libs`
+CFLAGS = -Wall -g
+LFLAGS = -framework SDL2
 OBJS   = hello_world.o
 PROG = hello_world
 CXX = gcc
