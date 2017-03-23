@@ -10,7 +10,7 @@ type expr = Literal of int
 		| Id of string
 		| Binop of expr * op * expr
 		| Assign of expr * expr
-		| Access of string * string (* p.name *)
+		| Access of expr * expr (* p.name *)
 		| ArrayAccess of expr * expr (*p[0]*)
 		| Unop of uop * expr
 		| Call of string * expr list
@@ -22,7 +22,7 @@ type stmt = Block of stmt list
 		| Expr of expr
 		| Return of expr
 
-type var_decl = VarInit of typ * string * expr
+type var_decl = VarInit of typ * expr * expr
 
 type event = Event of expr * stmt list
 
