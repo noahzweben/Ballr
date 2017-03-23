@@ -114,9 +114,6 @@ int run_loop()
 	} 
 
 	int quit = 0;
-	SDL_Event e;
-	SDL_Rect block = {10,SCREEN_HEIGHT / 2 - 10, 20, 20 };
-	SDL_Rect endZone = {SCREEN_WIDTH - 100, SCREEN_HEIGHT / 2 - 100, 100, 200 };
 	
 	SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
 	SDL_UpdateWindowSurface( window );
@@ -143,52 +140,8 @@ int run_loop()
         SDL_UpdateWindowSurface( window );
         SDL_Delay(MS_PER_FRAME);
     }
-	/*	while ( SDL_PollEvent( &e ) != 0 ) {
 
-			
-
-			SDL_FillRect( screenSurface, &endZone, SDL_MapRGB( screenSurface->format, 0x00, 0xFF, 0x00 ));
-			SDL_FillRect( screenSurface, &block, SDL_MapRGB( screenSurface->format, 0xFF, 0x00, 0x00 ));
-
-			if ( inEndZone( block, endZone ) ) {
-				block.x = 10;
-				block.y = SCREEN_HEIGHT / 2 - 10;
-				continue;
-			}
-
-            if ( e.type == SDL_QUIT ) {
-
-                quit = 1;
-
-            } else if ( e.type == SDL_KEYDOWN ){
-            	
-            	switch( e.key.keysym.sym )
-                {
-                    case SDLK_UP:
-                    block.y -= 10;
-                    break;
-
-                    case SDLK_DOWN:
-                    block.y += 10;
-                    break;
-
-                    case SDLK_LEFT:
-                    block.x -= 10;
-                    break;
-
-                    case SDLK_RIGHT:
-                    block.x += 10;
-                    break;
-
-                    default:
-                
-                    break;
-                }
-            }
-        }		
-	}*/
-		
-	closeWindow();
+    closeWindow();
 
 	return 0;
 }
