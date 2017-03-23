@@ -27,14 +27,14 @@ define i32 @main() {
   store %struct.gameboard* %5, %struct.gameboard** %1
   %6 = load %struct.gameboard*, %struct.gameboard** %1
   %7 = getelementptr inbounds [5 x i8], [5 x i8]* @.str, i32 0, i32 0
-  %8 = load %struct.blr_size, %struct.blr_size* %2
-  %9 = load %struct.blr_color, %struct.blr_color* %3
-  call void @gb_init(%struct.gameboard* %6, i8* %7, %struct.blr_size %8, %struct.blr_color %9, void (%struct.gameboard*)* @game1_init)
+  %8 = getelementptr %struct.blr_size, %struct.blr_size* %2, i32 0
+  %9 = getelementptr %struct.blr_color, %struct.blr_color * %3, i32 0
+  call void @gb_init(%struct.gameboard* %6, i8* %7, %struct.blr_size* %2, %struct.blr_color* %3, void (%struct.gameboard*)* @game1_init)
   %10 = call i32 (...) @run_loop()
   ret i32 0
 }
 
 declare i8* @malloc(i64) #1
 declare void @llvm.memcpy.p0i8.p0i8.i64(i8* nocapture, i8* nocapture readonly, i64, i32, i1)
-declare void @gb_init(%struct.gameboard*, i8*, %struct.blr_size, %struct.blr_color, void (%struct.gameboard*)*)
+declare void @gb_init(%struct.gameboard*, i8*, %struct.blr_size*, %struct.blr_color*, void (%struct.gameboard*)*)
 declare i32 @run_loop(...)
