@@ -2,7 +2,7 @@ CFLAGS = -Wall -g
 LFLAGS = -framework SDL2
 OBJS   = ballr.o window.o gamec.o
 PROG = ballr
-CXX = gcc
+CXX = clang
 
 %.o: %.c
 	$(CXX) $(CFLAGS) -c $<
