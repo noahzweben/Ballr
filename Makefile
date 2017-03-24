@@ -4,7 +4,7 @@
 
 # Easiest way to build: using ocamlbuild, which in turn uses ocamlfind
 
-all : ballr.native printbig.o
+all : clean ballr
 
 ballr.native :
 	ocamlbuild -use-ocamlfind -pkgs llvm,llvm.analysis -cflags -w,+a-4 \

@@ -12,17 +12,18 @@ let translate (_, _, _, gboard, _) =
   	let i8_t   = L.i8_type   context in 
   	let i1_t   = L.i1_type   context in
   	let flt_t = L.float_type context in
-(*   	and L.pointer_type = L.pointer_type context *)
-(*     and ut_hash_handle_t = L.struct_type context [|L.pointer_type ut_hash_table_t; L.pointer_type i8_t; L.pointer_type i8_t; L.pointer_type ut_hash_handle_t; L.pointer_type ut_hash_handle; L.pointer_type i8_t; i32_t; i32_t|]
-    and ut_hash_table_t = L.struct_type context [|L.pointer_type ut_hash_bucket_t; i32_t; i32_t; i32_t; L.pointer_type ut_hash_handle_t; i64_t; i32_t; i32_t; i32_t; i32_t; i32_t|]
-    and ut_hash_bucket_t = L.struct_type context [|L.pointer_type ut_hash_handle; i32_t; i32_t|] *)
-    let clr_t = L.struct_type context [|i32_t; i32_t; i32_t|] in
-    let vec_t = L.struct_type context [|i32_t; i32_t|] in
+(*     let ut_hash_handle_t = L.struct_type context [|L.pointer_type ut_hash_table_t; L.pointer_type i8_t; L.pointer_type i8_t; L.pointer_type ut_hash_handle_t; L.pointer_type ut_hash_handle; L.pointer_type i8_t; i32_t; i32_t|] in 
+    let ut_hash_table_t = L.struct_type context [|L.pointer_type ut_hash_bucket_t; i32_t; i32_t; i32_t; L.pointer_type ut_hash_handle_t; i64_t; i32_t; i32_t; i32_t; i32_t; i32_t|] in
+    let ut_hash_bucket_t = L.struct_type context [|L.pointer_type ut_hash_handle; i32_t; i32_t|] in *)
+    let clr_t = L.named_struct_type context "blr_color_t" in
+      L.struct_set_body clr_t [|i32_t; i32_t; i32_t|] false;
+    let vec_t = L.named_struct_type context "blr_size_t" in
+      L.struct_set_body vec_t [|i32_t; i32_t|] false;
 (*	  and size_t = L.struct_type context [|i32_t; i32_t|]
 	  and pos_t = L.struct_type context [|i32_t; i32_t|]
 	  and ent_t = L.struct_type context [|  L.pointer_type i8_t; size_t; pos_t; clr_t; L.function_type L.void_type [| L.pointer_type ent_t |]; L.pointer_type ent_t; ut_hash_handle_t |] *)
-	  let gb_t = L.struct_type context [| (L.pointer_type (L.i8_type context)) |] (*; size_t; clr_t; L.pointer_type ent_t; L.function_type L.void_type [| L.pointer_type gb_t |]; ut_hash_handle_t;|]*) in
-
+	  let gb_t = L.named_struct_type context "blr_gameboard_t" in
+      L.struct_set_body gb_t [| (L.pointer_type (L.i8_type context))  ; vec_t; clr_t; (* L.pointer_type ent_t; L.function_type L.void_type [| L.pointer_type gb_t |];  ut_hash_handle_t; *)|] false;
   let ltype_of_typ = function
       A.Int -> i32_t
     | A.Bool -> i1_t
@@ -34,22 +35,54 @@ let translate (_, _, _, gboard, _) =
   in
 
   let run_loop_t = L.function_type i32_t [| |] in
-  let run_loop_t_func = L.declare_function "run_loop" run_loop_t the_module in
+  let run_loop_func = L.declare_function "run_loop" run_loop_t the_module in
 
   let register_gb_t = L.function_type (L.void_type context) [| (L.pointer_type gb_t) |] in
-  let register_gb_t_func = L.declare_function "register_gb" register_gb_t the_module in
+  let register_gb_func = L.declare_function "register_gb" register_gb_t the_module in
   
   let gb_create gb = 
     let name = gb.A.gname ^ "_create" in 
     let ftype = L.function_type (L.pointer_type gb_t) [| |] in 
     L.define_function name ftype the_module in
 
-  let fill_create_function gb t = 
-    let builder = L.builder_at_end context (L.entry_block (gb_create gb)) in
-    L.build_alloca t "tmp" builder ; 
-    ignore(L.build_ret (L.const_null gb_t) builder); builder in
+  let get_decl name decls =
+    match List.filter (fun (A.VarInit (t, s, e)) -> s = name) decls with
+      | A.VarInit (t, s, e) :: tl -> e
+      | [] -> A.Noexpr in
 
-  fill_create_function gboard i32_t ;
+  let clr_lit = function
+    | A.Clr (A.Literal r, A.Literal g, A.Literal b) -> [|L.const_int i32_t r; L.const_int i32_t g; L.const_int i32_t b|]
+    | _ -> [|L.const_int i32_t 0; L.const_int i32_t 0; L.const_int i32_t 0|] in
+
+  let vec_lit = function
+    | A.Vec (A.Literal v1, A.Literal v2) -> [|L.const_int i32_t v1; L.const_int i32_t v2|]
+    | _ -> [|L.const_int i32_t 0; L.const_int i32_t 0; L.const_int i32_t 0|] in
+
+  let fill_create_function gb = 
+    let builder = L.builder_at_end context (L.entry_block (gb_create gb)) in
+    let gb_ptr = L.build_malloc gb_t ("board_ptr") builder in
+
+    let name_str_ptr = L.build_global_stringptr gb.A.gname (gb.A.gname ^ "_name_str_ptr") builder in
+    let name_ptr = L.build_struct_gep gb_ptr 0 ("name_ptr") builder in
+    L.build_store name_str_ptr name_ptr builder;
+
+    let gb_size_ptr = L.build_struct_gep gb_ptr 1 ("size_ptr") builder in
+    let size_decl_expr = get_decl "size" gb.A.members in
+    L.build_store (L.const_struct context (vec_lit size_decl_expr)) gb_size_ptr builder;
+
+    let gb_color_ptr = L.build_struct_gep gb_ptr 2 ("color_ptr") builder in
+    let color_decl_expr = get_decl "clr" gb.A.members in
+    L.build_store (L.const_struct context (clr_lit color_decl_expr)) gb_color_ptr builder;
+
+    L.build_call register_gb_func [| gb_ptr |] "unused" builder;
+
+    L.build_ret gb_ptr builder; builder in
+    (* set board name, 
+    set board size, 
+    set board color, 
+    call register gb *)
+  
+  fill_create_function gboard;
   
   the_module  
   
