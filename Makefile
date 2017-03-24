@@ -6,9 +6,9 @@
 
 all : ballr.native printbig.o
 
-microc.native :
+ballr.native :
 	ocamlbuild -use-ocamlfind -pkgs llvm,llvm.analysis -cflags -w,+a-4 \
-		microc.native
+		ballr.native
 
 # "make clean" removes all generated files
 
@@ -20,10 +20,12 @@ clean :
 
 # More detailed: build using ocamlc/ocamlopt + ocamlfind to locate LLVM
 
-OBJS = ast.cmo parser.cmo scanner.cmo ballr.cmo
+OBJS = ast.cmx codegen_simple.cmx parser.cmx scanner.cmx ballr.cmx
+# OBJS = ast.cmo parser.cmo scanner.cmo ballr.cmo
 
 ballr : $(OBJS)
-	ocamlc $(OBJS) -o ballr
+	# ocamlc $(OBJS) -o ballr
+	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis $(OBJS) -o ballr
 
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
@@ -38,7 +40,7 @@ parser.ml parser.mli : parser.mly
 	ocamlc -c $<
 
 %.cmx : %.ml
-	ocamlc -c $< -o $@
+	ocamlfind ocamlopt -c -package llvm $<
 
 # Testing the "printbig" example
 
