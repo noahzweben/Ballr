@@ -44,12 +44,12 @@ let translate (_, _, _, gboard, _) =
     let ftype = L.function_type (L.pointer_type gb_t) [| |] in 
     L.define_function name ftype the_module in
 
-  let fill_create_function gb n m = 
+  let fill_create_function gb t = 
     let builder = L.builder_at_end context (L.entry_block (gb_create gb)) in
-    L.build_add n m "tmp" builder ;
-    L.build_ret (L.const_null gb_t) builder; builder in
+    L.build_alloca t "tmp" builder ; 
+    ignore(L.build_ret (L.const_null gb_t) builder); builder in
 
-  fill_create_function gboard (L.const_int i32_t 1) (L.const_int i32_t 1);
+  fill_create_function gboard i32_t ;
   
   the_module  
   
