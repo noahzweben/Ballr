@@ -40,8 +40,6 @@ typedef struct gameboard {
     UT_hash_handle hh;
 } gameboard_t;
 
-void gb_init(gameboard_t *board, const char *name, blr_size_t *size, blr_color_t *color, void (*init_fn)(gameboard_t *));
-
 void ent_add(gameboard_t *board, entity_t *e);
 
 void chk_collision(entity_t *e, const char *other_name, void (*callback)(entity_t *, entity_t*));
