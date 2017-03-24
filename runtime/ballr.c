@@ -3,15 +3,6 @@
 
 extern gameboard_t *current_board;
 
-void gb_init(gameboard_t *board, const char *name,  blr_size_t *size, blr_color_t *color, void (*init_fn)(gameboard_t *)) {
-    board->name = name;
-    board->size = *size;
-    board->color = *color;
-    board->ents = NULL;
-    board->init_fn = init_fn;
-    register_gb(board);
-}
-
 void ent_add(gameboard_t *board, entity_t *e) {
     entity_t *elist;
     HASH_FIND_STR(board->ents, e->name, elist);
