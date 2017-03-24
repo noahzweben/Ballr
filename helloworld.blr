@@ -1,0 +1,7 @@
+gameboard g1{
+	clr = (0,255,255);
+	size = (500,500);
+	init -> {}
+}
+
+rules{}
