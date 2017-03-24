@@ -40,10 +40,12 @@ let translate (_, _, _, gboard, _) =
   let register_gb_t = L.function_type (L.void_type context) [| (L.pointer_type gb_t) |] in
   let register_gb_func = L.declare_function "register_gb" register_gb_t the_module in
   
-  let gb_create gb = 
+  let gb_create gb m = 
     let name = gb.A.gname ^ "_create" in 
     let ftype = L.function_type (L.pointer_type gb_t) [| |] in 
-    L.define_function name ftype the_module in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
 
   let get_decl name decls =
     match List.filter (fun (A.VarInit (t, s, e)) -> s = name) decls with
@@ -58,8 +60,9 @@ let translate (_, _, _, gboard, _) =
     | A.Vec (A.Literal v1, A.Literal v2) -> [|L.const_int i32_t v1; L.const_int i32_t v2|]
     | _ -> [|L.const_int i32_t 0; L.const_int i32_t 0; L.const_int i32_t 0|] in
 
-  let fill_create_function gb = 
-    let builder = L.builder_at_end context (L.entry_block (gb_create gb)) in
+  let fill_create_function gb m = 
+    let (map, func) =  (gb_create gb m) in
+    let builder = L.builder_at_end context (L.entry_block func) in
     let gb_ptr = L.build_malloc gb_t ("board_ptr") builder in
 
     let name_str_ptr = L.build_global_stringptr gb.A.gname (gb.A.gname ^ "_name_str_ptr") builder in
@@ -76,13 +79,19 @@ let translate (_, _, _, gboard, _) =
 
     L.build_call register_gb_func [| gb_ptr |] "unused" builder;
 
-    L.build_ret gb_ptr builder; builder in
-    (* set board name, 
-    set board size, 
-    set board color, 
-    call register gb *)
+    L.build_ret gb_ptr builder;
+    map
+  in
+
+  let fmap = fill_create_function gboard StringMap.empty in
   
-  fill_create_function gboard;
-  
+  let main_ftype = L.function_type i32_t [||] in 
+  let main_function = L.define_function "main" main_ftype the_module in
+  let main_builder = L.builder_at_end context (L.entry_block main_function) in
+  L.build_call (StringMap.find (gboard.A.gname ^ "_create") fmap) [||] "_unused" main_builder;
+ (*  L.build_call (StringMap.find (gboard.A.gname ^ "_create") fmap) [||] "_unused" main_builder; *)
+  L.build_call run_loop_func [| |] "__unused" main_builder ;
+
+
   the_module  
   
