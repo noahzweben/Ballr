@@ -32,6 +32,10 @@ void register_gb(gameboard_t *board) {
     }
 }
 
+int is_key_down(int scancode) {
+    return (int)kb_state[scancode];
+}
+
 int initWindow()
 {
 

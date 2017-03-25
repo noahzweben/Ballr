@@ -7,4 +7,6 @@ void register_gb(gameboard_t *board);
 
 int run_loop();
 
+int is_key_down(int scancode);
+
 #endif

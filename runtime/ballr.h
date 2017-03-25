@@ -40,8 +40,12 @@ typedef struct gameboard {
     UT_hash_handle hh;
 } gameboard_t;
 
-void ent_add(gameboard_t *board, entity_t *e);
+void ent_add(entity_t *e);
+
+void ent_remove(entity_t *e);
 
 void chk_collision(entity_t *e, const char *other_name, void (*callback)(entity_t *, entity_t*));
+
+int chk_keypress(int keycode);
 
 #endif

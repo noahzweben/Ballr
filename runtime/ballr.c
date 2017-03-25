@@ -3,15 +3,24 @@
 
 extern gameboard_t *current_board;
 
-void ent_add(gameboard_t *board, entity_t *e) {
+void ent_add(entity_t *e) {
     entity_t *elist;
-    HASH_FIND_STR(board->ents, e->name, elist);
+    HASH_FIND_STR(current_board->ents, e->name, elist);
     if (elist == NULL) {
         elist = malloc(sizeof(entity_t));
         elist->name = e->name;
-        HASH_ADD_STR(board->ents, name, elist);
+        HASH_ADD_STR(current_board->ents, name, elist);
     }
     LL_APPEND(elist, e);
+}
+
+void ent_remove(entity_t *e) {
+    entity_t *elist;
+    HASH_FIND_STR(current_board->ents, e->name, elist);
+    if (elist != NULL) {
+        LL_DELETE(elist, e);
+	free(e);
+    }
 }
 
 int rect_intersect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
@@ -48,6 +57,6 @@ void chk_collision(entity_t *e, const char *other_name, void (*callback)(entity_
     }
 }
 
-void chk_keypress(int keycode) {
-
+int chk_keypress(int keycode) {
+    return is_key_down(keycode);
 }
