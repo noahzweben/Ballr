@@ -36,30 +36,21 @@ int initWindow()
 {
 
 	if ( SDL_Init ( SDL_INIT_VIDEO ) < 0 ){
-
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		return 0;
-
 	} else {
-
-		window = SDL_CreateWindow( "Hello World", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 		
-		if ( window == NULL ) {
-
+        window = SDL_CreateWindow( "Hello World", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		
+        if ( window == NULL ) {
 			printf( "Window could not be created. SDL Error: %s\n", SDL_GetError() );
 			return 0;
-
 		} else {
-
-			screenSurface = SDL_GetWindowSurface( window );
-			//renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );		
-			
+			screenSurface = SDL_GetWindowSurface( window );		
 			if ( screenSurface == NULL ) {
-
 				printf( "Surface could not be created! SDL Error: %s\n", SDL_GetError() );
 				return 0;
 			}
-
 		}
 	}
 
@@ -115,31 +106,37 @@ int run_loop()
 	} 
 
 	int quit = 0;
+    SDL_Event e;
 	
 	SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
 	SDL_UpdateWindowSurface( window );
 
 	while( !quit ) {
+    	while ( SDL_PollEvent ( &e ) != 0 ) {
+            SDL_PumpEvents();
 
-        SDL_PumpEvents();
+            blr_color_t c = current_board->color;
+            Uint32 bg_color_sdl = SDL_MapRGB(screenSurface->format, c.r, c.g, c.b);
+            SDL_FillRect(screenSurface, NULL, bg_color_sdl);
+            kb_state = SDL_GetKeyboardState(NULL);
 
-        blr_color_t c = current_board->color;
-        Uint32 bg_color_sdl = SDL_MapRGB(screenSurface->format, c.r, c.g, c.b);
-        SDL_FillRect(screenSurface, NULL, bg_color_sdl);
-        kb_state = SDL_GetKeyboardState(NULL);
-
-        entity_t *elist;
-        for (elist = current_board->ents; elist != NULL; elist = elist->hh.next) {
-            entity_t *tmp, *elt;
-            LL_FOREACH_SAFE(elist, elt, tmp) {
-                if (elt->frame_fn != NULL) {
-                    elt->frame_fn(elt);
+            entity_t *elist;
+            for (elist = current_board->ents; elist != NULL; elist = elist->hh.next) {
+                entity_t *tmp, *elt;
+                LL_FOREACH_SAFE(elist, elt, tmp) {
+                    if (elt->frame_fn != NULL) {
+                        elt->frame_fn(elt);
+                    }
+                    draw_entity(elt);
                 }
-                draw_entity(elt);
+            } 
+            SDL_UpdateWindowSurface( window );
+            SDL_Delay(MS_PER_FRAME);
+
+            if (e.type == SDL_QUIT) {
+                quit = 1;
             }
-        } 
-        SDL_UpdateWindowSurface( window );
-        SDL_Delay(MS_PER_FRAME);
+    	}
     }
 
     closeWindow();
