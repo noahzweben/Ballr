@@ -5,31 +5,32 @@ module A = Ast
 module StringMap = Map.Make(String)
 
 let translate (_, _, _, gboard, _) =
-	let context = L.global_context () in
-  	let the_module = L.create_module context "Ballr" in
-    let i64_t  = L.i64_type  context in
-  	let i32_t  = L.i32_type  context in
-  	let i8_t   = L.i8_type   context in 
-  	let i1_t   = L.i1_type   context in
-  	let flt_t = L.float_type context in
-    (*let ut_hash_handle_t = L.struct_type context [|L.pointer_type ut_hash_table_t; L.pointer_type i8_t; L.pointer_type i8_t; L.pointer_type ut_hash_handle_t; L.pointer_type ut_hash_handle_t; L.pointer_type i8_t; i32_t; i32_t|] 
-    and ut_hash_table_t = L.struct_type context [|L.pointer_type ut_hash_bucket_t; i32_t; i32_t; i32_t; L.pointer_type ut_hash_handle_t; i64_t; i32_t; i32_t; i32_t; i32_t; i32_t|]
-    and ut_hash_bucket_t = L.struct_type context [|L.pointer_type ut_hash_handle_t; i32_t; i32_t|] in*)
-    let clr_t = L.named_struct_type context "blr_color_t" in
-      L.struct_set_body clr_t [|i32_t; i32_t; i32_t|] false;
-    let vec_t = L.named_struct_type context "blr_size_t" in
-      L.struct_set_body vec_t [|i32_t; i32_t|] false;
-(*	  and size_t = L.struct_type context [|i32_t; i32_t|]
-	  and pos_t = L.struct_type context [|i32_t; i32_t|]
-	  and ent_t = L.struct_type context [|  L.pointer_type i8_t; size_t; pos_t; clr_t; L.function_type L.void_type [| L.pointer_type ent_t |]; L.pointer_type ent_t; ut_hash_handle_t |] *)
-	  let gb_t = L.named_struct_type context "blr_gameboard_t" in
-      L.struct_set_body gb_t [| (L.pointer_type (L.i8_type context))  ; vec_t; clr_t; i32_t; i8_t; i8_t; i8_t (* L.pointer_type ent_t; L.function_type L.void_type [| L.pointer_type gb_t |];  ut_hash_handle_t *)|] false;
+  let context = L.global_context () in
+  let the_module = L.create_module context "Ballr" in
+  let i64_t  = L.i64_type  context in
+  let i32_t  = L.i32_type  context in
+  let i8_t   = L.i8_type   context in 
+  let i1_t   = L.i1_type   context in
+  let flt_t = L.float_type context in
+  let ut_hash_handle_t = L.named_struct_type context "UT_hash_handle" in 
+  let ut_hash_table_t = L.named_struct_type context "UT_hash_table" in
+  let ut_hash_bucket_t = L.named_struct_type context "UT_hash_bucket" in
+    L.struct_set_body ut_hash_handle_t [|L.pointer_type ut_hash_table_t; L.pointer_type i8_t; L.pointer_type i8_t; L.pointer_type ut_hash_handle_t; L.pointer_type ut_hash_handle_t; L.pointer_type i8_t; i32_t; i32_t|] false; 
+    L.struct_set_body ut_hash_table_t  [|L.pointer_type ut_hash_bucket_t; i32_t; i32_t; i32_t; L.pointer_type ut_hash_handle_t; i64_t; i32_t; i32_t; i32_t; i32_t; i32_t|] false;
+    L.struct_set_body ut_hash_bucket_t [|L.pointer_type ut_hash_handle_t; i32_t; i32_t|] false;
+  let clr_t = L.named_struct_type context "blr_color_t" in
+    L.struct_set_body clr_t [|i32_t; i32_t; i32_t|] false;
+  let vec_t = L.named_struct_type context "blr_size_t" in
+    L.struct_set_body vec_t [|i32_t; i32_t|] false;
+  let ent_t = L.named_struct_type context "blr_entity_t" in
+    L.struct_set_body ent_t [|  L.pointer_type i8_t; vec_t; vec_t; clr_t; L.pointer_type (L.function_type (L.void_type context) [| L.pointer_type ent_t |]); L.pointer_type ent_t; ut_hash_handle_t |] false;
+  let gb_t = L.named_struct_type context "blr_gameboard_t" in
+    L.struct_set_body gb_t [| L.pointer_type i8_t; vec_t; clr_t; L.pointer_type ent_t; L.pointer_type (L.function_type (L.void_type context) [| L.pointer_type gb_t |]);  ut_hash_handle_t |] false;
+
   let ltype_of_typ = function
       A.Int -> i32_t
     | A.Bool -> i1_t
     | A.Float -> flt_t
-(*     | A.Size -> size_t
-    | A.Pos -> pos_t *)
     | A.Color -> clr_t  
     | A.Vector -> vec_t
   in
@@ -46,7 +47,7 @@ let translate (_, _, _, gboard, _) =
     let func = L.define_function name ftype the_module in
     (StringMap.add name func m, func)
   in
-
+  
   let get_decl name decls =
     match List.filter (fun (A.VarInit (t, s, e)) -> s = name) decls with
       | A.VarInit (t, s, e) :: tl -> e
@@ -67,19 +68,22 @@ let translate (_, _, _, gboard, _) =
 
     let name_str_ptr = L.build_global_stringptr gb.A.gname (gb.A.gname ^ "_name_str_ptr") builder in
     let name_ptr = L.build_struct_gep gb_ptr 0 ("name_ptr") builder in
-    L.build_store name_str_ptr name_ptr builder;
+    ignore (L.build_store name_str_ptr name_ptr builder);
 
     let gb_size_ptr = L.build_struct_gep gb_ptr 1 ("size_ptr") builder in
     let size_decl_expr = get_decl "size" gb.A.members in
-    L.build_store (L.const_named_struct vec_t (vec_lit size_decl_expr)) gb_size_ptr builder;
+    ignore (L.build_store (L.const_named_struct vec_t (vec_lit size_decl_expr)) gb_size_ptr builder);
 
     let gb_color_ptr = L.build_struct_gep gb_ptr 2 ("color_ptr") builder in
     let color_decl_expr = get_decl "clr" gb.A.members in
-    L.build_store (L.const_named_struct clr_t (clr_lit color_decl_expr)) gb_color_ptr builder;
+    ignore (L.build_store (L.const_named_struct clr_t (clr_lit color_decl_expr)) gb_color_ptr builder);
 
-    L.build_call register_gb_func [| gb_ptr |] "" builder;
+    let gb_init_fn_ptr = L.build_struct_gep gb_ptr 4 ("init_fn_ptr") builder in
+    ignore (L.build_store (L.const_null (L.element_type (L.type_of gb_init_fn_ptr))) gb_init_fn_ptr builder);
 
-    L.build_ret gb_ptr builder;
+    ignore (L.build_call register_gb_func [| gb_ptr |] "" builder);
+
+    ignore (L.build_ret gb_ptr builder);
     map
   in
 
@@ -88,9 +92,9 @@ let translate (_, _, _, gboard, _) =
   let main_ftype = L.function_type i32_t [||] in 
   let main_function = L.define_function "main" main_ftype the_module in
   let main_builder = L.builder_at_end context (L.entry_block main_function) in
-  L.build_call (StringMap.find (gboard.A.gname ^ "_create") fmap) [||] "" main_builder;
-  L.build_call run_loop_func [| |] "" main_builder ;
-  L.build_ret (L.const_int i32_t 0) main_builder;
+  ignore (L.build_call (StringMap.find (gboard.A.gname ^ "_create") fmap) [||] "" main_builder);
+  ignore (L.build_call run_loop_func [| |] "" main_builder);
+  ignore (L.build_ret (L.const_int i32_t 0) main_builder);
 
   the_module  
   

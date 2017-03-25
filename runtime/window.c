@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "SDL2/SDL.h"
-//#include "/Users/Jessie/Desktop/SDL_PLT/SDL/include/SDL.h"
 #include "window.h"
 
 #define MS_PER_FRAME 17
@@ -19,16 +18,18 @@ gameboard_t *current_board = NULL;
 
 
 void register_gb(gameboard_t *board) {
-//    if (HASH_COUNT(boards) == 0) {
+    if (HASH_COUNT(boards) == 0) {
         current_board = board;
-//        board->init_fn(board);
-//    }
+        if (board->init_fn != NULL) {
+            board->init_fn(board);
+        }
+    }
 
-//    gameboard_t *p;
-//    HASH_FIND_STR(boards, board->name, p);
-//    if (p == NULL) {
-//        HASH_ADD_STR(boards, name, board);
-//    }
+    gameboard_t *p;
+    HASH_FIND_STR(boards, board->name, p);
+    if (p == NULL) {
+        HASH_ADD_STR(boards, name, board);
+    }
 }
 
 int initWindow()
@@ -127,16 +128,16 @@ int run_loop()
         SDL_FillRect(screenSurface, NULL, bg_color_sdl);
         kb_state = SDL_GetKeyboardState(NULL);
 
- //       entity_t *elist;
- //       for (elist = current_board->ents; elist != NULL; elist = elist->hh.next) {
- //           entity_t *tmp, *elt;
- //           LL_FOREACH_SAFE(elist, elt, tmp) {
- //               if (elt->frame_fn != NULL) {
- //                   elt->frame_fn(elt);
- //               }
- //               draw_entity(elt);
- //           }
- //       }            
+        entity_t *elist;
+        for (elist = current_board->ents; elist != NULL; elist = elist->hh.next) {
+            entity_t *tmp, *elt;
+            LL_FOREACH_SAFE(elist, elt, tmp) {
+                if (elt->frame_fn != NULL) {
+                    elt->frame_fn(elt);
+                }
+                draw_entity(elt);
+            }
+        } 
         SDL_UpdateWindowSurface( window );
         SDL_Delay(MS_PER_FRAME);
     }

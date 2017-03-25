@@ -20,11 +20,11 @@ clean :
 
 # More detailed: build using ocamlc/ocamlopt + ocamlfind to locate LLVM
 
-OBJS = ast.cmx codegen_simple.cmx parser.cmx scanner.cmx ballr.cmx
-# OBJS = ast.cmo parser.cmo scanner.cmo ballr.cmo
+ OBJS = ast.cmx codegen_simple.cmx parser.cmx scanner.cmx ballr.cmx
+# OBJS = ast.cmo codegen_simple.cmo parser.cmo scanner.cmo ballr.cmo
 
 ballr : $(OBJS)
-	# ocamlc $(OBJS) -o ballr
+	#ocamlc -g -I ~/.opam/system/lib/llvm $(OBJS) -o ballr
 	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis $(OBJS) -o ballr
 
 scanner.ml : scanner.mll
@@ -34,7 +34,7 @@ parser.ml parser.mli : parser.mly
 	ocamlyacc parser.mly
 
 %.cmo : %.ml
-	ocamlc -c $<
+	ocamlc -g -c -I ~/.opam/system/lib/llvm $<
 
 %.cmi : %.mli
 	ocamlc -c $<

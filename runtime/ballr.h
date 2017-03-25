@@ -35,8 +35,8 @@ typedef struct gameboard {
     const char *name;
     blr_size_t size;
     blr_color_t color;
-//    entity_t *ents;
-//    void (*init_fn)(struct gameboard *);
+    entity_t *ents;
+    void (*init_fn)(struct gameboard *);
     UT_hash_handle hh;
 } gameboard_t;
 
