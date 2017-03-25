@@ -8,7 +8,16 @@ To test Pretty Printing:
 sh run.bat
 
 
-./ballr  < Ballr\_helloworld/helloworld.blr 
+./ballr < Ballr\_helloworld/helloworld.blr 
+
+
+Building 
+---------
+To build a Ballr game, from the root directory type `make <filename>.game  `.
+This will build the compiler if it has changed, look for a file called
+`<filename>`.blr, use the `ballr` executable to compile this to LLVM, and then
+build this LLVM file and link it with the runtime located at runtime/build.
+
 
 Codegen 
 --------

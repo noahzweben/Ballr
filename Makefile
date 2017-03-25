@@ -4,6 +4,10 @@
 
 # Easiest way to build: using ocamlbuild, which in turn uses ocamlfind
 
+LFLAGS = $(shell sdl2-config --libs)
+LFLAGS += -L./runtime/build -lblr_rt
+
+
 all : clean ballr
 
 ballr.native :
@@ -41,6 +45,11 @@ parser.ml parser.mli : parser.mly
 
 %.cmx : %.ml
 	ocamlfind ocamlopt -c -package llvm $<
+
+%.game: ballr %.blr
+	./ballr -c $(*F).blr
+	clang -c $(*F).ll
+	clang $(*F).o -o $(*F) $(LFLAGS)
 
 # Testing the "printbig" example
 
