@@ -40,14 +40,7 @@ let translate (_, _, _, gboard, _) =
 
   let register_gb_t = L.function_type (L.void_type context) [| (L.pointer_type gb_t) |] in
   let register_gb_func = L.declare_function "register_gb" register_gb_t the_module in
-  
-  let gb_create gb m = 
-    let name = gb.A.gname ^ "_create" in 
-    let ftype = L.function_type (L.pointer_type gb_t) [| |] in 
-    let func = L.define_function name ftype the_module in
-    (StringMap.add name func m, func)
-  in
-  
+
   let get_decl name decls =
     match List.filter (fun (A.VarInit (t, s, e)) -> s = name) decls with
       | A.VarInit (t, s, e) :: tl -> e
@@ -61,8 +54,30 @@ let translate (_, _, _, gboard, _) =
     | A.Vec (A.Literal v1, A.Literal v2) -> [|L.const_int i32_t v1; L.const_int i32_t v2|]
     | _ -> [|L.const_int i32_t 0; L.const_int i32_t 0; L.const_int i32_t 0|] in
 
+  let gb_init gb m = 
+    let name = gb.A.gname ^ "_init" in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type gb_t |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
+  let fill_init_function gb m =
+    let (map, func) = (gb_init gb m) in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    ignore (L.build_ret_void builder);
+    map    
+  in
+
+  let gb_create gb m = 
+    let name = gb.A.gname ^ "_create" in 
+    let ftype = L.function_type (L.pointer_type gb_t) [| |] in 
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+  
   let fill_create_function gb m = 
-    let (map, func) =  (gb_create gb m) in
+    let map = fill_init_function gb m in
+    let (map, func) =  (gb_create gb map) in
     let builder = L.builder_at_end context (L.entry_block func) in
     let gb_ptr = L.build_malloc gb_t ("board_ptr") builder in
 
@@ -79,7 +94,8 @@ let translate (_, _, _, gboard, _) =
     ignore (L.build_store (L.const_named_struct clr_t (clr_lit color_decl_expr)) gb_color_ptr builder);
 
     let gb_init_fn_ptr = L.build_struct_gep gb_ptr 4 ("init_fn_ptr") builder in
-    ignore (L.build_store (L.const_null (L.element_type (L.type_of gb_init_fn_ptr))) gb_init_fn_ptr builder);
+    let init_fn = StringMap.find (gb.A.gname ^ "_init") map in
+    ignore (L.build_store init_fn gb_init_fn_ptr builder);
 
     ignore (L.build_call register_gb_func [| gb_ptr |] "" builder);
 
