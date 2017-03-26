@@ -43,8 +43,10 @@ int initWindow()
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		return 0;
 	} else {
-		
-        window = SDL_CreateWindow( "Hello World", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+
+		int board_w = (current_board->size).w;
+        int board_h = (current_board->size).h;
+        window = SDL_CreateWindow( "Hello World", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, board_w, board_h, SDL_WINDOW_SHOWN );
 		
         if ( window == NULL ) {
 			printf( "Window could not be created. SDL Error: %s\n", SDL_GetError() );
