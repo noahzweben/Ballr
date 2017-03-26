@@ -10,6 +10,9 @@ sh run.bat
 
 ./ballr < Ballr\_helloworld/helloworld.blr 
 
+SSH
+-------
+If ssh-ing into virtual machine, make sure to use -X to enable X-forwarding. Will allow screen to be displayed
 
 Building 
 ---------

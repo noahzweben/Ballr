@@ -10,3 +10,4 @@ ast.mli
 .DS_STORE
 *.swp
 ballr
+/runtime/build
