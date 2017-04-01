@@ -35,6 +35,9 @@ let translate (_, _, _, gboard) =
     | A.Vector -> vec_t
   in
 
+  let printf_t = L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in 
+  let printf_func = L.declare_function "printf" printf_t the_module in
+
   let run_loop_t = L.function_type i32_t [| |] in
   let run_loop_func = L.declare_function "run_loop" run_loop_t the_module in
 
@@ -62,8 +65,68 @@ let translate (_, _, _, gboard) =
   in
 
   let fill_init_function gb m =
+    
     let (map, func) = (gb_init gb m) in
     let builder = L.builder_at_end context (L.entry_block func) in
+    
+    let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder in (* format string for printf calls *)
+
+    let add_terminal builder f =
+      match L.block_terminator (L.insertion_block builder) with
+        Some _ -> ()
+      | None -> ignore (f builder) in
+
+      (* BUILD EXPRESSIONS *)
+      let rec expr builder = function
+        A.Literal i -> L.const_int i32_t i
+        | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
+        | A.Noexpr -> L.const_int i32_t 0
+
+        | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
+          L.build_call printf_func 
+            [| int_format_str ; (expr builder e) |]
+            "printf" builder (* build_call fn args name b creates %name = call %fn(args...) *)
+
+      in
+
+    (* BUILD STATEMENTS *)
+    let rec stmt builder = function
+          A.Block sl -> List.fold_left stmt builder sl (* sl is a block = list of stmts *)
+        | A.Expr e -> ignore (expr builder e); builder
+                
+        | A.If (predicate, then_stmt, else_stmt) ->
+            let bool_val = expr builder predicate in (* evaluate predicate expression *)
+            let merge_bb = L.append_block context "merge" func in (* append_block c name f creates new basic block named name at end of function f in context c *)
+            let then_bb = L.append_block context "then" func in
+            add_terminal 
+             (stmt (L.builder_at_end context then_bb) then_stmt) (* builder_at_end bb creates instr builder positioned at end of basic block bb *)
+             (L.build_br merge_bb); (* build_br bb b creates a br %bb instr at position specified by b *)
+
+            let else_bb = L.append_block context "else" func in
+            add_terminal 
+              (stmt (L.builder_at_end context else_bb) else_stmt)
+              (L.build_br merge_bb);
+
+            ignore (L.build_cond_br bool_val then_bb else_bb builder); (* build_cond_br cond tbb fbb b creates a br %cond, %tbb, %fbb instr *)
+            L.builder_at_end context merge_bb
+
+        | A.While (predicate, body) ->
+          let pred_bb = L.append_block context "while" func in
+          ignore (L.build_br pred_bb builder);
+
+          let body_bb = L.append_block context "while_body" func in
+          add_terminal (stmt (L.builder_at_end context body_bb) body)
+            (L.build_br pred_bb);
+
+          let pred_builder = L.builder_at_end context pred_bb in
+          let bool_val = expr pred_builder predicate in
+
+          let merge_bb = L.append_block context "merge" func in
+          ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
+          L.builder_at_end context merge_bb
+      in
+
+    let builder = stmt builder (A.Block gb.A.init) in
     ignore (L.build_ret_void builder);
     map    
   in
