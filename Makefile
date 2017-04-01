@@ -27,7 +27,7 @@ clean :
  OBJS = ast.cmx codegen_simple.cmx parser.cmx scanner.cmx ballr.cmx
 # OBJS = ast.cmo codegen_simple.cmo parser.cmo scanner.cmo ballr.cmo
 
-ballr : $(OBJS)
+ballr : clean $(OBJS)
 	#ocamlc -g -I ~/.opam/system/lib/llvm $(OBJS) -o ballr
 	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis $(OBJS) -o ballr
 

@@ -4,10 +4,12 @@
 %token ASSIGN GT LT ISEQ NEQ LEQ GEQ AND OR NOT PERIOD TRUE FALSE IF ELSE 
 %token WHILE INT BOOL FLOAT COLOR VECTOR GBOARD ENT RULES FUNCTION RETURN 
 %token DO COLLIDE EOF SEMI CLR MOV SIZE INIT FUNC LSQUARE RSQUARE
+%token FRAME CLICK FOREACH SELF
 
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
 %token <string> ID
+%token <string> KEYPRESS
 
 %nonassoc NOELSE
 %nonassoc ELSE
@@ -29,8 +31,8 @@
 /* QUESTIONS: time? vec/clr assignment? */
 
 program:	
-		var_decl_list func_decl_list ent_decl_list gboard rules EOF         
-        { (List.rev $1, List.rev $2, List.rev $3, $4, $5) }
+		var_decl_list func_decl_list ent_decl_list gboard EOF         
+        { (List.rev $1, List.rev $2, List.rev $3, $4) }
 
 prim_type:
         INT 		{ Int }
@@ -59,17 +61,16 @@ func_decl:
 				locals = List.rev $8;
 				body = List.rev $9;  
         } }
-
-
 ent_decl_list: 
 		/* nothing */               			{ [] }
         | ent_decl_list ent_decl 				{ $2 :: $1 }
 
 ent_decl: 
-		ENT ID LBRACE property_list RBRACE   	
+		ENT ID LBRACE property_list event_list RBRACE   	
 		{ { 	
 			ename = $2;
 			members = List.rev $4;
+			rules = List.rev $5;
 		} }
 
 property_list:
@@ -80,7 +81,19 @@ property:
 		var_decl 								{ $1 }
 		| CLR ASSIGN expr SEMI 					{ VarInit(Color, "clr", $3) } /*****************/
 		| SIZE ASSIGN expr SEMI					{ VarInit(Vector, "size", $3) } /*****************/
-		| MOV ASSIGN expr SEMI 					{ VarInit(Vector, "mov", $3) } /*****************/
+
+event_list: 
+	    /* nothing */                       	{ [] }
+        | event_list event						{ $2 :: $1 }	
+
+event: 
+		eventCheck DO LBRACE stmt_list RBRACE 		{ Event($1, List.rev $4) }
+
+eventCheck:
+		KEYPRESS								{ KeyPress($1)}
+		| CLICK 									{ Click }
+		| ID COLLIDE ID 						{ Collision($1,$3) }
+		| FRAME 								{ Frame }
 
 gboard:
 		GBOARD ID LBRACE property_list INIT DO LBRACE stmt_list RBRACE RBRACE 	
@@ -90,18 +103,6 @@ gboard:
 			init = List.rev $8;
 		}}
 
-rules:
-	 	RULES LBRACE event_list RBRACE
-	 	{{ 
-	 		events = List.rev $3 
-	 	}}
-
-event_list: 
-	    /* nothing */                       	{ [] }
-        | event_list event						{ $2 :: $1 }	
-
-event: 
-		expr DO LBRACE stmt_list RBRACE 		{ Event($1, List.rev $4) }
 
 stmt_list: 
 	    /* nothing */                       	{ [] }
@@ -114,6 +115,9 @@ stmt:
 	| IF LPAREN expr RPAREN stmt  %prec NOELSE 	{ If($3, $5, Block([])) }
 	| IF LPAREN expr RPAREN stmt ELSE stmt 		{ If($3, $5, $7) }
 	| WHILE LPAREN expr RPAREN stmt 			{ While($3, $5)}
+	| FOREACH LPAREN ID ID RPAREN stmt 		{ ForEach($3, $4, $6)}
+
+
 
 expr: 
 	INT_LITERAL 					{ Literal($1) }
@@ -135,7 +139,6 @@ expr:
     | expr AND expr 				{ Binop($1, And, $3) }
     | expr OR expr 					{ Binop($1, Or, $3) }
     | expr MOD expr 				{ Binop($1, Mod, $3) }
-    | expr COLLIDE expr 			{ Binop($1, Coll, $3) }
     | NOT expr  					{ Unop(Not, $2) }
     | MINUS expr %prec NEG 			{ Unop(Neg, $2) }
     | LPAREN expr RPAREN 			{ $2 }
@@ -144,6 +147,7 @@ expr:
     | tmember ASSIGN expr 			{ Assign($1,$3)}
     | LPAREN expr COMMA expr RPAREN 			{ Vec($2, $4) }
     | LPAREN expr COMMA expr COMMA expr RPAREN  { Clr($2, $4, $6) }
+   
 
 member:
 	ID  				{ Id($1) } 
@@ -168,4 +172,3 @@ formal_list_opt:
 formal_list:
         prim_type ID                            { [($1, $2)] }
         | formal_list COMMA prim_type ID        { ($3, $4) :: $1 }
-

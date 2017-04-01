@@ -1,0 +1,19 @@
+int x = 10;
+
+func int ballr(int dog){
+	return dog+10;
+}
+
+entity piece{
+	clr = (10,10,10);
+	int dog = 4;
+	frame -> {}
+	key_UP -> {}
+}
+
+gameboard g1{ 
+	clr = (0,0,255);
+	size = (500,500);
+	init -> {}
+
+}

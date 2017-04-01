@@ -1,4 +1,4 @@
-type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | And | Or | Mod | Coll
+type op = Add | Sub | Mult | Div | Equal | Neq | Less | Leq | Greater | Geq | And | Or | Mod
 type uop = Neg | Not
 type typ = Int | Float | Bool | Color | Vector
 
@@ -14,17 +14,18 @@ type expr = Literal of int
 		| ArrayAccess of expr * expr (*p[0]*)
 		| Unop of uop * expr
 		| Call of string * expr list
+    | ClickPos
 		| Noexpr (*do we use this?*)
 
 type stmt = Block of stmt list
 		| If of expr * stmt * stmt
 		| While of expr * stmt
 		| Expr of expr
+    | ForEach of string * string * stmt
 		| Return of expr
 
-type var_decl = VarInit of typ * string * expr
 
-type event = Event of expr * stmt list
+type var_decl = VarInit of typ * string * expr
 
 type bind = typ * string
 
@@ -36,10 +37,18 @@ type func_decl = {
 	body : stmt list;
 }
 
+type eventCheck = KeyPress of string
+    | Click
+    | Collision of string * string 
+    | Frame 
+
+type event = Event of eventCheck * stmt list
+
 
 type ent_decl = {
 	ename : string;
 	members : var_decl list;
+  rules : event list;
 }
 
 type game_decl = {
@@ -48,11 +57,7 @@ type game_decl = {
 	init : stmt list;
 }
 
-type rules_decl = {
-	events : event list;
-}
-
-type program = var_decl list * func_decl list * ent_decl list * game_decl * rules_decl
+type program = var_decl list * func_decl list * ent_decl list * game_decl
 
 
 let string_of_op = function
@@ -69,7 +74,6 @@ let string_of_op = function
   | And -> "&&"
   | Or -> "||"
   | Mod -> "%"
-  | Coll -> "><"
 
 let string_of_uop = function
     Neg -> "-"
@@ -85,13 +89,14 @@ let rec string_of_expr = function
       string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Unop(o, e) -> string_of_uop o ^ string_of_expr e
   | Assign(v, e) -> string_of_expr v ^ " = " ^ string_of_expr e
-  | Access(v, e) -> v ^ "." ^ e
+  | Access(v, e) ->  v ^ "." ^ e
   | ArrayAccess(e1,e2) -> string_of_expr e1 ^ "[" ^ string_of_expr e2^ "]"
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Noexpr -> ""
   | Clr(e1,e2,e3) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e2 ^ ", " ^ string_of_expr e3 ^ ")"
   | Vec(e1,e2) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e2 ^ ")"
+  | ClickPos -> "click_pos"
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -102,6 +107,7 @@ let rec string_of_stmt = function
   | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
+  | ForEach(o1,o2,s) -> "foreach (" ^ o1 ^ " " ^ o2 ^ ") " ^ string_of_stmt s
 
 let string_of_typ = function
     Int -> "int"
@@ -123,10 +129,21 @@ let string_of_fdecl fdecl =
   String.concat "" (List.map string_of_stmt fdecl.body) ^
   "}\n"
 
+let string_of_eventCheck = function
+  Click -> "click"
+  | Frame -> "frame"
+  | KeyPress(s) -> s
+  | Collision(e1,e2) -> e1 ^ " >< " ^ e2
+
+let string_of_event  = function
+  Event(e,a) ->  string_of_eventCheck e ^ " -> {\n" ^
+   String.concat "" (List.map string_of_stmt a) ^ "}\n"
+
 let string_of_entdecl edecl =
 	"\nentity " ^ edecl.ename ^ " " ^
 	"{\n" ^
 	String.concat "" (List.map string_of_vdecl edecl.members) ^ 
+  String.concat "" (List.map string_of_event edecl.rules) ^
 	"}\n"
 
 let string_of_gboard gdecl =
@@ -136,17 +153,8 @@ let string_of_gboard gdecl =
 	"init -> {" ^ String.concat "" (List.map string_of_stmt gdecl.init) ^
 	"}\n}\n"
 
-let string_of_event  = function
-	Event(e,a) ->  string_of_expr e ^ " -> {\n" ^
-	 String.concat "" (List.map string_of_stmt a) ^ "}\n"
-
-let string_of_rules rdecl = 
-  "\nrules {\n" ^
-	String.concat "" (List.map string_of_event rdecl.events)
-  ^ "}\n"
-
-let string_of_program (vars, funcs, ents, game, rules) =
+let string_of_program (vars, funcs, ents, game) =
   String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
   String.concat "\n" (List.map string_of_fdecl funcs) ^
   String.concat "" (List.map string_of_entdecl ents) ^
-  string_of_gboard game ^ string_of_rules rules ^ "\n"
+  string_of_gboard game

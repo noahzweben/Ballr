@@ -4,7 +4,7 @@ module A = Ast
 
 module StringMap = Map.Make(String)
 
-let translate (_, _, _, gboard, _) =
+let translate (_, _, _, gboard) =
   let context = L.global_context () in
   let the_module = L.create_module context "Ballr" in
   let i64_t  = L.i64_type  context in
