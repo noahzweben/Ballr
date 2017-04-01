@@ -51,6 +51,11 @@ parser.ml parser.mli : parser.mly
 	clang -c $(*F).ll
 	clang $(*F).o -o $(*F) $(LFLAGS)
 
+%.test: 
+	./ballr < tests/$(*F).blr > $(*F).ll
+	clang -c $(*F).ll
+	clang $(*F).o -o $(*F) $(LFLAGS)
+
 # Testing the "printbig" example
 
 
