@@ -6,10 +6,10 @@ func int ballr(int dog){
 
 entity piece{
 	clr = (10,10,10);
+	size = (10,01);
 	int dog = 4;
-
 	frame -> {}
-	key_UP -> {}
+	key_UP -> { 5+4; 10+11;}
 }
 
 gameboard g1{ 

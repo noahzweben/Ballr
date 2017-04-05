@@ -89,11 +89,11 @@ StringMap.empty memz
 
 in 
 
-let checkEntMem s t m = 
+let checkMemExists s t m = 
       try 
         let myT = StringMap.find s m 
         in
-        if myT != t then raise (Failure ("wrong Type"))
+        if myT != t then raise (Failure ("wrong type"))
      with Not_found -> raise (Failure ("You haven't defined " ^ s))
   in
 
@@ -104,8 +104,8 @@ let checkEvent = function
 
 let checkEntDecl e = 
   let myMems = entMemTypes e.members in
-  checkEntMem "clr" Color myMems;
-  checkEntMem "size" Vector myMems;
+  checkMemExists "clr" Color myMems;
+  checkMemExists "size" Vector myMems;
 	List.iter checkEvent e.rules
 
 
