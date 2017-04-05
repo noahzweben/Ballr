@@ -50,12 +50,12 @@ let translate (_, _, ents, gboard) =
       | [] -> A.Noexpr in
 
   let clr_lit = function
-    | A.Clr (A.Literal r, A.Literal g, A.Literal b) -> [|L.const_int i32_t r; L.const_int i32_t g; L.const_int i32_t b|]
-    | _ -> [|L.const_int i32_t 0; L.const_int i32_t 0; L.const_int i32_t 0|] in
+    | A.Clr (A.Literal r, A.Literal g, A.Literal b) -> Some([|L.const_int i32_t r; L.const_int i32_t g; L.const_int i32_t b|])
+    | _ -> None in
 
   let vec_lit = function
-    | A.Vec (A.Literal v1, A.Literal v2) -> [|L.const_int i32_t v1; L.const_int i32_t v2|]
-    | _ -> [|L.const_int i32_t 0; L.const_int i32_t 0; L.const_int i32_t 0|] in
+    | A.Vec (A.Literal v1, A.Literal v2) -> Some([|L.const_int i32_t v1; L.const_int i32_t v2|])
+    | _ -> None in 
 
   let int_format_str builder = L.build_global_stringptr "%d\n" "fmt" builder in (* format string for printf calls *)
 
@@ -101,9 +101,34 @@ let translate (_, _, ents, gboard) =
       (match op with
           A.Neg     -> L.build_neg
         | A.Not     -> L.build_not) e' "tmp" builder
-    | A.Clr _ as clr -> L.const_named_struct clr_t (clr_lit clr)
-    | A.Vec _ as vec -> L.const_named_struct vec_t (vec_lit vec)
+    | A.Clr (e1, e2, e3) as clr -> 
+      (match (clr_lit clr) with
+        Some(vals) -> L.const_named_struct clr_t vals
+        | None ->
+	  let e1' = expr builder m e1
+	  and e2' = expr builder m e2
+          and e3' = expr builder m e3 in
+          let clr_ptr = L.build_alloca clr_t "tmp" builder in
+  	  let r_ptr = L.build_struct_gep clr_ptr 0 "r" builder in
+  	  ignore (L.build_store e1' r_ptr builder);
+          let g_ptr = L.build_struct_gep clr_ptr 1 "g" builder in
+	  ignore (L.build_store e2' g_ptr builder);
+          let b_ptr = L.build_struct_gep clr_ptr 2 "b" builder in
+          ignore (L.build_store e3' b_ptr builder);
+	  L.build_load clr_ptr "c" builder)
 
+    | A.Vec (e1, e2) as vec -> 
+      (match (vec_lit vec) with
+        Some(vals) -> L.const_named_struct vec_t vals
+        | None ->
+          let e1' = expr builder m e1
+          and e2' = expr builder m e2 in
+          let vec_ptr = L.build_alloca vec_t "tmp" builder in
+          let x_ptr = L.build_struct_gep vec_ptr 0 "x" builder in
+          ignore (L.build_store e1' x_ptr builder);
+          let y_ptr = L.build_struct_gep vec_ptr 1 "y" builder in
+          ignore (L.build_store e2' y_ptr builder);
+          L.build_load vec_ptr "v" builder)
   in
 
   (* BUILD STATEMENTS *)
