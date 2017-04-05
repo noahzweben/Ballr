@@ -3,9 +3,9 @@ open Ast
 module StringMap = Map.Make(String)
 
 
-let check (vardecls, funcdecls, entdecls, gboard) = 1;
+let check (vardecls, funcdecls, entdecls, gboard) = 
 
-(* let rec expr = function
+let rec expr = function
 		Literal _ -> Int
 	  | FLiteral _ -> Float
       | BoolLit _ -> Bool
@@ -42,8 +42,8 @@ let check (vardecls, funcdecls, entdecls, gboard) = 1;
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
 				     " = " ^ string_of_typ rt ^ " in " ^ 
 				     string_of_expr ex)) *)
-	  | Access -> ()
-	  | ArrayAccess -> 
+	  (* | Access -> ()
+	  | ArrayAccess ->  *)
 (*       | Call(fname, actuals) as call -> let fd = function_decl fname in
          if List.length actuals != List.length fd.formals then
            raise (Failure ("expecting " ^ string_of_int
@@ -85,7 +85,7 @@ let rec stmt = function
 in
 
 let checkEvent (_, bhvr) = 
-	stmt (Block bhvr)
+	stmt bhvr
 in
 
 let checkEntDecl e = 
@@ -93,7 +93,7 @@ let checkEntDecl e =
 
 in
 
-List.iter checkEntDecl entDecls *)
+List.iter checkEntDecl entDecls
 
 
 (*  let type_of_identifier s =
