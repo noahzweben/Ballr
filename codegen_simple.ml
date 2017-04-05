@@ -57,6 +57,93 @@ let translate (_, _, ents, gboard) =
     | A.Vec (A.Literal v1, A.Literal v2) -> [|L.const_int i32_t v1; L.const_int i32_t v2|]
     | _ -> [|L.const_int i32_t 0; L.const_int i32_t 0; L.const_int i32_t 0|] in
 
+  let int_format_str builder = L.build_global_stringptr "%d\n" "fmt" builder in (* format string for printf calls *)
+
+  let add_terminal builder f =
+    match L.block_terminator (L.insertion_block builder) with
+      Some _ -> ()
+      | None -> ignore (f builder) in
+
+  (* BUILD EXPRESSIONS *)
+  let rec expr builder m = function
+    A.Literal i -> L.const_int i32_t i
+    | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
+    | A.Noexpr -> L.const_int i32_t 0
+
+    | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
+      L.build_call printf_func 
+        [| int_format_str builder ; (expr builder m e) |]
+        "printf" builder (* build_call fn args name b creates %name = call %fn(args...) *)
+    | A.Call (name, args) ->
+      let func = StringMap.find name m in
+      let arg_arr = Array.of_list (List.map (expr builder m) args) in
+      L.build_call func arg_arr name builder
+    | A.Binop (e1, op, e2) ->
+      let e1' = expr builder m e1
+      and e2' = expr builder m e2 in
+      (match op with
+        A.Add     -> L.build_add
+      | A.Sub     -> L.build_sub
+      | A.Mult    -> L.build_mul
+      | A.Div     -> L.build_sdiv
+      | A.And     -> L.build_and
+      | A.Or      -> L.build_or
+      | A.Equal   -> L.build_icmp L.Icmp.Eq
+      | A.Neq     -> L.build_icmp L.Icmp.Ne
+      | A.Less    -> L.build_icmp L.Icmp.Slt
+      | A.Leq     -> L.build_icmp L.Icmp.Sle
+      | A.Greater -> L.build_icmp L.Icmp.Sgt
+      | A.Geq     -> L.build_icmp L.Icmp.Sge
+      ) e1' e2' "tmp" builder 
+    
+    | A.Unop(op, e) ->
+      let e' = expr builder m e in
+      (match op with
+          A.Neg     -> L.build_neg
+        | A.Not     -> L.build_not) e' "tmp" builder
+    | A.Clr _ as clr -> L.const_named_struct clr_t (clr_lit clr)
+    | A.Vec _ as vec -> L.const_named_struct vec_t (vec_lit vec)
+
+  in
+
+  (* BUILD STATEMENTS *)
+  let rec stmt builder func m = function
+    A.Block sl -> List.fold_left (fun b s -> stmt b func m s) builder sl (* sl is a block = list of stmts *)
+    | A.Expr e -> ignore (expr builder m e); builder
+                
+    | A.If (predicate, then_stmt, else_stmt) ->
+      let bool_val = expr builder m predicate in (* evaluate predicate expression *)
+      let merge_bb = L.append_block context "merge" func in (* append_block c name f creates new basic block named name at end of function f in context c *)
+      let then_bb = L.append_block context "then" func in
+      add_terminal 
+        (stmt (L.builder_at_end context then_bb) func m then_stmt) (* builder_at_end bb creates instr builder positioned at end of basic block bb *)
+        (L.build_br merge_bb); (* build_br bb b creates a br %bb instr at position specified by b *)
+
+      let else_bb = L.append_block context "else" func in
+      add_terminal 
+        (stmt (L.builder_at_end context else_bb) func m else_stmt)
+        (L.build_br merge_bb);
+
+      ignore (L.build_cond_br bool_val then_bb else_bb builder); (* build_cond_br cond tbb fbb b creates a br %cond, %tbb, %fbb instr *)
+      L.builder_at_end context merge_bb
+
+    | A.While (predicate, body) ->
+      let pred_bb = L.append_block context "while" func in
+      ignore (L.build_br pred_bb builder);
+
+      let body_bb = L.append_block context "while_body" func in
+      add_terminal (stmt (L.builder_at_end context body_bb) func m body)
+          (L.build_br pred_bb);
+
+      let pred_builder = L.builder_at_end context pred_bb in
+      let bool_val = expr pred_builder m predicate in
+
+      let merge_bb = L.append_block context "merge" func in
+      ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
+        L.builder_at_end context merge_bb
+  in
+
+
   let gb_init gb m = 
     let name = gb.A.gname ^ "_init" in
     let ftype = L.function_type (L.void_type context) [| L.pointer_type gb_t |] in
@@ -69,87 +156,8 @@ let translate (_, _, ents, gboard) =
     let (map, func) = (gb_init gb m) in
     let builder = L.builder_at_end context (L.entry_block func) in
     
-    let int_format_str = L.build_global_stringptr "%d\n" "fmt" builder in (* format string for printf calls *)
-
-    let add_terminal builder f =
-      match L.block_terminator (L.insertion_block builder) with
-        Some _ -> ()
-      | None -> ignore (f builder) in
-
-      (* BUILD EXPRESSIONS *)
-      let rec expr builder = function
-        A.Literal i -> L.const_int i32_t i
-        | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
-        | A.Noexpr -> L.const_int i32_t 0
-
-        | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
-          L.build_call printf_func 
-            [| int_format_str ; (expr builder e) |]
-            "printf" builder (* build_call fn args name b creates %name = call %fn(args...) *)
-        | A.Binop (e1, op, e2) ->
-          let e1' = expr builder e1
-          and e2' = expr builder e2 in
-          (match op with
-            A.Add     -> L.build_add
-          | A.Sub     -> L.build_sub
-          | A.Mult    -> L.build_mul
-          | A.Div     -> L.build_sdiv
-          | A.And     -> L.build_and
-          | A.Or      -> L.build_or
-          | A.Equal   -> L.build_icmp L.Icmp.Eq
-          | A.Neq     -> L.build_icmp L.Icmp.Ne
-          | A.Less    -> L.build_icmp L.Icmp.Slt
-          | A.Leq     -> L.build_icmp L.Icmp.Sle
-          | A.Greater -> L.build_icmp L.Icmp.Sgt
-          | A.Geq     -> L.build_icmp L.Icmp.Sge
-          ) e1' e2' "tmp" builder 
-        
-        | A.Unop(op, e) ->
-          let e' = expr builder e in
-          (match op with
-              A.Neg     -> L.build_neg
-            | A.Not     -> L.build_not) e' "tmp" builder
-
-      in
-
-    (* BUILD STATEMENTS *)
-    let rec stmt builder = function
-          A.Block sl -> List.fold_left stmt builder sl (* sl is a block = list of stmts *)
-        | A.Expr e -> ignore (expr builder e); builder
-                
-        | A.If (predicate, then_stmt, else_stmt) ->
-            let bool_val = expr builder predicate in (* evaluate predicate expression *)
-            let merge_bb = L.append_block context "merge" func in (* append_block c name f creates new basic block named name at end of function f in context c *)
-            let then_bb = L.append_block context "then" func in
-            add_terminal 
-             (stmt (L.builder_at_end context then_bb) then_stmt) (* builder_at_end bb creates instr builder positioned at end of basic block bb *)
-             (L.build_br merge_bb); (* build_br bb b creates a br %bb instr at position specified by b *)
-
-            let else_bb = L.append_block context "else" func in
-            add_terminal 
-              (stmt (L.builder_at_end context else_bb) else_stmt)
-              (L.build_br merge_bb);
-
-            ignore (L.build_cond_br bool_val then_bb else_bb builder); (* build_cond_br cond tbb fbb b creates a br %cond, %tbb, %fbb instr *)
-            L.builder_at_end context merge_bb
-
-        | A.While (predicate, body) ->
-          let pred_bb = L.append_block context "while" func in
-          ignore (L.build_br pred_bb builder);
-
-          let body_bb = L.append_block context "while_body" func in
-          add_terminal (stmt (L.builder_at_end context body_bb) body)
-            (L.build_br pred_bb);
-
-          let pred_builder = L.builder_at_end context pred_bb in
-          let bool_val = expr pred_builder predicate in
-
-          let merge_bb = L.append_block context "merge" func in
-          ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
-          L.builder_at_end context merge_bb
-      in
-
-    let builder = stmt builder (A.Block gb.A.init) in
+    
+    let builder = stmt builder func m (A.Block gb.A.init) in
     ignore (L.build_ret_void builder);
     map    
   in
@@ -173,11 +181,11 @@ let translate (_, _, ents, gboard) =
 
     let gb_size_ptr = L.build_struct_gep gb_ptr 1 ("size_ptr") builder in
     let size_decl_expr = get_decl "size" gb.A.members in
-    ignore (L.build_store (L.const_named_struct vec_t (vec_lit size_decl_expr)) gb_size_ptr builder);
+    ignore (L.build_store (expr builder map size_decl_expr) gb_size_ptr builder);
 
     let gb_color_ptr = L.build_struct_gep gb_ptr 2 ("color_ptr") builder in
     let color_decl_expr = get_decl "clr" gb.A.members in
-    ignore (L.build_store (L.const_named_struct clr_t (clr_lit color_decl_expr)) gb_color_ptr builder);
+    ignore (L.build_store (expr builder map color_decl_expr) gb_color_ptr builder);
 
     let gb_init_fn_ptr = L.build_struct_gep gb_ptr 4 ("init_fn_ptr") builder in
     let init_fn = StringMap.find (gb.A.gname ^ "_init") map in
@@ -221,7 +229,7 @@ let translate (_, _, ents, gboard) =
 
     let ent_size_ptr = L.build_struct_gep ent_ptr 1 ("size_ptr") builder in
     let size_decl_expr = get_decl "size" e.A.members in
-    ignore (L.build_store (L.const_named_struct vec_t (vec_lit size_decl_expr)) ent_size_ptr builder);
+    ignore (L.build_store (expr builder map size_decl_expr) ent_size_ptr builder);
 
     let ent_pos_ptr = L.build_struct_gep ent_ptr 2 ("pos_ptr") builder in
     let pos_zero = [|L.const_int i32_t 0; L.const_int i32_t 0|] in
@@ -229,7 +237,7 @@ let translate (_, _, ents, gboard) =
 
     let ent_color_ptr = L.build_struct_gep ent_ptr 3 ("color_ptr") builder in
     let color_decl_expr = get_decl "clr" e.A.members in
-    ignore (L.build_store (L.const_named_struct clr_t (clr_lit color_decl_expr)) ent_color_ptr builder); 
+    ignore (L.build_store (expr builder map color_decl_expr) ent_color_ptr builder); 
 
     let ent_frame_fn_ptr = L.build_struct_gep ent_ptr 4 ("frame_fn_ptr") builder in
     let map = fill_ent_frame_function e map in
