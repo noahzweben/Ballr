@@ -5,8 +5,11 @@ module StringMap = Map.Make(String)
 
 let check (vardecls, funcdecls, entdecls, gboard) = 
 
+let isNumType t = if (t=Int || t=Float) then true else false
+in 
+
 let rec expr = function
-		Literal _ -> Int
+		  Literal _ -> Int
 	    | FLiteral _ -> Float
       | BoolLit _ -> Bool
       | Id s -> Bool
@@ -37,6 +40,13 @@ let rec expr = function
         )
 
       | Noexpr -> Bool
+      | Clr(r,g,b)  -> let t1 = expr r and t2 = expr g and t3 = expr b in
+          if (isNumType(t1) && isNumType(t2) && isNumType(t3)) then Color
+          else raise (Failure ("expected numeric input for type color"))
+      | Vec(x,y)  -> let t1 = expr x and t2 = expr y in
+          if (isNumType(t1) && isNumType(t2)) then Vector
+          else raise (Failure ("expected numeric input for type vector"))
+
  (*      | Assign(var, e) as ex -> let lt = type_of_identifier var
                                 and rt = expr e in
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
@@ -58,6 +68,13 @@ let rec expr = function
 in
 
 
+let checkVarInit = function
+  VarInit(t,n,e) -> let e_typ = expr e in
+    if t != e_typ 
+    then raise (Failure ("expected type " ^ string_of_typ t ^ ", not " ^ string_of_expr e ^ " of type " ^ string_of_typ e_typ))
+     else () 
+
+in
 
 let check_bool_expr e = if expr e != Bool
      then raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
@@ -106,6 +123,7 @@ let checkEntDecl e =
   let myMems = entMemTypes e.members in
   checkMemExists "clr" Color myMems;
   checkMemExists "size" Vector myMems;
+  List.iter checkVarInit e.members;
 	List.iter checkEvent e.rules
 
 
