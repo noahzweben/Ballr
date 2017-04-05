@@ -4,7 +4,7 @@ module A = Ast
 
 module StringMap = Map.Make(String)
 
-let translate (_, _, _, gboard) =
+let translate (_, _, ents, gboard) =
   let context = L.global_context () in
   let the_module = L.create_module context "Ballr" in
   let i64_t  = L.i64_type  context in
@@ -161,7 +161,7 @@ let translate (_, _, _, gboard) =
     (StringMap.add name func m, func)
   in
   
-  let fill_create_function gb m = 
+  let fill_gb_create_function gb m = 
     let map = fill_init_function gb m in
     let (map, func) =  (gb_create gb map) in
     let builder = L.builder_at_end context (L.entry_block func) in
@@ -189,8 +189,60 @@ let translate (_, _, _, gboard) =
     map
   in
 
-  let fmap = fill_create_function gboard StringMap.empty in
-  
+  let ent_frame e m =
+    let name = e.A.ename ^ "_frame" in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
+  let fill_ent_frame_function e m =
+    let (map, func) = ent_frame e m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    ignore (L.build_ret_void builder);
+    map
+  in
+
+  let ent_create e m =
+    let name = e.A.ename ^ "_create" in
+    let ftype = L.function_type (L.pointer_type ent_t) [| |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
+  let fill_ent_create_function e m =
+    let (map, func) = ent_create e m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let ent_ptr = L.build_malloc ent_t ("ent_ptr") builder in
+
+    let name_str_ptr = L.build_global_stringptr e.A.ename (e.A.ename ^ "_name_str_ptr") builder in
+    let name_ptr = L.build_struct_gep ent_ptr 0 ("name_ptr") builder in
+    ignore (L.build_store name_str_ptr name_ptr builder);
+
+    let ent_size_ptr = L.build_struct_gep ent_ptr 1 ("size_ptr") builder in
+    let size_decl_expr = get_decl "size" e.A.members in
+    ignore (L.build_store (L.const_named_struct vec_t (vec_lit size_decl_expr)) ent_size_ptr builder);
+
+    let ent_pos_ptr = L.build_struct_gep ent_ptr 2 ("pos_ptr") builder in
+    let pos_zero = [|L.const_int i32_t 0; L.const_int i32_t 0|] in
+    ignore (L.build_store (L.const_named_struct vec_t pos_zero) ent_pos_ptr builder);
+
+    let ent_color_ptr = L.build_struct_gep ent_ptr 3 ("color_ptr") builder in
+    let color_decl_expr = get_decl "clr" e.A.members in
+    ignore (L.build_store (L.const_named_struct clr_t (clr_lit color_decl_expr)) ent_color_ptr builder); 
+
+    let ent_frame_fn_ptr = L.build_struct_gep ent_ptr 4 ("frame_fn_ptr") builder in
+    let map = fill_ent_frame_function e map in
+    let frame_fn = StringMap.find (e.A.ename ^ "_frame") map in
+    ignore (L.build_store frame_fn ent_frame_fn_ptr builder);
+
+    ignore (L.build_ret ent_ptr builder);
+    map
+  in
+
+  let fmap = fill_gb_create_function gboard StringMap.empty in
+  let fmap = List.fold_left (fun m e -> fill_ent_create_function e m) fmap ents in
+
   let main_ftype = L.function_type i32_t [||] in 
   let main_function = L.define_function "main" main_ftype the_module in
   let main_builder = L.builder_at_end context (L.entry_block main_function) in
