@@ -182,7 +182,7 @@ let translate (_, _, ents, gboard) =
     let builder = L.builder_at_end context (L.entry_block func) in
     
     
-    let builder = stmt builder func m (A.Block gb.A.init) in
+    let builder = stmt builder func m (A.Block gb.A.init_body) in
     ignore (L.build_ret_void builder);
     map    
   in

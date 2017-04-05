@@ -14,7 +14,6 @@ type expr = Literal of int
 		| ArrayAccess of expr * expr (*p[0]*)
 		| Unop of uop * expr
 		| Call of string * expr list
-    | ClickPos
 		| Noexpr (*do we use this?*)
 
 type stmt = Block of stmt list
@@ -42,7 +41,7 @@ type eventCheck = KeyPress of string
     | Collision of string * string 
     | Frame 
 
-type event = Event of eventCheck * stmt list
+type event = Event of eventCheck * var_decl list * stmt list
 
 
 type ent_decl = {
@@ -54,7 +53,8 @@ type ent_decl = {
 type game_decl = {
 	gname : string;
 	members : var_decl list;
-	init : stmt list;
+  init_mem: var_decl list;
+	init_body : stmt list;
 }
 
 type program = var_decl list * func_decl list * ent_decl list * game_decl
@@ -96,7 +96,6 @@ let rec string_of_expr = function
   | Noexpr -> ""
   | Clr(e1,e2,e3) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e2 ^ ", " ^ string_of_expr e3 ^ ")"
   | Vec(e1,e2) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e2 ^ ")"
-  | ClickPos -> "click_pos"
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -136,7 +135,8 @@ let string_of_eventCheck = function
   | Collision(e1,e2) -> e1 ^ " >< " ^ e2
 
 let string_of_event  = function
-  Event(e,a) ->  string_of_eventCheck e ^ " -> {\n" ^
+  Event(e,v,a) ->  string_of_eventCheck e ^ " -> {\n" ^
+   String.concat "" (List.map string_of_vdecl v) ^
    String.concat "" (List.map string_of_stmt a) ^ "}\n"
 
 let string_of_entdecl edecl =
@@ -150,7 +150,8 @@ let string_of_gboard gdecl =
 	"\ngameboard " ^ gdecl.gname ^ " " ^
 	"{\n" ^
 	String.concat "" (List.map string_of_vdecl gdecl.members) ^
-	"init -> {" ^ String.concat "" (List.map string_of_stmt gdecl.init) ^
+	"init -> {" ^ String.concat "" (List.map string_of_vdecl gdecl.init_mem)
+  ^ String.concat "" (List.map string_of_stmt gdecl.init_body) ^
 	"}\n}\n"
 
 let string_of_program (vars, funcs, ents, game) =
