@@ -84,17 +84,17 @@ let rec stmt = function
 
 in
 
-let checkEvent (_, bhvr) = 
-	stmt bhvr
-in
+let checkEvent = function 
+  Event (_, _, bhvr) ->
+	   stmt (Block bhvr)
+   in
 
 let checkEntDecl e = 
 	List.iter checkEvent e.rules
 
 in
 
-List.iter checkEntDecl entDecls
-
+List.iter checkEntDecl entdecls
 
 (*  let type_of_identifier s =
       try StringMap.find s symbols

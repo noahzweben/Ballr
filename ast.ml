@@ -41,8 +41,7 @@ type eventCheck = KeyPress of string
     | Collision of string * string 
     | Frame 
 
-type event = Event of eventCheck * var_decl list * stmt list
-
+type event = Event of eventCheck * (var_decl list) * (stmt list)
 
 type ent_decl = {
 	ename : string;
