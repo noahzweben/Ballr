@@ -14,7 +14,6 @@ type expr = Literal of int
 		| ArrayAccess of expr * expr (*p[0]*)
 		| Unop of uop * expr
 		| Call of string * expr list
-    | ClickPos
 		| Noexpr (*do we use this?*)
 
 type stmt = Block of stmt list
@@ -96,7 +95,6 @@ let rec string_of_expr = function
   | Noexpr -> ""
   | Clr(e1,e2,e3) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e2 ^ ", " ^ string_of_expr e3 ^ ")"
   | Vec(e1,e2) -> "(" ^ string_of_expr e1 ^ ", " ^ string_of_expr e2 ^ ")"
-  | ClickPos -> "click_pos"
 
 let rec string_of_stmt = function
     Block(stmts) ->
