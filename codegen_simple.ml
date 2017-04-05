@@ -180,11 +180,11 @@ let translate (_, _, ents, gboard) =
     ignore (L.build_store name_str_ptr name_ptr builder);
 
     let gb_size_ptr = L.build_struct_gep gb_ptr 1 ("size_ptr") builder in
-    let size_decl_expr = get_decl "size" gb.A.members in
+    let size_decl_expr = get_decl "size" gb.A.gmembers in
     ignore (L.build_store (expr builder map size_decl_expr) gb_size_ptr builder);
 
     let gb_color_ptr = L.build_struct_gep gb_ptr 2 ("color_ptr") builder in
-    let color_decl_expr = get_decl "clr" gb.A.members in
+    let color_decl_expr = get_decl "clr" gb.A.gmembers in
     ignore (L.build_store (expr builder map color_decl_expr) gb_color_ptr builder);
 
     let gb_init_fn_ptr = L.build_struct_gep gb_ptr 4 ("init_fn_ptr") builder in

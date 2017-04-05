@@ -41,7 +41,8 @@ type eventCheck = KeyPress of string
     | Collision of string * string 
     | Frame 
 
-type event = Event of eventCheck * (var_decl list) * (stmt list)
+type event = Event of eventCheck * var_decl list * stmt list
+
 
 type ent_decl = {
 	ename : string;
@@ -51,7 +52,7 @@ type ent_decl = {
 
 type game_decl = {
 	gname : string;
-	members : var_decl list;
+	gmembers : var_decl list;
   init_mem: var_decl list;
 	init_body : stmt list;
 }
@@ -148,7 +149,7 @@ let string_of_entdecl edecl =
 let string_of_gboard gdecl =
 	"\ngameboard " ^ gdecl.gname ^ " " ^
 	"{\n" ^
-	String.concat "" (List.map string_of_vdecl gdecl.members) ^
+	String.concat "" (List.map string_of_vdecl gdecl.gmembers) ^
 	"init -> {" ^ String.concat "" (List.map string_of_vdecl gdecl.init_mem)
   ^ String.concat "" (List.map string_of_stmt gdecl.init_body) ^
 	"}\n}\n"

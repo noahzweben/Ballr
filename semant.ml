@@ -7,7 +7,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
 let rec expr = function
 		Literal _ -> Int
-	  | FLiteral _ -> Float
+	    | FLiteral _ -> Float
       | BoolLit _ -> Bool
       | Id s -> Bool
       | Binop(e1, op, e2) as e -> let t1 = expr e1 and t2 = expr e2 in
@@ -84,16 +84,32 @@ let rec stmt = function
 
 in
 
+let entMemTypes memz= List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
+StringMap.empty memz
+
+in 
+
+let checkEntMem s t m = 
+      try 
+        let myT = StringMap.find s m 
+        in
+        if myT != t then raise (Failure ("wrong Type"))
+     with Not_found -> raise (Failure ("You haven't defined " ^ s))
+  in
+
 let checkEvent = function 
   Event (_, _, bhvr) ->
 	   stmt (Block bhvr)
    in
 
 let checkEntDecl e = 
+  let myMems = entMemTypes e.members in
+  checkEntMem "clr" Color myMems;
+  checkEntMem "size" Vector myMems;
 	List.iter checkEvent e.rules
 
-in
 
+in
 List.iter checkEntDecl entdecls
 
 (*  let type_of_identifier s =
