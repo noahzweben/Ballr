@@ -13,7 +13,7 @@ let print_map m =
   StringMap.iter print_key m;;
 
 
-let translate (_, _, ents, gboard) =
+let translate (vardecls, _, ents, gboard) =
   let context = L.global_context () in
   let the_module = L.create_module context "Ballr" in
   let i64_t  = L.i64_type  context in
@@ -79,6 +79,7 @@ let translate (_, _, ents, gboard) =
   (* BUILD EXPRESSIONS *)
   let rec expr builder m = function
     A.Literal i -> L.const_int i32_t i
+    | A.FLiteral f -> L.const_float flt_t f
     | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
     | A.Noexpr -> L.const_int i32_t 0
 
@@ -86,6 +87,7 @@ let translate (_, _, ents, gboard) =
       L.build_call printf_func 
         [| int_format_str builder ; (expr builder m e) |]
         "printf" builder (* build_call fn args name b creates %name = call %fn(args...) *)
+
     | A.Call ("add", [e1; e2]) ->
       let e2' = expr builder m e2 in
       (match e1 with
@@ -97,10 +99,14 @@ let translate (_, _, ents, gboard) =
           ignore (L.build_call add_fn [| ent_ptr |] "" builder);
           L.const_int i32_t 0
         | _ -> raise (Blr_err "expected identifier"))
+
+      (***** ADD OTHER BUILT IN FUNCTIONS *)
+
     | A.Call (name, args) ->
       let func = StringMap.find name m in
       let arg_arr = Array.of_list (List.map (expr builder m) args) in
       L.build_call func arg_arr name builder
+
     | A.Binop (e1, op, e2) ->
       let e1' = expr builder m e1
       and e2' = expr builder m e2 in
@@ -108,6 +114,7 @@ let translate (_, _, ents, gboard) =
         A.Add     -> L.build_add
       | A.Sub     -> L.build_sub
       | A.Mult    -> L.build_mul
+      | A.Mod     -> L.build_srem
       | A.Div     -> L.build_sdiv
       | A.And     -> L.build_and
       | A.Or      -> L.build_or
@@ -124,6 +131,7 @@ let translate (_, _, ents, gboard) =
       (match op with
           A.Neg     -> L.build_neg
         | A.Not     -> L.build_not) e' "tmp" builder
+
     | A.Clr (e1, e2, e3) as clr -> 
       (match (clr_lit clr) with
         Some(vals) -> L.const_named_struct clr_t vals
@@ -152,7 +160,91 @@ let translate (_, _, ents, gboard) =
           let y_ptr = L.build_struct_gep vec_ptr 1 "y" builder in
           ignore (L.build_store e2' y_ptr builder);
           L.build_load vec_ptr "v" builder)
+
+    (***** ID *)
+    (***** ACCESS *)
+    (***** ARRAY ACCESS *)
+    (***** ASSIGN *)
   in
+
+   let int_of_bool b = if b then 1 else 0
+  in 
+    let bool_of_int b = b != 0 
+  in
+
+   let rec eval_expr m = function
+      A.Literal i -> (L.const_int i32_t i, i)
+      (* FLOATS ??  separate eval function ? better way to do this? *)
+(*     | A.FLiteral f -> (L.const_float flt_t f *)
+    | A.BoolLit b -> let res = (int_of_bool b) in (L.const_int i1_t res, res)
+    | A.Noexpr    -> (L.const_int i32_t 0, 0)
+    | A.Id s      -> snd (StringMap.find s m) 
+    | A.Binop (e1, op, e2) ->
+      let e1' = eval_expr m e1
+      and e2' = eval_expr m e2 in
+      ( match op with
+        A.Add     -> let res = (snd e1' + snd e2') in (L.const_int i32_t res, res)
+      | A.Sub     -> let res = (snd e1' - snd e2') in (L.const_int i32_t res, res)
+      | A.Mult    -> let res = (snd e1' * snd e2') in (L.const_int i32_t res, res)
+      | A.Div     -> let res = (snd e1' / snd e2') in (L.const_int i32_t res, res)
+      | A.Mod     -> let res = (snd e1' mod snd e2') in (L.const_int i32_t res, res)
+      | A.And     -> let res = int_of_bool (bool_of_int (snd e1') && bool_of_int (snd e2')) in (L.const_int i1_t res, res)
+      | A.Or      -> let res = int_of_bool (bool_of_int (snd e1') || bool_of_int (snd e2')) in (L.const_int i1_t res, res)
+      | A.Equal   -> let res = (int_of_bool (snd e1' = snd e2')) in (L.const_int i1_t res, res)
+      | A.Neq     -> let res = (int_of_bool (snd e1' != snd e2')) in (L.const_int i1_t res, res)
+      | A.Less    -> let res = (int_of_bool (snd e1' < snd e2')) in (L.const_int i1_t res, res)
+      | A.Leq     -> let res = (int_of_bool (snd e1' <= snd e2')) in (L.const_int i1_t res, res)
+      | A.Greater -> let res = (int_of_bool (snd e1' > snd e2')) in (L.const_int i1_t res, res)
+      | A.Geq     -> let res = (int_of_bool (snd e1' >= snd e2')) in (L.const_int i1_t res, res) 
+      ) 
+    
+    | A.Unop(op, e) ->
+      let e' = eval_expr m e in
+      ( match op with
+          A.Neg     -> let res = -(snd e') in (L.const_int i32_t res, res)
+        | A.Not     -> let res = if (bool_of_int (snd e')) then 0 else 1 in (L.const_int i1_t res, res)
+      )
+
+(*    | A.Clr (e1, e2, e3) as clr -> 
+      (match (clr_lit clr) with
+        Some(vals) -> L.const_named_struct clr_t vals
+        | None ->
+    let e1' = expr builder m e1
+    and e2' = expr builder m e2
+          and e3' = expr builder m e3 in
+          let clr_ptr = L.build_alloca clr_t "tmp" builder in
+      let r_ptr = L.build_struct_gep clr_ptr 0 "r" builder in
+      ignore (L.build_store e1' r_ptr builder);
+          let g_ptr = L.build_struct_gep clr_ptr 1 "g" builder in
+    ignore (L.build_store e2' g_ptr builder);
+          let b_ptr = L.build_struct_gep clr_ptr 2 "b" builder in
+          ignore (L.build_store e3' b_ptr builder);
+    L.build_load clr_ptr "c" builder)
+
+    | A.Vec (e1, e2) as vec -> 
+      (match (vec_lit vec) with
+        Some(vals) -> L.const_named_struct vec_t vals
+        | None ->
+          let e1' = expr builder m e1
+          and e2' = expr builder m e2 in
+          let vec_ptr = L.build_alloca vec_t "tmp" builder in
+          let x_ptr = L.build_struct_gep vec_ptr 0 "x" builder in
+          ignore (L.build_store e1' x_ptr builder);
+          let y_ptr = L.build_struct_gep vec_ptr 1 "y" builder in
+          ignore (L.build_store e2' y_ptr builder);
+          L.build_load vec_ptr "v" builder) *)
+
+
+    (* CAN YOU USE A FUNCTION TO INITIALIZE A GLOBAL ? *)
+(*     | A.Call (name, args) ->
+      let func = StringMap.find name m in
+      let arg_arr = Array.of_list (List.map (expr builder m) args) in
+      L.build_call func arg_arr name builder *)
+
+    (***** ACCESS *)
+    (***** ARRAY ACCESS *)
+    (***** ASSIGN *)
+   in 
 
   (* BUILD STATEMENTS *)
   let rec stmt builder func m = function
@@ -189,6 +281,9 @@ let translate (_, _, ents, gboard) =
       let merge_bb = L.append_block context "merge" func in
       ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
         L.builder_at_end context merge_bb
+
+    (*FOREACH, 
+      RETURN *)
   in
 
   let add_locals m decls builder = 
@@ -201,57 +296,19 @@ let translate (_, _, ents, gboard) =
     List.fold_left add_local m decls
   in
 
-  let gb_init gb m = 
-    let name = gb.A.gname ^ "_init" in
-    let ftype = L.function_type (L.void_type context) [| L.pointer_type gb_t |] in
-    let func = L.define_function name ftype the_module in
-    (StringMap.add name func m, func)
+  (* GLOBAL VARS *)
+
+  let global_vars = 
+    let global_var m (A.VarInit(t, n, e)) = 
+      let init = eval_expr m e in
+      let initval = (fst init) in
+      StringMap.add n ((L.define_global n initval the_module), init) m in 
+    List.fold_left global_var StringMap.empty vardecls 
   in
 
-  let fill_init_function gb m =
-    let (map, func) = (gb_init gb m) in
-    let builder = L.builder_at_end context (L.entry_block func) in
-    
-    let map = add_locals map gb.A.init_mem builder in
-    let builder = stmt builder func map (A.Block gb.A.init_body) in
-    ignore (L.build_ret_void builder);
-    map    
-  in
+  (* FUNCTION DECLARATIONS *)
 
-  let gb_create gb m = 
-    let name = gb.A.gname ^ "_create" in 
-    let ftype = L.function_type (L.pointer_type gb_t) [| |] in 
-    let func = L.define_function name ftype the_module in
-    (StringMap.add name func m, func)
-  in
-  
-  let fill_gb_create_function gb m = 
-    let map = fill_init_function gb m in
-    let (map, func) =  (gb_create gb map) in
-    let builder = L.builder_at_end context (L.entry_block func) in
-    let gb_ptr = L.build_malloc gb_t ("board_ptr") builder in
-
-    let name_str_ptr = L.build_global_stringptr gb.A.gname (gb.A.gname ^ "_name_str_ptr") builder in
-    let name_ptr = L.build_struct_gep gb_ptr 0 ("name_ptr") builder in
-    ignore (L.build_store name_str_ptr name_ptr builder);
-
-    let gb_size_ptr = L.build_struct_gep gb_ptr 1 ("size_ptr") builder in
-    let size_decl_expr = get_decl "size" gb.A.gmembers in
-    ignore (L.build_store (expr builder map size_decl_expr) gb_size_ptr builder);
-
-    let gb_color_ptr = L.build_struct_gep gb_ptr 2 ("color_ptr") builder in
-    let color_decl_expr = get_decl "clr" gb.A.gmembers in
-    ignore (L.build_store (expr builder map color_decl_expr) gb_color_ptr builder);
-
-    let gb_init_fn_ptr = L.build_struct_gep gb_ptr 4 ("init_fn_ptr") builder in
-    let init_fn = StringMap.find (gb.A.gname ^ "_init") map in
-    ignore (L.build_store init_fn gb_init_fn_ptr builder);
-
-    ignore (L.build_call register_gb_func [| gb_ptr |] "" builder);
-
-    ignore (L.build_ret gb_ptr builder);
-    map
-  in
+  (* ENTITY DECLARATIONS *)
 
   let ent_frame e m =
     let name = e.A.ename ^ "_frame" in
@@ -304,9 +361,65 @@ let translate (_, _, ents, gboard) =
     map
   in
 
+  (* GAMEBOARD DECLARATION *)
+  
+  let gb_init gb m = 
+    let name = gb.A.gname ^ "_init" in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type gb_t |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
+  let fill_init_function gb m =
+    let (map, func) = (gb_init gb m) in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    
+    let map = add_locals map gb.A.init_mem builder in
+    let builder = stmt builder func map (A.Block gb.A.init_body) in
+    ignore (L.build_ret_void builder);
+    map    
+  in
+
+  let gb_create gb m = 
+    let name = gb.A.gname ^ "_create" in 
+    let ftype = L.function_type (L.pointer_type gb_t) [| |] in 
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+  
+  let fill_gb_create_function gb m = 
+    let map = fill_init_function gb m in
+    let (map, func) =  (gb_create gb map) in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let gb_ptr = L.build_malloc gb_t ("board_ptr") builder in
+
+    let name_str_ptr = L.build_global_stringptr gb.A.gname (gb.A.gname ^ "_name_str_ptr") builder in
+    let name_ptr = L.build_struct_gep gb_ptr 0 ("name_ptr") builder in
+    ignore (L.build_store name_str_ptr name_ptr builder);
+
+    let gb_size_ptr = L.build_struct_gep gb_ptr 1 ("size_ptr") builder in
+    let size_decl_expr = get_decl "size" gb.A.gmembers in
+    ignore (L.build_store (expr builder map size_decl_expr) gb_size_ptr builder);
+
+    let gb_color_ptr = L.build_struct_gep gb_ptr 2 ("color_ptr") builder in
+    let color_decl_expr = get_decl "clr" gb.A.gmembers in
+    ignore (L.build_store (expr builder map color_decl_expr) gb_color_ptr builder);
+
+    let gb_init_fn_ptr = L.build_struct_gep gb_ptr 4 ("init_fn_ptr") builder in
+    let init_fn = StringMap.find (gb.A.gname ^ "_init") map in
+    ignore (L.build_store init_fn gb_init_fn_ptr builder);
+
+    ignore (L.build_call register_gb_func [| gb_ptr |] "" builder);
+
+    ignore (L.build_ret gb_ptr builder);
+    map
+  in
+
+  (* ADD ENTITY DECLARATIONS, GAMEBOARD DECLARATION TO MAP *)
   let fmap = List.fold_left (fun m e -> fill_ent_create_function e m) StringMap.empty ents in
   let fmap = fill_gb_create_function gboard fmap in
 
+  (* DEFINE MAIN FUNCTION: calls gb_create, run_loop, returns 0 *)
   let main_ftype = L.function_type i32_t [||] in 
   let main_function = L.define_function "main" main_ftype the_module in
   let main_builder = L.builder_at_end context (L.entry_block main_function) in
