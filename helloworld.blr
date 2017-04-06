@@ -13,7 +13,10 @@ gameboard g1{
 	clr = (25,100,100);
 	size = (680,420);
 	init -> {
-                add(e1, (300, 20));
+                int x = 5;
+		int y = x + 7;
+		print(y);
+		add(e1, (300, 20));
                 add(e1, (20, 300));
 	}
 }

@@ -156,7 +156,6 @@ reportDuplicate (fun n -> "duplicate global variable " ^ n)
 
 (*** CHECK FUNC DECLS ***)
 
-  (**)
   let checkFunc func =
 
     (* check for duplicate formals *)
@@ -170,7 +169,7 @@ reportDuplicate (fun n -> "duplicate global variable " ^ n)
     (* check function statements *)
     stmt StringMap.empty (Block func.body)
     
-    (* DO WE NEED TO CHECK FOR A RETURN STATEMENT OR DO WE FORCE THIS IN CODEGEN? *)
+    (* DO WE NEED TO CHECK FOR A RETURN STATEMENT OR FORCE THIS IN CODEGEN? *)
     (* DO WE NEED TO CHECK FOR DUPLICATE FUNCTION NAMES? OVERLOADING? *)
 
 in
