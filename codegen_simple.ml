@@ -3,6 +3,8 @@ module A = Ast
 
 module StringMap = Map.Make(String)
 
+exception Blr_err of string;;
+
 let print_map m =
   print_string ("Map:\n");
   let print_key k v =
@@ -93,7 +95,8 @@ let translate (_, _, ents, gboard) =
           let pos_ptr = L.build_struct_gep ent_ptr 2 "pos" builder in
           ignore (L.build_store e2' pos_ptr builder);
           ignore (L.build_call add_fn [| ent_ptr |] "" builder);
-          L.const_int i32_t 0)
+          L.const_int i32_t 0
+        | _ -> raise (Blr_err "expected identifier"))
     | A.Call (name, args) ->
       let func = StringMap.find name m in
       let arg_arr = Array.of_list (List.map (expr builder m) args) in
