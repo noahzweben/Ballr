@@ -1,8 +1,14 @@
-int i = 5;
+int i = -5;
 int j = i + 10;
+
 bool k = 5 > 3 && 3 < 2 ;
 bool h = !true;
-int l = -5;
+
+func int test_func(int x){
+	int y = 33;
+	print(y);
+	return x;
+}
 
 entity e1 {
     clr = (255, 0, 255);
@@ -15,7 +21,6 @@ gameboard g1{
 	init -> {
                 int x = 5;
 		int y = x + 7;
-		print(y);
 		add(e1, (300, 20));
                 add(e1, (20, 300));
 	}

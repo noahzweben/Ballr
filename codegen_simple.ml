@@ -13,7 +13,7 @@ let print_map m =
   StringMap.iter print_key m;;
 
 
-let translate (vardecls, _, ents, gboard) =
+let translate (vardecls, fdecls, ents, gboard) =
   let context = L.global_context () in
   let the_module = L.create_module context "Ballr" in
   let i64_t  = L.i64_type  context in
@@ -162,7 +162,6 @@ let translate (vardecls, _, ents, gboard) =
           ignore (L.build_store e2' y_ptr builder);
           L.build_load vec_ptr "v" builder)
 
-    (***** ID *)
     (***** ACCESS *)
     (***** ARRAY ACCESS *)
     (***** ASSIGN *)
@@ -173,7 +172,7 @@ let translate (vardecls, _, ents, gboard) =
     let bool_of_int b = b != 0 
   in
 
-   let rec eval_expr m = function
+   let rec eval_expr m = function (* used for global var init values *)
       A.Literal i -> (L.const_int i32_t i, i)
       (* FLOATS ??  separate eval function ? better way to do this? *)
 (*     | A.FLiteral f -> (L.const_float flt_t f *)
@@ -216,8 +215,9 @@ let translate (vardecls, _, ents, gboard) =
 
   (* BUILD STATEMENTS *)
   let rec stmt builder func m = function
-    A.Block sl -> List.fold_left (fun b s -> stmt b func m s) builder sl (* sl is a block = list of stmts *)
+      A.Block sl -> List.fold_left (fun b s -> stmt b func m s) builder sl (* sl is a block = list of stmts *)
     | A.Expr e -> ignore (expr builder m e); builder
+    | A.Return e -> L.build_ret (expr builder m e) builder; builder
                 
     | A.If (predicate, then_stmt, else_stmt) ->
       let bool_val = expr builder m predicate in (* evaluate predicate expression *)
@@ -249,9 +249,9 @@ let translate (vardecls, _, ents, gboard) =
       let merge_bb = L.append_block context "merge" func in
       ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
         L.builder_at_end context merge_bb
-
+    
     (***** FOREACH *)
-    (***** RETURN *)
+    
   in
 
   let add_locals m decls builder = 
@@ -276,6 +276,31 @@ let translate (vardecls, _, ents, gboard) =
 
   (* FUNCTION DECLARATIONS *)
 
+  let func_create f m =
+    let name = f.A.fname
+    and formal_types = Array.of_list (List.map (fun (t,_) -> ltype_of_typ t) f.A.formals) in 
+    let ftype = L.function_type (ltype_of_typ f.A.typ) formal_types in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func) 
+  in  
+  
+  (* Fill in the body of the given function *)
+  let fill_func_body f m =
+    let (map, func) = func_create f m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+
+    let map =
+      let add_formal m (t, n) p = L.set_value_name n p; 
+          let local = L.build_alloca (ltype_of_typ t) n builder 
+          in ignore (L.build_store p local builder); 
+            StringMap.add n local m 
+      in List.fold_left2 add_formal m f.A.formals (Array.to_list (L.params func))
+    in 
+    let map = add_locals map f.A.locals builder in
+    let builder = stmt builder func map (A.Block f.A.body) in
+    map
+  in
+ 
   (* ENTITY DECLARATIONS *)
 
   let ent_frame e m =
@@ -383,8 +408,9 @@ let translate (vardecls, _, ents, gboard) =
     map
   in
 
-  (* ADD ENTITY DECLARATIONS TO MAP *)
-  let fmap = List.fold_left (fun m e -> fill_ent_create_function e m) StringMap.empty ents in
+  (* ADD FUNCTION AND ENTITY DECLARATIONS TO MAP *)
+  let fmap = List.fold_left (fun m f -> fill_func_body f m) StringMap.empty fdecls in
+  let fmap = List.fold_left (fun m e -> fill_ent_create_function e m) fmap ents in
   let fmap = fill_gb_create_function gboard fmap in
 
   (* DEFINE MAIN FUNCTION: calls gb_create, run_loop, return 0 *)
