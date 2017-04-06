@@ -206,15 +206,12 @@ let translate (_, _, ents, gboard) =
   in
 
   let fill_init_function gb m =
-    print_map m; 
     let (map, func) = (gb_init gb m) in
-    print_map map;
     let builder = L.builder_at_end context (L.entry_block func) in
     
     let map = add_locals map gb.A.init_mem builder in
     let builder = stmt builder func map (A.Block gb.A.init_body) in
     ignore (L.build_ret_void builder);
-    print_map map;
     map    
   in
 
@@ -228,7 +225,6 @@ let translate (_, _, ents, gboard) =
   let fill_gb_create_function gb m = 
     let map = fill_init_function gb m in
     let (map, func) =  (gb_create gb map) in
-    print_map map;
     let builder = L.builder_at_end context (L.entry_block func) in
     let gb_ptr = L.build_malloc gb_t ("board_ptr") builder in
 
