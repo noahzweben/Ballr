@@ -14,6 +14,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
     in helper (List.sort compare list)
   in
 
+  (* check if given type is int or float *)
   let isNumType t = if (t=Int || t=Float) then true else false
 
   in 
@@ -77,6 +78,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
            fd.typ *)
 in
 
+(* check if types in a varinit statement match *)
 let checkVarInit = function
   VarInit(t,n,e) -> let e_typ = expr e in
     if t != e_typ 
@@ -85,6 +87,7 @@ let checkVarInit = function
 
 in
 
+(* check if given expression is of type boolean *)
 let check_bool_expr e = if expr e != Bool
      then raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
      else () 
@@ -109,22 +112,26 @@ let rec stmt = function
 
 in
 
-(* CHECK VAR DECLS (GLOBALS) *)
+(*** CHECK VAR DECLS (GLOBALS) ***)
 
-List.iter checkVarInit vardecls; (* check assignment types *)
+(* check assignment types *)
+List.iter checkVarInit vardecls; 
+
+(* check for duplicates *)
 let varDeclName = function 
   VarInit(_, n, _) -> n in
-
   report_duplicate (fun n -> "duplicate global variable " ^ n)
-    (List.map varDeclName vardecls); (* check for duplicates *)
+    (List.map varDeclName vardecls); 
 
-(* CHECK ENT DECLS *)
+(*** CHECK ENT DECLS ***)
 
-let entMemTypes memz= List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
+(* build a map given a list of members *)
+let entMemTypes memz = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
 StringMap.empty memz
 
 in 
 
+(* check if a given member type exists *)
 let checkMemExists s t m = 
       try 
         let myT = StringMap.find s m 
@@ -133,11 +140,13 @@ let checkMemExists s t m =
      with Not_found -> raise (Failure ("You haven't defined " ^ s))
   in
 
+(* check the statements within events *)
 let checkEvent = function 
   Event (_, _, bhvr) ->
 	   stmt (Block bhvr)
    in
 
+(* check for required members, check member types, check event statements *)
 let checkEntDecl e = 
   let myMems = entMemTypes e.members in
   checkMemExists "clr" Color myMems;
@@ -145,8 +154,8 @@ let checkEntDecl e =
   List.iter checkVarInit e.members;
 	List.iter checkEvent e.rules
 
-
 in
+
 List.iter checkEntDecl entdecls
 
 (*  let type_of_identifier s =
