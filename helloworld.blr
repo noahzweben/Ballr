@@ -1,5 +1,5 @@
 int i = 5;
-int j = 5 + 10;
+int j = i + 10;
 bool k = 5 > 3 && 3 < 2 ;
 bool h = !true;
 int l = -5;

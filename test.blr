@@ -1,4 +1,4 @@
-int x = 10;
+int x = 5;
 
 func int ballr(int dog){
 	return dog+10;
@@ -8,13 +8,15 @@ entity piece{
 	clr = (10, 10.1, 10);
 	size = (10,10);
 	int dog = 4;
+	int y = x + 3;
+	int cat = y + dog;
 	frame -> {}
-	key_UP -> { 5+4; 10+11;}
+	key_UP -> { int a = 5 + 4;}
 }
 
 gameboard g1{ 
 	clr = (0,0,255);
 	size = (500,500);
-	init -> {int x = 5;}
+	init -> {int x = 5; int y = x + 2;}
 
 }
