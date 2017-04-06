@@ -6,7 +6,7 @@ func int ballr(int dog){
 
 entity piece{
 	clr = (10, 10.1, 10);
-	size = (10,10,dog);
+	size = (10,10);
 	int dog = 4;
 	frame -> {}
 	key_UP -> { 5+4; 10+11;}

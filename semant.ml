@@ -5,10 +5,20 @@ module StringMap = Map.Make(String)
 
 let check (vardecls, funcdecls, entdecls, gboard) = 
 
-let isNumType t = if (t=Int || t=Float) then true else false
-in 
+  (* Raise an exception if the given list has a duplicate *)
+  let report_duplicate exceptf list =
+    let rec helper = function
+  n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
+      | _ :: t -> helper t
+      | [] -> ()
+    in helper (List.sort compare list)
+  in
 
-let rec expr = function
+  let isNumType t = if (t=Int || t=Float) then true else false
+
+  in 
+
+  let rec expr = function
 		  Literal _ -> Int
 	    | FLiteral _ -> Float
       | BoolLit _ -> Bool
@@ -16,7 +26,7 @@ let rec expr = function
       | Binop(e1, op, e2) as e -> let t1 = expr e1 and t2 = expr e2 in
 		(match op with
 			(* do better *)
-           Add | Mod | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
+      Add | Mod | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
 		 |  Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
 		 |  Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
    		 |  Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
@@ -67,7 +77,6 @@ let rec expr = function
            fd.typ *)
 in
 
-
 let checkVarInit = function
   VarInit(t,n,e) -> let e_typ = expr e in
     if t != e_typ 
@@ -81,9 +90,8 @@ let check_bool_expr e = if expr e != Bool
      else () 
 in
 
-
 let rec stmt = function
-	Block sl -> let rec check_block = function
+  Block sl -> let rec check_block = function
        [Return _ as s] -> stmt s
      | Return _ :: _ -> raise (Failure "nothing may follow a return")
      | Block sl :: ss -> check_block (sl @ ss)
@@ -100,6 +108,17 @@ let rec stmt = function
   | While(p, s) -> check_bool_expr p; stmt s
 
 in
+
+(* CHECK VAR DECLS (GLOBALS) *)
+
+List.iter checkVarInit vardecls; (* check assignment types *)
+let varDeclName = function 
+  VarInit(_, n, _) -> n in
+
+  report_duplicate (fun n -> "duplicate global variable " ^ n)
+    (List.map varDeclName vardecls); (* check for duplicates *)
+
+(* CHECK ENT DECLS *)
 
 let entMemTypes memz= List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
 StringMap.empty memz
