@@ -99,7 +99,7 @@ gboard:
 		GBOARD ID LBRACE property_list INIT DO LBRACE var_decl_list stmt_list RBRACE RBRACE 	
 		{{
 			gname = $2;
-			members = List.rev $4;
+			gmembers = List.rev $4;
 			init_mem = List.rev $8;
 			init_body = List.rev $9;
 		}}

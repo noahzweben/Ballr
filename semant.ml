@@ -3,11 +3,14 @@ open Ast
 module StringMap = Map.Make(String)
 
 
-let check (vardecls, funcdecls, entdecls, gboard) = 1;
+let check (vardecls, funcdecls, entdecls, gboard) = 
 
-(* let rec expr = function
-		Literal _ -> Int
-	  | FLiteral _ -> Float
+let isNumType t = if (t=Int || t=Float) then true else false
+in 
+
+let rec expr = function
+		  Literal _ -> Int
+	    | FLiteral _ -> Float
       | BoolLit _ -> Bool
       | Id s -> Bool
       | Binop(e1, op, e2) as e -> let t1 = expr e1 and t2 = expr e2 in
@@ -37,13 +40,20 @@ let check (vardecls, funcdecls, entdecls, gboard) = 1;
         )
 
       | Noexpr -> Bool
+      | Clr(r,g,b)  -> let t1 = expr r and t2 = expr g and t3 = expr b in
+          if (isNumType(t1) && isNumType(t2) && isNumType(t3)) then Color
+          else raise (Failure ("expected numeric input for type color"))
+      | Vec(x,y)  -> let t1 = expr x and t2 = expr y in
+          if (isNumType(t1) && isNumType(t2)) then Vector
+          else raise (Failure ("expected numeric input for type vector"))
+
  (*      | Assign(var, e) as ex -> let lt = type_of_identifier var
                                 and rt = expr e in
         check_assign lt rt (Failure ("illegal assignment " ^ string_of_typ lt ^
 				     " = " ^ string_of_typ rt ^ " in " ^ 
 				     string_of_expr ex)) *)
-	  | Access -> ()
-	  | ArrayAccess -> 
+	  (* | Access -> ()
+	  | ArrayAccess ->  *)
 (*       | Call(fname, actuals) as call -> let fd = function_decl fname in
          if List.length actuals != List.length fd.formals then
            raise (Failure ("expecting " ^ string_of_int
@@ -58,6 +68,13 @@ let check (vardecls, funcdecls, entdecls, gboard) = 1;
 in
 
 
+let checkVarInit = function
+  VarInit(t,n,e) -> let e_typ = expr e in
+    if t != e_typ 
+    then raise (Failure ("expected type " ^ string_of_typ t ^ ", not " ^ string_of_expr e ^ " of type " ^ string_of_typ e_typ))
+     else () 
+
+in
 
 let check_bool_expr e = if expr e != Bool
      then raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
@@ -84,17 +101,34 @@ let rec stmt = function
 
 in
 
-let checkEvent (_, bhvr) = 
-	stmt (Block bhvr)
-in
+let entMemTypes memz= List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
+StringMap.empty memz
+
+in 
+
+let checkMemExists s t m = 
+      try 
+        let myT = StringMap.find s m 
+        in
+        if myT != t then raise (Failure ("wrong type"))
+     with Not_found -> raise (Failure ("You haven't defined " ^ s))
+  in
+
+let checkEvent = function 
+  Event (_, _, bhvr) ->
+	   stmt (Block bhvr)
+   in
 
 let checkEntDecl e = 
+  let myMems = entMemTypes e.members in
+  checkMemExists "clr" Color myMems;
+  checkMemExists "size" Vector myMems;
+  List.iter checkVarInit e.members;
 	List.iter checkEvent e.rules
 
+
 in
-
-List.iter checkEntDecl entDecls *)
-
+List.iter checkEntDecl entdecls
 
 (*  let type_of_identifier s =
       try StringMap.find s symbols
