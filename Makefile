@@ -29,7 +29,7 @@ clean :
 
 ballr : clean $(OBJS)
 	#ocamlc -g -I ~/.opam/system/lib/llvm $(OBJS) -o ballr
-	ocamlfind ocamlopt -linkpkg -package llvm -package llvm.analysis $(OBJS) -o ballr
+	ocamlfind ocamlopt -linkpkg -g -package llvm -package llvm.analysis $(OBJS) -o ballr
 
 scanner.ml : scanner.mll
 	ocamllex scanner.mll
@@ -44,7 +44,7 @@ parser.ml parser.mli : parser.mly
 	ocamlc -c $<
 
 %.cmx : %.ml
-	ocamlfind ocamlopt -c -package llvm $<
+	ocamlfind ocamlopt -c -g -package llvm $<
 
 %.game: ballr %.blr
 	./ballr -c $(*F).blr

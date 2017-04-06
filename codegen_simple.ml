@@ -1,8 +1,15 @@
-
 module L = Llvm
 module A = Ast
 
 module StringMap = Map.Make(String)
+
+let print_map m =
+  print_string ("Map:\n");
+  let print_key k v =
+    print_string (k ^ "\n")
+  in
+  StringMap.iter print_key m;;
+
 
 let translate (_, _, ents, gboard) =
   let context = L.global_context () in
@@ -44,6 +51,9 @@ let translate (_, _, ents, gboard) =
   let register_gb_t = L.function_type (L.void_type context) [| (L.pointer_type gb_t) |] in
   let register_gb_func = L.declare_function "register_gb" register_gb_t the_module in
 
+  let add_fn_t = L.function_type (L.void_type context) [| (L.pointer_type ent_t) |] in
+  let add_fn = L.declare_function "ent_add" add_fn_t the_module in
+
   let get_decl name decls =
     match List.filter (fun (A.VarInit (t, s, e)) -> s = name) decls with
       | A.VarInit (t, s, e) :: tl -> e
@@ -74,6 +84,16 @@ let translate (_, _, ents, gboard) =
       L.build_call printf_func 
         [| int_format_str builder ; (expr builder m e) |]
         "printf" builder (* build_call fn args name b creates %name = call %fn(args...) *)
+    | A.Call ("add", [e1; e2]) ->
+      let e2' = expr builder m e2 in
+      (match e1 with
+        A.Id (name) ->
+          let creat_fn = StringMap.find (name ^ "_create") m in
+          let ent_ptr = L.build_call creat_fn [| |] name builder in
+          let pos_ptr = L.build_struct_gep ent_ptr 2 "pos" builder in
+          ignore (L.build_store e2' pos_ptr builder);
+          ignore (L.build_call add_fn [| ent_ptr |] "" builder);
+          L.const_int i32_t 0)
     | A.Call (name, args) ->
       let func = StringMap.find name m in
       let arg_arr = Array.of_list (List.map (expr builder m) args) in
@@ -168,6 +188,15 @@ let translate (_, _, ents, gboard) =
         L.builder_at_end context merge_bb
   in
 
+  let add_locals m decls builder = 
+    let add_local m (A.VarInit(t, n, e)) =
+      let e' = expr builder m e in
+      let local_var = L.build_alloca (ltype_of_typ t) n builder in
+      ignore (L.build_store e' local_var builder);
+      StringMap.add n local_var m
+    in
+    List.fold_left add_local m decls
+  in
 
   let gb_init gb m = 
     let name = gb.A.gname ^ "_init" in
@@ -177,13 +206,15 @@ let translate (_, _, ents, gboard) =
   in
 
   let fill_init_function gb m =
-    
+    print_map m; 
     let (map, func) = (gb_init gb m) in
+    print_map map;
     let builder = L.builder_at_end context (L.entry_block func) in
     
-    
-    let builder = stmt builder func m (A.Block gb.A.init_body) in
+    let map = add_locals map gb.A.init_mem builder in
+    let builder = stmt builder func map (A.Block gb.A.init_body) in
     ignore (L.build_ret_void builder);
+    print_map map;
     map    
   in
 
@@ -197,6 +228,7 @@ let translate (_, _, ents, gboard) =
   let fill_gb_create_function gb m = 
     let map = fill_init_function gb m in
     let (map, func) =  (gb_create gb map) in
+    print_map map;
     let builder = L.builder_at_end context (L.entry_block func) in
     let gb_ptr = L.build_malloc gb_t ("board_ptr") builder in
 
@@ -273,8 +305,8 @@ let translate (_, _, ents, gboard) =
     map
   in
 
-  let fmap = fill_gb_create_function gboard StringMap.empty in
-  let fmap = List.fold_left (fun m e -> fill_ent_create_function e m) fmap ents in
+  let fmap = List.fold_left (fun m e -> fill_ent_create_function e m) StringMap.empty ents in
+  let fmap = fill_gb_create_function gboard fmap in
 
   let main_ftype = L.function_type i32_t [||] in 
   let main_function = L.define_function "main" main_ftype the_module in
