@@ -4,10 +4,10 @@ int j = i + 10;
 bool k = 5 > 3 && 3 < 2 ;
 bool h = !true;
 
-func int test_func(int x){
+func int test_func(){
 	int y = 33;
 	print(y);
-	return x;
+	return y;
 }
 
 entity e1 {
@@ -21,6 +21,7 @@ gameboard g1{
 	init -> {
                 int x = 5;
 		int y = x + 7;
+		test_func();
 		add(e1, (300, 20));
                 add(e1, (20, 300));
 	}

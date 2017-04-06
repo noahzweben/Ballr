@@ -294,7 +294,7 @@ let translate (vardecls, fdecls, ents, gboard) =
           let local = L.build_alloca (ltype_of_typ t) n builder 
           in ignore (L.build_store p local builder); 
             StringMap.add n local m 
-      in List.fold_left2 add_formal m f.A.formals (Array.to_list (L.params func))
+      in List.fold_left2 add_formal map f.A.formals (Array.to_list (L.params func))
     in 
     let map = add_locals map f.A.locals builder in
     let builder = stmt builder func map (A.Block f.A.body) in
