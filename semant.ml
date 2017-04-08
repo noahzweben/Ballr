@@ -258,7 +258,13 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
     (* run checks *)
     List.iter (checkVarInit symbols) e.members;
-  	List.iter checkEvent e.rules
+  	List.iter checkEvent e.rules;
+
+  (*** CHECK GAMEBOARD DECL ***)
+
+  (* check members *)
+  (* check init members *)
+  (* check init body *)
 
 in
 

@@ -167,16 +167,13 @@ let translate (vardecls, fdecls, ents, gboard) =
     (***** ASSIGN *)
   in
 
-   let int_of_bool b = if b then 1 else 0
-  in 
-    let bool_of_int b = b != 0 
-  in
+  let int_of_bool b = if b then 1 else 0 in 
 
   (* BUILD STATEMENTS *)
   let rec stmt builder func m = function
       A.Block sl -> List.fold_left (fun b s -> stmt b func m s) builder sl (* sl is a block = list of stmts *)
     | A.Expr e -> ignore (expr builder m e); builder
-    | A.Return e -> L.build_ret (expr builder m e) builder; builder
+    | A.Return e -> ignore (L.build_ret (expr builder m e) builder); builder
                 
     | A.If (predicate, then_stmt, else_stmt) ->
       let bool_val = expr builder m predicate in (* evaluate predicate expression *)
@@ -241,24 +238,22 @@ let translate (vardecls, fdecls, ents, gboard) =
     | A.Unop(op, e) ->
       let e' = get_init_val e in
       ( match op with
-          A.Neg     -> match e with 
+          A.Neg     -> (match e with 
                           A.Literal i -> L.const_neg e'
                         | A.FLiteral f -> L.const_fneg e'
-                        | _ -> L.const_int i32_t 0  
+                        | _ -> L.const_int i32_t 0 ) 
         | _ -> L.const_int i32_t 0 
       )
+    | _ -> L.const_int i32_t 0 (* semant shouldn't let it get here *)
   in
 
   (* GLOBAL VAR DECLARATIONS *)
 
-  let global_vars = 
-    let global_var m (A.VarInit(t, n, e)) = 
-(*       let init = eval_expr m e in
-      let initval = (fst init) in *)
-      let initval = get_init_val e in 
-      StringMap.add n ((L.define_global n initval the_module), initval) m in 
-    List.fold_left global_var StringMap.empty vardecls 
-  in
+  let global_var m (A.VarInit(t, n, e)) = 
+    let initval = get_init_val e in 
+    StringMap.add n ((L.define_global n initval the_module), initval) m 
+  in 
+  ignore (List.fold_left global_var StringMap.empty vardecls); 
 
   (* FUNCTION DECLARATIONS *)
 
@@ -283,8 +278,7 @@ let translate (vardecls, fdecls, ents, gboard) =
       in List.fold_left2 add_formal map f.A.formals (Array.to_list (L.params func))
     in 
     let map = add_locals map f.A.locals builder in
-    let builder = stmt builder func map (A.Block f.A.body) in
-    map
+    ignore (stmt builder func map (A.Block f.A.body)); map
   in
  
   (* ENTITY DECLARATIONS *)
