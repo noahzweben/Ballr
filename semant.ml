@@ -18,6 +18,58 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
   in 
 
+  let varDeclName = function VarInit(_, n, _) -> n 
+
+  in
+
+  (*** CHECK VAR DECLS & BUILD GLOBALS MAP ***)
+
+  (* only allow constants or negative unop for global declarations *)
+  let rec globalExpr = function
+      Literal _ -> Int
+      | FLiteral _ -> Float
+      | BoolLit _ -> Bool
+      | Unop(op, e) as ex -> let t = globalExpr e in
+      (match op with
+        Neg when t = Int -> Int
+      | Neg when t = Float -> Float
+      | _ -> raise (Failure ("Illegal global declaration: " ^ string_of_expr ex))
+      )
+
+      | Clr(r,g,b)  -> let t1 = globalExpr r and t2 = globalExpr g and t3 = globalExpr b in
+        if (isNumType(t1) && isNumType(t2) && isNumType(t3)) then Color
+        else raise (Failure ("Expected numeric input for type color"))
+
+      | Vec(x,y)  -> let t1 = globalExpr x and t2 = globalExpr y in
+        if (isNumType(t1) && isNumType(t2)) then Vector
+        else raise (Failure ("Expected numeric input for type vector"))
+
+      | _ -> raise (Failure ("Illegal global declaration"))
+  in
+
+
+  let checkGlobalVarInit m = function
+    VarInit(t,n,e) -> let e_typ = globalExpr e in
+      if t != e_typ 
+        then raise (Failure ("Inconsistent types in global declaration " ^ n ^ " " ^ string_of_expr e))
+      else () 
+  in
+
+  (* build map of global names & types *)
+  let globals =   
+    let global_var m (VarInit(t, n, e)) = StringMap.add n t m 
+    in List.fold_left global_var StringMap.empty vardecls
+  in 
+
+  (* check assignment types *)
+  List.iter (checkGlobalVarInit globals) vardecls; 
+
+  (* check for duplicates *)
+  reportDuplicate (fun n -> "Duplicate global variable " ^ n)
+      (List.map varDeclName vardecls); 
+
+
+
   let builtInDecls =  StringMap.add "print" (*** ADD BUILT IN FUNCTIONS ***)
      { typ = Int; fname = "print"; formals = [(Int, "x")];
        locals = []; body = [] } 
@@ -31,12 +83,14 @@ let check (vardecls, funcdecls, entdecls, gboard) =
   in
 
   let functionDecl s = try StringMap.find s functionDecls
-       with Not_found -> raise (Failure ("unrecognized function " ^ s))
+       with Not_found -> raise (Failure ("Unrecognized function " ^ s))
   in
 
   let type_of_identifier m s =
       try StringMap.find s m
-      with Not_found -> raise (Failure ("undeclared identifier " ^ s))
+      with Not_found ->
+        try StringMap.find s globals
+        with Not_found -> raise (Failure ("Undeclared identifier " ^ s))
     in
 
   (* check expressions *)
@@ -84,18 +138,15 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
     | Call(fname, actuals) as call -> let fd = functionDecl fname in
        if List.length actuals != List.length fd.formals then
-         raise (Failure ("expecting " ^ string_of_int
+         raise (Failure ("Expecting " ^ string_of_int
            (List.length fd.formals) ^ " arguments in " ^ string_of_expr call))
        else
-(*          List.iter2 (fun (ft, _) e -> let et = expr e in
-            ignore (check_assign ft et
-              (Failure ("illegal actual argument found " ^ string_of_typ et ^
-              " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e))))
-           fd.formals actuals; *)
+        (** FIX THIS : Type Ast.typ is not compatible with type Ast.expr -> Ast.typ  *)
+(*           List.iter2 (fun (ft, _) e -> if ft != (expr e) then raise (Failure ("Incorrect actual argument type in " ^ string_of_expr call)))
+          fd.formals actuals;  *)
          fd.typ
 
-    (* ADD THESE:
-     | Access -> ()
+     (* Access -> ()
      | ArrayAccess ->  *)
 in
 
@@ -104,18 +155,13 @@ let checkVarInit m = function
   VarInit(t,n,e) -> let e_typ = expr m e in
     if t != e_typ 
     then raise (Failure ("expected type " ^ string_of_typ t ^ ", not " ^ string_of_expr e ^ " of type " ^ string_of_typ e_typ))
-     else () 
-
+     else ()
 in
 
 (* check if given expression is of type boolean *)
 let checkBoolExpr e = if expr StringMap.empty e != Bool
      then raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
      else () 
-in
-
-let varDeclName = function VarInit(_, n, _) -> n 
-
 in
 
 (* check statements *)
@@ -128,81 +174,56 @@ let rec stmt m = function
      | [] -> ()
     in checkBlock sl
   | Expr e -> ignore (expr m e)
-(*   | Return e -> let t = expr e in if t = func.typ then () else
-     raise (Failure ("return gives " ^ string_of_typ t ^ " expected " ^
-                     string_of_typ func.typ ^ " in " ^ string_of_expr e))  *)
-       
   | If(p, b1, b2) -> checkBoolExpr p; stmt m b1; stmt m b2
   | ForEach(n1, n2, st) -> stmt m st
   | While(p, s) -> checkBoolExpr p; stmt m s
+  | Return e -> () (* NEED TO MAKE SURE ONLY HAVE RETURN STATEMENTS IN FUNCTIONS *)
 
 in
-
-(*** CHECK VAR DECLS ***)
-
-(* only allow constants or negative unop for global declarations *)
-let rec globalExpr = function
-    Literal _ -> Int
-    | FLiteral _ -> Float
-    | BoolLit _ -> Bool
-    | Unop(op, e) as ex -> let t = globalExpr e in
-    (match op with
-      Neg when t = Int -> Int
-    | Neg when t = Float -> Float
-    | _ -> raise (Failure ("Illegal global declaration: " ^ string_of_expr ex))
-    )
-
-    | Clr(r,g,b)  -> let t1 = globalExpr r and t2 = globalExpr g and t3 = globalExpr b in
-      if (isNumType(t1) && isNumType(t2) && isNumType(t3)) then Color
-      else raise (Failure ("Expected numeric input for type color"))
-
-    | Vec(x,y)  -> let t1 = globalExpr x and t2 = globalExpr y in
-      if (isNumType(t1) && isNumType(t2)) then Vector
-      else raise (Failure ("Expected numeric input for type vector"))
-
-    | _ -> raise (Failure ("Illegal global declaration"))
-in
-
-
-let checkGlobalVarInit m = function
-  VarInit(t,n,e) -> let e_typ = globalExpr e in
-    if t != e_typ 
-      then raise (Failure ("Unexpected types in global declaration: " ^ string_of_expr e))
-    else () 
-in
-
-(* build map of global names & types *)
-let globals =   
-  let global_var m (VarInit(t, n, e)) = StringMap.add n t m 
-  in List.fold_left global_var StringMap.empty vardecls
-in 
-
-(* check assignment types *)
-List.iter (checkGlobalVarInit globals) vardecls; 
-
-(* check for duplicates *)
-reportDuplicate (fun n -> "duplicate global variable " ^ n)
-    (List.map varDeclName vardecls); 
 
 (*** CHECK FUNC DECLS ***)
+  let checkReturnStmt func m =  function
+    Return e -> let t = expr m e in if t = func.typ then () else
+     raise (Failure ("Return gives " ^ string_of_typ t ^ " expected " ^
+                     string_of_typ func.typ ^ " in " ^ string_of_expr e))  
+    | _ -> raise (Failure ("Function must end with return statement"))
+  in
 
   let checkFunc func =
 
     (* check for duplicate formals *)
-    reportDuplicate (fun n -> "duplicate formal " ^ n ^ " in " ^ func.fname)
+    reportDuplicate (fun n -> "Duplicate formal " ^ n ^ " in " ^ func.fname)
       (List.map snd func.formals);
 
     (* check for duplicate locals *)
-    reportDuplicate (fun n -> "duplicate local " ^ n ^ " in " ^ func.fname)
+    reportDuplicate (fun n -> "Duplicate local " ^ n ^ " in " ^ func.fname)
       (List.map varDeclName func.locals);
 
-    (* check function statements *)
-    stmt StringMap.empty (Block func.body)
-    
-    (* DO WE NEED TO CHECK FOR A RETURN STATEMENT OR FORCE THIS IN CODEGEN? *)
-    (* DO WE NEED TO CHECK FOR DUPLICATE FUNCTION NAMES? OVERLOADING? *)
+    (* build map of local variables *)
+    let local_var m (VarInit(t, n, e)) = StringMap.add n t m 
+    and formal_var m (t, n) = StringMap.add n t m 
 
-in
+    in
+
+    let locals = List.fold_left local_var StringMap.empty func.locals in 
+    let locals = List.fold_left formal_var locals func.formals
+  in
+
+    (* check function statements *)
+    stmt locals (Block func.body);
+
+    (* make sure the last statement is a return and that it is the correct type *)
+    let rev_statements = List.rev func.body in
+    let getReturnStmt = function x::_ -> x | _ -> raise (Failure "Empty function") in
+    let return_stmt = getReturnStmt rev_statements in
+    checkReturnStmt func locals return_stmt;
+  
+  in
+
+  List.iter checkFunc funcdecls;
+
+
+    (* FIX MAPS BEING PASSED AROUND -- NEEDS TO BE IN SCOPE VBLS (?) *)
 
 (*** CHECK ENT DECLS ***)
 
@@ -217,7 +238,7 @@ let checkMemExists s t m =
       try 
         let myT = StringMap.find s m 
         in
-        if myT != t then raise (Failure ("wrong type"))
+        if myT != t then raise (Failure ("Inconsistent types"))
      with Not_found -> raise (Failure ("You haven't defined " ^ s))
   in
 

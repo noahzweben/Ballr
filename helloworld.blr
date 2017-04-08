@@ -6,10 +6,10 @@ color blue = (0, 0, 255);
 vec pos = (50, 10);
 
 /* function declarations */
-func int test_func(){
+func int test_func(int x, int z){
 	int y = 33;
 	print(y);
-	return y;
+	return x;
 }
 
 /* entity declarations */
@@ -25,7 +25,7 @@ gameboard g1{
 	init -> {
                 int x = 5;
 		int y = x + 7;
-		test_func();
+		test_func(10, 12);
 		add(e1, (300, 20));
                 add(e1, (20, 300));
 	}
