@@ -8,7 +8,9 @@ vec pos = (50, 10);
 /* function declarations */
 func int test_func(int x, int z){
 	int y = 33;
-	print(y);
+	if (y > 12) {
+		print(y);	
+	}
 	return x;
 }
 
@@ -21,7 +23,7 @@ entity e1 {
 /* gameboard declaration */
 gameboard g1{
 	clr = (25,100,100);
-	size = (680,420);0;
+	size = (680,420);
 	init -> {
         int x = 5;
 		int y = x + 7;

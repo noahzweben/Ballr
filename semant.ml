@@ -159,7 +159,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
   in
 
   (* check if given expression is of type boolean *)
-  let checkBoolExpr e = if expr StringMap.empty e != Bool
+  let checkBoolExpr e m = if expr m e != Bool
        then raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
        else () 
   in
@@ -174,9 +174,9 @@ let check (vardecls, funcdecls, entdecls, gboard) =
        | [] -> ()
       in checkBlock sl
     | Expr e -> ignore (expr m e)
-    | If(p, b1, b2) -> checkBoolExpr p; stmt m b1; stmt m b2
+    | If(p, b1, b2) -> checkBoolExpr p m; stmt m b1; stmt m b2
     | ForEach(n1, n2, st) -> stmt m st
-    | While(p, s) -> checkBoolExpr p; stmt m s
+    | While(p, s) -> checkBoolExpr p m; stmt m s
     | Return e -> () (* NEED TO MAKE SURE ONLY HAVE RETURN STATEMENTS IN FUNCTIONS *)
 
   in
