@@ -7,20 +7,17 @@ let check (vardecls, funcdecls, entdecls, gboard) =
   (* check for duplicates within a list *)
   let reportDuplicate exceptf list =
     let rec helper = function
-  n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
+       n1 :: n2 :: _ when n1 = n2 -> raise (Failure (exceptf n1))
       | _ :: t -> helper t
       | [] -> ()
     in helper (List.sort compare list)
   in
 
   (* check if given type is an int or float *)
-  let isNumType t = if (t = Int || t = Float) then true else false
+  let isNumType t = if (t = Int || t = Float) then true else false in 
 
-  in 
-
-  let varDeclName = function VarInit(_, n, _) -> n 
-
-  in
+  (* extract variable name from varinit *)
+  let varDeclName = function VarInit(_, n, _) -> n in
 
   (*** CHECK VAR DECLS & BUILD GLOBALS MAP ***)
 
@@ -47,7 +44,6 @@ let check (vardecls, funcdecls, entdecls, gboard) =
       | _ -> raise (Failure ("Illegal global declaration"))
   in
 
-
   let checkGlobalVarInit m = function
     VarInit(t,n,e) -> let e_typ = globalExpr e in
       if t != e_typ 
@@ -68,24 +64,27 @@ let check (vardecls, funcdecls, entdecls, gboard) =
   reportDuplicate (fun n -> "Duplicate global variable " ^ n)
       (List.map varDeclName vardecls); 
 
-
+  (*** DONE CHECKING VARDECLS ***)
 
   let builtInDecls =  StringMap.add "print" (*** ADD BUILT IN FUNCTIONS ***)
      { typ = Int; fname = "print"; formals = [(Int, "x")];
        locals = []; body = [] } 
        (StringMap.singleton "add"
-     { typ = Int; fname = "add"; formals = [(Bool, "e") ; (Vector, "pos")]; (* NEED AN ENTITY TYPE*)
+     { typ = Int; fname = "add"; formals = [(Bool, "e") ; (Vector, "pos")]; (* NEED AN ENTITY TYPE ? *)
        locals = []; body = [] }) 
    in
-     
+
+  (* map of all callable functions *)
   let functionDecls = List.fold_left (fun m fd -> StringMap.add fd.fname fd m)
                          builtInDecls funcdecls
   in
 
+  (* find a function given its name *)
   let functionDecl s = try StringMap.find s functionDecls
        with Not_found -> raise (Failure ("Unrecognized function " ^ s))
   in
 
+  (* return the type of an ID (check given symbols map and globals) *)
   let type_of_identifier m s =
       try StringMap.find s m
       with Not_found ->
@@ -146,42 +145,47 @@ let check (vardecls, funcdecls, entdecls, gboard) =
           fd.formals actuals;  *)
          fd.typ
 
-     (* Access -> ()
-     | ArrayAccess ->  *)
-in
+     (* Access -> 
+     | ArrayAccess ->  
+     | Assign -> *)
+  in
 
-(* check if types in a varinit statement match *)
-let checkVarInit m = function
-  VarInit(t,n,e) -> let e_typ = expr m e in
-    if t != e_typ 
-    then raise (Failure ("expected type " ^ string_of_typ t ^ ", not " ^ string_of_expr e ^ " of type " ^ string_of_typ e_typ))
-     else ()
-in
+  (* check if types in a varinit statement match *)
+  let checkVarInit m = function
+    VarInit(t,n,e) -> let e_typ = expr m e in
+      if t != e_typ 
+      then raise (Failure ("expected type " ^ string_of_typ t ^ ", not " ^ string_of_expr e ^ " of type " ^ string_of_typ e_typ))
+       else ()
+  in
 
-(* check if given expression is of type boolean *)
-let checkBoolExpr e = if expr StringMap.empty e != Bool
-     then raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
-     else () 
-in
+  (* check if given expression is of type boolean *)
+  let checkBoolExpr e = if expr StringMap.empty e != Bool
+       then raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
+       else () 
+  in
 
-(* check statements *)
-let rec stmt m = function
-  Block sl -> let rec checkBlock = function
-       [Return _ as s] -> stmt m s
-     | Return _ :: _ -> raise (Failure "nothing may follow a return")
-     | Block sl :: ss -> checkBlock (sl @ ss)
-     | s :: ss -> stmt m s ; checkBlock ss
-     | [] -> ()
-    in checkBlock sl
-  | Expr e -> ignore (expr m e)
-  | If(p, b1, b2) -> checkBoolExpr p; stmt m b1; stmt m b2
-  | ForEach(n1, n2, st) -> stmt m st
-  | While(p, s) -> checkBoolExpr p; stmt m s
-  | Return e -> () (* NEED TO MAKE SURE ONLY HAVE RETURN STATEMENTS IN FUNCTIONS *)
+  (* check statements *)
+  let rec stmt m = function
+    Block sl -> let rec checkBlock = function
+         [Return _ as s] -> stmt m s
+       | Return _ :: _ -> raise (Failure "nothing may follow a return")
+       | Block sl :: ss -> checkBlock (sl @ ss)
+       | s :: ss -> stmt m s ; checkBlock ss
+       | [] -> ()
+      in checkBlock sl
+    | Expr e -> ignore (expr m e)
+    | If(p, b1, b2) -> checkBoolExpr p; stmt m b1; stmt m b2
+    | ForEach(n1, n2, st) -> stmt m st
+    | While(p, s) -> checkBoolExpr p; stmt m s
+    | Return e -> () (* NEED TO MAKE SURE ONLY HAVE RETURN STATEMENTS IN FUNCTIONS *)
 
-in
+  in
 
-(*** CHECK FUNC DECLS ***)
+  (* add variable to a map *)
+  let var m (VarInit(t, n, e)) = StringMap.add n t m in
+
+  (*** CHECK FUNC DECLS ***)
+
   let checkReturnStmt func m =  function
     Return e -> let t = expr m e in if t = func.typ then () else
      raise (Failure ("Return gives " ^ string_of_typ t ^ " expected " ^
@@ -199,69 +203,62 @@ in
     reportDuplicate (fun n -> "Duplicate local " ^ n ^ " in " ^ func.fname)
       (List.map varDeclName func.locals);
 
-    (* build map of local variables *)
-    let local_var m (VarInit(t, n, e)) = StringMap.add n t m 
-    and formal_var m (t, n) = StringMap.add n t m 
+    (* build map of in-scope variables *)
+    let formal_var m (t, n) = StringMap.add n t m in
+    let symbols = List.fold_left var StringMap.empty func.locals in 
+    let symbols = List.fold_left formal_var symbols func.formals in
 
-    in
-
-    let locals = List.fold_left local_var StringMap.empty func.locals in 
-    let locals = List.fold_left formal_var locals func.formals
-  in
+    (* check function locals *)
+    List.iter (checkVarInit symbols) func.locals;
 
     (* check function statements *)
-    stmt locals (Block func.body);
+    stmt symbols (Block func.body);
 
     (* make sure the last statement is a return and that it is the correct type *)
     let rev_statements = List.rev func.body in
     let getReturnStmt = function x::_ -> x | _ -> raise (Failure "Empty function") in
     let return_stmt = getReturnStmt rev_statements in
-    checkReturnStmt func locals return_stmt;
+    checkReturnStmt func symbols return_stmt;
   
   in
 
   List.iter checkFunc funcdecls;
 
+  (*** CHECK ENT DECLS ***)
 
-    (* FIX MAPS BEING PASSED AROUND -- NEEDS TO BE IN SCOPE VBLS (?) *)
+  (* build a map given a list of members *)
+  let entMemTypes memz = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
+    StringMap.empty memz
 
-(*** CHECK ENT DECLS ***)
-
-(* build a map given a list of members *)
-let entMemTypes memz = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
-  StringMap.empty memz
-
-in 
-
-(* check if a given member type exists *)
-let checkMemExists s t m = 
-      try 
-        let myT = StringMap.find s m 
-        in
-        if myT != t then raise (Failure ("Inconsistent types"))
-     with Not_found -> raise (Failure ("You haven't defined " ^ s))
-  in
-
-(* check the statements within events *)
-let checkEvent = function 
-  Event (_, _, bhvr) ->
-	   stmt StringMap.empty (Block bhvr)
-   in
-
-(* check for required members, check member types, check event statements *)
-let checkEntDecl e = 
-  let myMems = entMemTypes e.members in
-    checkMemExists "clr" Color myMems;
-    checkMemExists "size" Vector myMems;
-
-  (* build a symbols map - variables within scope *)
-  let symbols =  
-    let var m (VarInit(t, n, e)) = StringMap.add n t m 
-      in List.fold_left var globals e.members
   in 
 
-  List.iter (checkVarInit symbols) e.members;
-	List.iter checkEvent e.rules
+  (* check if a given member type exists *)
+  let checkMemExists s t m = 
+        try 
+          let myT = StringMap.find s m 
+          in
+          if myT != t then raise (Failure ("Inconsistent types"))
+       with Not_found -> raise (Failure ("You haven't defined " ^ s))
+    in
+
+  (* check the statements within events *)
+  let checkEvent = function 
+    Event (_, _, bhvr) ->
+  	   stmt StringMap.empty (Block bhvr)
+     in
+
+  (* check for required members, check member types, check event statements *)
+  let checkEntDecl e = 
+    let myMems = entMemTypes e.members in
+      checkMemExists "clr" Color myMems;
+      checkMemExists "size" Vector myMems;
+
+    (* build a symbols map - variables within scope *)
+    let symbols =  List.fold_left var StringMap.empty e.members in 
+
+    (* run checks *)
+    List.iter (checkVarInit symbols) e.members;
+  	List.iter checkEvent e.rules
 
 in
 
