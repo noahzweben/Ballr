@@ -1,20 +1,24 @@
+/* global variables */
 int i = -5;
-int j = i + 10;
+float j = -3.5;
+bool k = true;
+color blue = (0, 0, 255);
+vec pos = (50, 50);
 
-bool k = 5 > 3 && 3 < 2 ;
-bool h = !true;
-
+/* function declarations */
 func int test_func(){
 	int y = 33;
 	print(y);
 	return y;
 }
 
+/* entity declarations */
 entity e1 {
     clr = (255, 0, 255);
     size = (20, 20);
 }
 
+/* gameboard declaration */
 gameboard g1{
 	clr = (25,100,100);
 	size = (680,420);

@@ -172,47 +172,6 @@ let translate (vardecls, fdecls, ents, gboard) =
     let bool_of_int b = b != 0 
   in
 
-   let rec eval_expr m = function (* used for global var init values *)
-      A.Literal i -> (L.const_int i32_t i, i)
-      (* FLOATS ??  separate eval function ? better way to do this? *)
-(*     | A.FLiteral f -> (L.const_float flt_t f *)
-    | A.BoolLit b -> let res = (int_of_bool b) in (L.const_int i1_t res, res)
-    | A.Noexpr    -> (L.const_int i32_t 0, 0)
-    | A.Id s      -> snd (StringMap.find s m) 
-    | A.Binop (e1, op, e2) ->
-      let e1' = eval_expr m e1
-      and e2' = eval_expr m e2 in
-      ( match op with
-        A.Add     -> let res = (snd e1' + snd e2') in (L.const_int i32_t res, res)
-      | A.Sub     -> let res = (snd e1' - snd e2') in (L.const_int i32_t res, res)
-      | A.Mult    -> let res = (snd e1' * snd e2') in (L.const_int i32_t res, res)
-      | A.Div     -> let res = (snd e1' / snd e2') in (L.const_int i32_t res, res)
-      | A.Mod     -> let res = (snd e1' mod snd e2') in (L.const_int i32_t res, res)
-      | A.And     -> let res = int_of_bool (bool_of_int (snd e1') && bool_of_int (snd e2')) in (L.const_int i1_t res, res)
-      | A.Or      -> let res = int_of_bool (bool_of_int (snd e1') || bool_of_int (snd e2')) in (L.const_int i1_t res, res)
-      | A.Equal   -> let res = (int_of_bool (snd e1' = snd e2')) in (L.const_int i1_t res, res)
-      | A.Neq     -> let res = (int_of_bool (snd e1' != snd e2')) in (L.const_int i1_t res, res)
-      | A.Less    -> let res = (int_of_bool (snd e1' < snd e2')) in (L.const_int i1_t res, res)
-      | A.Leq     -> let res = (int_of_bool (snd e1' <= snd e2')) in (L.const_int i1_t res, res)
-      | A.Greater -> let res = (int_of_bool (snd e1' > snd e2')) in (L.const_int i1_t res, res)
-      | A.Geq     -> let res = (int_of_bool (snd e1' >= snd e2')) in (L.const_int i1_t res, res) 
-      ) 
-    
-    | A.Unop(op, e) ->
-      let e' = eval_expr m e in
-      ( match op with
-          A.Neg     -> let res = -(snd e') in (L.const_int i32_t res, res)
-        | A.Not     -> let res = if (bool_of_int (snd e')) then 0 else 1 in (L.const_int i1_t res, res)
-      )
-
-    (***** VEC *)
-    (***** CLR *)
-    (***** CALL *)
-    (***** ACCESS *)
-    (***** ARRAY ACCESS *)
-    (***** ASSIGN *)
-   in 
-
   (* BUILD STATEMENTS *)
   let rec stmt builder func m = function
       A.Block sl -> List.fold_left (fun b s -> stmt b func m s) builder sl (* sl is a block = list of stmts *)
@@ -264,13 +223,40 @@ let translate (vardecls, fdecls, ents, gboard) =
     List.fold_left add_local m decls
   in
 
+  let rec get_init_val = function 
+    A.Literal i -> L.const_int i32_t i
+    | A.FLiteral f -> L.const_float flt_t f 
+    | A.BoolLit b -> L.const_int i1_t (int_of_bool b)
+    | A.Noexpr    -> L.const_int i32_t 0
+    | A.Clr (e1, e2, e3) as clr -> 
+      (match (clr_lit clr) with
+        Some(vals) -> L.const_named_struct clr_t vals
+        | None -> L.const_named_struct clr_t [|L.const_int i32_t 0; L.const_int i32_t 0; L.const_int i32_t 0|](* shouldnt get here if passed semant *)
+      )
+    | A.Vec (e1, e2) as vec -> 
+      (match (vec_lit vec) with
+        Some(vals) -> L.const_named_struct vec_t vals
+        | None -> L.const_named_struct vec_t [|L.const_int i32_t 0; L.const_int i32_t 0|]
+      ) 
+    | A.Unop(op, e) ->
+      let e' = get_init_val e in
+      ( match op with
+          A.Neg     -> match e with 
+                          A.Literal i -> L.const_neg e'
+                        | A.FLiteral f -> L.const_fneg e'
+                        | _ -> L.const_int i32_t 0  
+        | _ -> L.const_int i32_t 0 
+      )
+  in
+
   (* GLOBAL VAR DECLARATIONS *)
 
   let global_vars = 
     let global_var m (A.VarInit(t, n, e)) = 
-      let init = eval_expr m e in
-      let initval = (fst init) in
-      StringMap.add n ((L.define_global n initval the_module), init) m in 
+(*       let init = eval_expr m e in
+      let initval = (fst init) in *)
+      let initval = get_init_val e in 
+      StringMap.add n ((L.define_global n initval the_module), initval) m in 
     List.fold_left global_var StringMap.empty vardecls 
   in
 
@@ -423,3 +409,40 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   the_module  
   
+
+
+
+(* IN CASE WE NEED EXPRESSIONS FOR GLOBALS BUT PROB TRASH *)
+  (*    let rec eval_expr m = function (* used for global var init values *)
+      A.Literal i -> (L.const_int i32_t i, i)
+      (* FLOATS ??  separate eval function ? better way to do this? *)
+(*     | A.FLiteral f -> (L.const_float flt_t f *)
+    | A.BoolLit b -> let res = (int_of_bool b) in (L.const_int i1_t res, res)
+    | A.Noexpr    -> (L.const_int i32_t 0, 0)
+    | A.Id s      -> snd (StringMap.find s m) 
+    | A.Binop (e1, op, e2) ->
+      let e1' = eval_expr m e1
+      and e2' = eval_expr m e2 in
+      ( match op with
+        A.Add     -> let res = (snd e1' + snd e2') in (L.const_int i32_t res, res)
+      | A.Sub     -> let res = (snd e1' - snd e2') in (L.const_int i32_t res, res)
+      | A.Mult    -> let res = (snd e1' * snd e2') in (L.const_int i32_t res, res)
+      | A.Div     -> let res = (snd e1' / snd e2') in (L.const_int i32_t res, res)
+      | A.Mod     -> let res = (snd e1' mod snd e2') in (L.const_int i32_t res, res)
+      | A.And     -> let res = int_of_bool (bool_of_int (snd e1') && bool_of_int (snd e2')) in (L.const_int i1_t res, res)
+      | A.Or      -> let res = int_of_bool (bool_of_int (snd e1') || bool_of_int (snd e2')) in (L.const_int i1_t res, res)
+      | A.Equal   -> let res = (int_of_bool (snd e1' = snd e2')) in (L.const_int i1_t res, res)
+      | A.Neq     -> let res = (int_of_bool (snd e1' != snd e2')) in (L.const_int i1_t res, res)
+      | A.Less    -> let res = (int_of_bool (snd e1' < snd e2')) in (L.const_int i1_t res, res)
+      | A.Leq     -> let res = (int_of_bool (snd e1' <= snd e2')) in (L.const_int i1_t res, res)
+      | A.Greater -> let res = (int_of_bool (snd e1' > snd e2')) in (L.const_int i1_t res, res)
+      | A.Geq     -> let res = (int_of_bool (snd e1' >= snd e2')) in (L.const_int i1_t res, res) 
+      ) 
+    
+    | A.Unop(op, e) ->
+      let e' = eval_expr m e in
+      ( match op with
+          A.Neg     -> let res = -(snd e') in (L.const_int i32_t res, res)
+        | A.Not     -> let res = if (bool_of_int (snd e')) then 0 else 1 in (L.const_int i1_t res, res)
+      )
+   in  *)
