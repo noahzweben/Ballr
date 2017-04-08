@@ -3,7 +3,7 @@ int i = -5;
 float j = -3.5;
 bool k = true;
 color blue = (0, 0, 255);
-vec pos = (50, 50);
+vec pos = (50, 10);
 
 /* function declarations */
 func int test_func(){

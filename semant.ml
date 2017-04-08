@@ -140,15 +140,45 @@ in
 
 (*** CHECK VAR DECLS ***)
 
-(* build map of global names & types *)
+(* only allow constants or negative unop for global declarations *)
+let rec globalExpr = function
+    Literal _ -> Int
+    | FLiteral _ -> Float
+    | BoolLit _ -> Bool
+    | Unop(op, e) as ex -> let t = globalExpr e in
+    (match op with
+      Neg when t = Int -> Int
+    | Neg when t = Float -> Float
+    | _ -> raise (Failure ("Illegal global declaration: " ^ string_of_expr ex))
+    )
 
+    | Clr(r,g,b)  -> let t1 = globalExpr r and t2 = globalExpr g and t3 = globalExpr b in
+      if (isNumType(t1) && isNumType(t2) && isNumType(t3)) then Color
+      else raise (Failure ("Expected numeric input for type color"))
+
+    | Vec(x,y)  -> let t1 = globalExpr x and t2 = globalExpr y in
+      if (isNumType(t1) && isNumType(t2)) then Vector
+      else raise (Failure ("Expected numeric input for type vector"))
+
+    | _ -> raise (Failure ("Illegal global declaration"))
+in
+
+
+let checkGlobalVarInit m = function
+  VarInit(t,n,e) -> let e_typ = globalExpr e in
+    if t != e_typ 
+      then raise (Failure ("Unexpected types in global declaration: " ^ string_of_expr e))
+    else () 
+in
+
+(* build map of global names & types *)
 let globals =   
   let global_var m (VarInit(t, n, e)) = StringMap.add n t m 
   in List.fold_left global_var StringMap.empty vardecls
 in 
 
 (* check assignment types *)
-List.iter (checkVarInit globals) vardecls; 
+List.iter (checkGlobalVarInit globals) vardecls; 
 
 (* check for duplicates *)
 reportDuplicate (fun n -> "duplicate global variable " ^ n)
