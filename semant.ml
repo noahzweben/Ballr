@@ -224,34 +224,37 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
   List.iter checkFunc funcdecls;
 
-  (*** CHECK ENT DECLS ***)
-
   (* build a map given a list of members *)
-  let entMemTypes memz = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
+  let memTypes memz = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
     StringMap.empty memz
-
   in 
 
   (* check if a given member type exists *)
   let checkMemExists s t m = 
-        try 
-          let myT = StringMap.find s m 
-          in
-          if myT != t then raise (Failure ("Inconsistent types"))
-       with Not_found -> raise (Failure ("You haven't defined " ^ s))
-    in
-
+    try 
+      let myT = StringMap.find s m 
+      in
+      if myT != t then raise (Failure ("Inconsistent types"))
+     with Not_found -> raise (Failure ("You haven't defined " ^ s))
+  in
+  
   (* check the statements within events *)
   let checkEvent = function 
     Event (_, _, bhvr) ->
-  	   stmt StringMap.empty (Block bhvr)
-     in
+       stmt StringMap.empty (Block bhvr)
+  in
+
+  (*** CHECK ENT DECLS ***)
 
   (* check for required members, check member types, check event statements *)
   let checkEntDecl e = 
-    let myMems = entMemTypes e.members in
+    let myMems = memTypes e.members in
       checkMemExists "clr" Color myMems;
       checkMemExists "size" Vector myMems;
+
+    (* check for duplicate members *)
+    reportDuplicate (fun n -> "Duplicate member " ^ n ^ " in " ^ e.ename)
+      (List.map varDeclName e.members);
 
     (* build a symbols map - variables within scope *)
     let symbols =  List.fold_left var StringMap.empty e.members in 
@@ -259,13 +262,37 @@ let check (vardecls, funcdecls, entdecls, gboard) =
     (* run checks *)
     List.iter (checkVarInit symbols) e.members;
   	List.iter checkEvent e.rules;
+  in
+  List.iter checkEntDecl entdecls;
 
   (*** CHECK GAMEBOARD DECL ***)
 
-  (* check members *)
-  (* check init members *)
-  (* check init body *)
+  let checkGbDecl gb = 
 
-in
+    (* check required members clr and size *)
+    let myMems = memTypes gb.gmembers in 
+      checkMemExists "clr" Color myMems;
+      checkMemExists "size" Vector myMems;
 
-List.iter checkEntDecl entdecls
+    (* check for duplicate members *)
+    reportDuplicate (fun n -> "Duplicate member " ^ n ^ " in " ^ gb.gname)
+      (List.map varDeclName gb.gmembers);
+
+    (* build a symbols map - variables within scope *)
+    let symbols =  List.fold_left var StringMap.empty gb.gmembers in
+
+    (* check members *)
+    List.iter (checkVarInit symbols) gb.gmembers;
+
+    (* check for duplicate init members *)
+    reportDuplicate (fun n -> "Duplicate init function member " ^ n ^ " in " ^ gb.gname)
+      (List.map varDeclName gb.init_mem);
+
+    (* check init members and add to symbols list *)
+    let symbols =  List.fold_left var symbols gb.init_mem in
+    List.iter (checkVarInit symbols) gb.init_mem;
+
+    (* check init body *)
+    stmt symbols (Block gb.init_body);
+  in 
+  checkGbDecl gboard;
