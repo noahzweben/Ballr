@@ -110,8 +110,8 @@ CheckFail() {
 
     generatedfiles=""
 
-    generatedfiles="$generatedfiles ${basename}.err ${basename}.diff" &&
-    RunFail "$BALLR" "<" $1 "2>" "${basename}.err" ">>" $globallog &&
+    generatedfiles="$generatedfiles ${basename}.ll ${basename}.o ${basename} ${basename}.err" &&
+    RunFail "make ${basename}.test 2> ${basename}.err 1> /dev/null"
     Compare ${basename}.err ${reffile}.err ${basename}.diff
 
     # Report the status and clean up the generated files
@@ -145,7 +145,7 @@ if [ $# -ge 1 ]
 then
     files=$@
 else
-    files="tests/test-*.blr" # tests/fail-*.blr"
+    files="tests/test-*.blr tests/fail-*.blr"
 fi
 
 for file in $files
@@ -155,9 +155,9 @@ do
 	    Check $file 2>> $globallog
 	    ;;
 	*fail-*)
-#	    CheckFail $file 2>> $globallog
-#	    ;;
-#	*)
+	    CheckFail $file 2>> $globallog
+	    ;;
+	*)
 	    echo "unknown file type $file"
 	    globalerror=1
 	    ;;
