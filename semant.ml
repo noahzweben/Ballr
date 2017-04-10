@@ -66,6 +66,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
   (*** DONE CHECKING VARDECLS ***)
 
+
   let builtInDecls =  StringMap.add "print" (*** ADD BUILT IN FUNCTIONS ***)
      { typ = Int; fname = "print"; formals = [(Int, "x")];
        locals = []; body = [] } 
@@ -145,9 +146,19 @@ let check (vardecls, funcdecls, entdecls, gboard) =
           fd.formals actuals;  *)
          fd.typ
 
-     (* Access -> 
-     | ArrayAccess ->  
-     | Assign -> *)
+    (* ADD INDEX CHECK *)
+    | ArrayAccess(e1, e2) -> let e_type = expr m e1 and e_num = expr m e2 in 
+      if (e_type != Color && e_type != Vector) 
+        then raise (Failure ("Can only access Color and Vector types, not " ^ string_of_typ e_type))
+      else 
+        if (e_num != Int) then raise (Failure ("Expecting Integer for access index, got " ^ string_of_typ e_num))
+        else Int
+    | Assign (e1,e2) as ex-> let t1 = expr m e1 and t2 = expr m e2 in
+      if t1 == t2 then t1 else raise (Failure ("illegal assignment " ^ string_of_typ t1 ^
+             " = " ^ string_of_typ t2 ^ " in " ^ 
+             string_of_expr ex))
+
+     (* Access -> *)
   in
 
   (* check if types in a varinit statement match *)
@@ -204,7 +215,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
       (List.map varDeclName func.locals);
 
     (* build map of in-scope variables *)
-    let formal_var m (t, n) = StringMap.add n t m in
+    let formal_var m (t, n) = StringMap.add n t m in 
     let symbols = List.fold_left var StringMap.empty func.locals in 
     let symbols = List.fold_left formal_var symbols func.formals in
 

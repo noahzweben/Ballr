@@ -14,6 +14,13 @@ func int test_func(int x, int z){
 	return x;
 }
 
+
+func int test_array_access(){
+	vec b = (10,10);
+	b[10] = 10;
+	return 10;
+}
+
 /* entity declarations */
 entity e1 {
     clr = (255, 0, 255);
@@ -28,7 +35,7 @@ gameboard g1{
         int x = 5;
 		int y = x + 7;
 		test_func(10, 12);
-		add(e1, (300, 20));
+		add(e1, (600, 20));
         add(e1, (20, 300));
 	}
 }
