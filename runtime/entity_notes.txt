@@ -1,0 +1,88 @@
+/***********
+MEMBERS:
+
+IN BALLR:
+entity e1 {
+    color = ...
+    pos = ...
+    int time = 0;
+    int speed = 0;
+}
+
+entity e2 {
+    color = ...
+    pos = ...
+    bool underwater = false;
+    float degrees = 0.0;
+}
+
+GENERATED:
+typedef struct {
+    int time;
+    int speed;
+} e1_mems_t;
+
+typedef struct {
+    bool underwater;
+    float degrees;
+} e2_mems_t;
+
+typedef union {
+    e1_mems_t e1;
+    e2_mems_t e2;
+} e_mems_t;
+
+IN BALLR:
+self.time = self.time + 1;
+
+GENERATED: (in LLVM tho)
+e_mems_t *mems = (e_mems_t *)self.members;
+int tmp = mems.e1.time;
+int tmp2 = tmp + 1;
+
+e_mems_t *mems = (e_mems_t *)self.members;
+mems.e1.time = tmp2;
+
+************/
+
+
+/*********
+FRAME FUNCTION:
+
+IN BALLR:
+entity e1 {
+    ...
+    frame => {
+        stmt1;
+        stmt2;
+    }
+    self >< e2 o {
+        stmt3;
+        stmt4;
+    }
+
+    keypress   {
+        stmt5;
+    }
+}
+
+GENERATED:
+collision.e1.e2 (entity *self, entity *o) {
+    stmt3;
+    stmt4;
+}
+
+keypress.KEY_UP (entity * self) {
+    stmt5;
+}
+
+frame.e1 (entity *self) {
+    stmt1;
+    stmt2;
+    chk_collision(self, "e2", collison.e1.e2);
+    if (chk_keypress(40)) {
+        keypress.KEY_UP(self);
+    }
+}
+
+**********/
