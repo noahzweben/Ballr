@@ -1,5 +1,6 @@
 int x = 5;
 
+color blue = (10,10,10);
 func int ballr(int dog){
 	return dog+10;
 }
@@ -10,9 +11,25 @@ entity piece{
 	int dog = 4;
 	int y = x + 3;
 	int cat = y + dog;
-	frame -> {}
-	key_UP -> { int a = 5 + 4;}
+	frame -> { }
+	key_UP -> { 
+		int a = 5 + 4;
+		self.y = 10;
+	}
 }
+
+entity booger{
+	clr = (10, 10.1, 10);
+	size = (10,10);
+	int y = x + 3;
+	color red = (self.y,0,0);
+	frame -> { }
+	key_UP -> { 
+		int a = 5 + 4;
+		self.red[10] = 10;
+	}
+}
+
 
 gameboard g1{ 
 	clr = (0,0,255);

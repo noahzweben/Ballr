@@ -93,15 +93,33 @@ let check (vardecls, funcdecls, entdecls, gboard) =
         with Not_found -> raise (Failure ("Undeclared identifier " ^ s))
     in
 
+
+
+(* builds a map of each entity and its corresponding available members *)
+
+(* build a map given a list of members *)
+let memTypes memz = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
+  StringMap.empty memz
+in 
+
+let allEntMembers =   
+    let entMems m ent = StringMap.add ent.ename (memTypes ent.members) m 
+    in List.fold_left entMems StringMap.empty entdecls
+
+
+in
+
+
+
   (* check expressions *)
-  let rec expr m = function
+  let rec expr m ent= function
 		Literal _ -> Int
 	  | FLiteral _ -> Float
     | BoolLit _ -> Bool
     | Id s -> type_of_identifier m s
     | Noexpr -> Bool (* THIS *)
 
-    | Binop(e1, op, e2) as e -> let t1 = expr m e1 and t2 = expr m e2 in
+    | Binop(e1, op, e2) as e -> let t1 = expr m ent e1 and t2 = expr m ent e2 in
 		(match op with
 			(* do better *)
       Add | Mod | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
@@ -119,7 +137,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
         string_of_typ t2 ^ " in " ^ string_of_expr e))
     )
 
-    | Unop(op, e) as ex -> let t = expr m e in
+    | Unop(op, e) as ex -> let t = expr m ent e in
 	  (match op with
 	 	Neg when t = Int -> Int
 	  | Neg when t = Float -> Float
@@ -128,11 +146,11 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 	  		string_of_typ t ^ " in " ^ string_of_expr ex))
     )
 
-    | Clr(r,g,b)  -> let t1 = expr m r and t2 = expr m g and t3 = expr m b in
+    | Clr(r,g,b)  -> let t1 = expr m ent r and t2 = expr m ent g and t3 = expr m ent b in
       if (isNumType(t1) && isNumType(t2) && isNumType(t3)) then Color
       else raise (Failure ("expected numeric input for type color"))
 
-    | Vec(x,y)  -> let t1 = expr m x and t2 = expr m y in
+    | Vec(x,y)  -> let t1 = expr m ent x and t2 = expr m ent y in
       if (isNumType(t1) && isNumType(t2)) then Vector
       else raise (Failure ("expected numeric input for type vector"))
 
@@ -147,47 +165,65 @@ let check (vardecls, funcdecls, entdecls, gboard) =
          fd.typ
 
     (* ADD INDEX CHECK *)
-    | ArrayAccess(e1, e2) -> let e_type = expr m e1 and e_num = expr m e2 in 
+    | ArrayAccess(e1, e2) -> let e_type = expr m ent e1 and e_num = expr m ent e2 in 
       if (e_type != Color && e_type != Vector) 
         then raise (Failure ("Can only access Color and Vector types, not " ^ string_of_typ e_type))
       else 
         if (e_num != Int) then raise (Failure ("Expecting Integer for access index, got " ^ string_of_typ e_num))
         else Int
-    | Assign (e1,e2) as ex-> let t1 = expr m e1 and t2 = expr m e2 in
+    | Assign (e1,e2) as ex-> let t1 = expr m ent e1 and t2 = expr m ent e2 in
       if t1 == t2 then t1 else raise (Failure ("illegal assignment " ^ string_of_typ t1 ^
              " = " ^ string_of_typ t2 ^ " in " ^ 
              string_of_expr ex))
 
-     (* Access -> *)
-  in
+    | Access(name,prop) -> 
+      if name = "self"
+        then
+          let availProps = StringMap.find ent allEntMembers in
+          type_of_identifier availProps prop;
+      else raise (Failure ("Cannot access " ^ name))
+
+
+
+   in
+
+
+(* let type_of_identifier m s =
+      try StringMap.find s m
+      with Not_found ->
+        try StringMap.find s globals
+        with Not_found -> raise (Failure ("Undeclared identifier " ^ s))
+    in
+ *)
+
 
   (* check if types in a varinit statement match *)
-  let checkVarInit m = function
-    VarInit(t,n,e) -> let e_typ = expr m e in
+  let checkVarInit m ent = function
+    VarInit(t,n,e) -> let e_typ = expr m ent e in
       if t != e_typ 
       then raise (Failure ("expected type " ^ string_of_typ t ^ ", not " ^ string_of_expr e ^ " of type " ^ string_of_typ e_typ))
        else ()
   in
 
   (* check if given expression is of type boolean *)
-  let checkBoolExpr e m = if expr m e != Bool
+  let checkBoolExpr e m ent = if expr m ent e != Bool
        then raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
        else () 
   in
 
   (* check statements *)
-  let rec stmt m = function
+  let rec stmt m ent = function
     Block sl -> let rec checkBlock = function
-         [Return _ as s] -> stmt m s
+         [Return _ as s] -> stmt m ent s
        | Return _ :: _ -> raise (Failure "nothing may follow a return")
        | Block sl :: ss -> checkBlock (sl @ ss)
-       | s :: ss -> stmt m s ; checkBlock ss
+       | s :: ss -> stmt m ent s ; checkBlock ss
        | [] -> ()
       in checkBlock sl
-    | Expr e -> ignore (expr m e)
-    | If(p, b1, b2) -> checkBoolExpr p m; stmt m b1; stmt m b2
-    | ForEach(n1, n2, st) -> stmt m st
-    | While(p, s) -> checkBoolExpr p m; stmt m s
+    | Expr e -> ignore (expr m ent e)
+    | If(p, b1, b2) -> checkBoolExpr p m ent; stmt m ent b1; stmt m ent b2
+    | ForEach(n1, n2, st) -> stmt m ent st
+    | While(p, s) -> checkBoolExpr p m ent; stmt m ent s
     | Return e -> () (* NEED TO MAKE SURE ONLY HAVE RETURN STATEMENTS IN FUNCTIONS *)
 
   in
@@ -198,7 +234,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
   (*** CHECK FUNC DECLS ***)
 
   let checkReturnStmt func m =  function
-    Return e -> let t = expr m e in if t = func.typ then () else
+    Return e -> let t = expr m "" e in if t = func.typ then () else
      raise (Failure ("Return gives " ^ string_of_typ t ^ " expected " ^
                      string_of_typ func.typ ^ " in " ^ string_of_expr e))  
     | _ -> raise (Failure ("Function must end with return statement"))
@@ -220,10 +256,10 @@ let check (vardecls, funcdecls, entdecls, gboard) =
     let symbols = List.fold_left formal_var symbols func.formals in
 
     (* check function locals *)
-    List.iter (checkVarInit symbols) func.locals;
+    List.iter (checkVarInit symbols "") func.locals;
 
     (* check function statements *)
-    stmt symbols (Block func.body);
+    stmt symbols "" (Block func.body);
 
     (* make sure the last statement is a return and that it is the correct type *)
     let rev_statements = List.rev func.body in
@@ -235,11 +271,6 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
   List.iter checkFunc funcdecls;
 
-  (* build a map given a list of members *)
-  let memTypes memz = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
-    StringMap.empty memz
-  in 
-
   (* check if a given member type exists *)
   let checkMemExists s t m = 
     try 
@@ -250,9 +281,9 @@ let check (vardecls, funcdecls, entdecls, gboard) =
   in
   
   (* check the statements within events *)
-  let checkEvent = function 
+  let checkEvent ent = function 
     Event (_, _, bhvr) ->
-       stmt StringMap.empty (Block bhvr)
+       stmt StringMap.empty ent (Block bhvr)
   in
 
   (*** CHECK ENT DECLS ***)
@@ -271,8 +302,8 @@ let check (vardecls, funcdecls, entdecls, gboard) =
     let symbols =  List.fold_left var StringMap.empty e.members in 
 
     (* run checks *)
-    List.iter (checkVarInit symbols) e.members;
-  	List.iter checkEvent e.rules;
+    List.iter (checkVarInit symbols e.ename) e.members;
+  	List.iter (checkEvent e.ename) e.rules ;
   in
   List.iter checkEntDecl entdecls;
 
@@ -293,7 +324,7 @@ let check (vardecls, funcdecls, entdecls, gboard) =
     let symbols =  List.fold_left var StringMap.empty gb.gmembers in
 
     (* check members *)
-    List.iter (checkVarInit symbols) gb.gmembers;
+    List.iter (checkVarInit symbols "") gb.gmembers;
 
     (* check for duplicate init members *)
     reportDuplicate (fun n -> "Duplicate init function member " ^ n ^ " in " ^ gb.gname)
@@ -301,9 +332,9 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
     (* check init members and add to symbols list *)
     let symbols =  List.fold_left var symbols gb.init_mem in
-    List.iter (checkVarInit symbols) gb.init_mem;
+    List.iter (checkVarInit symbols "") gb.init_mem;
 
     (* check init body *)
-    stmt symbols (Block gb.init_body);
+    stmt symbols "" (Block gb.init_body);
   in 
   checkGbDecl gboard;
