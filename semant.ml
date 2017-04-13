@@ -182,6 +182,7 @@ in
           let availProps = StringMap.find ent allEntMembers in
           type_of_identifier availProps prop;
       else raise (Failure ("Cannot access " ^ name))
+      (* next need to account for accesses in the form of foreach(obstacle o){o.blah} *)
 
 
 
