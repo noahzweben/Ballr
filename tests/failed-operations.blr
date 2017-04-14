@@ -1,0 +1,9 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {  
+		print(1 + b);
+  		print(a - 2);
+ 		print(c * 2);
+  		print(100 / false);
+  		print(hello);
