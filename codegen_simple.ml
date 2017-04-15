@@ -283,13 +283,15 @@ let translate (vardecls, fdecls, ents, gboard) =
  
   (* ENTITY DECLARATIONS *)
 
+  let decl_type = function A.VarInit(t,s,e) -> ltype_of_typ(t) in
+
+  let decl_name = function A.VarInit(t,s,e) -> s in
+
+  let decl_expr = function A.VarInit(t,s,e) -> e in
+
   (* make struct <ename>_mems_t for each entity *)
   let define_emembers_type e m =
     
-    let decl_type = function A.VarInit(t,s,e) -> ltype_of_typ(t) in
-
-    let decl_name = function A.VarInit(t,s,e) -> s in
-
     let add_mem_type a mem = 
       let name = decl_name mem in
       if name = "clr" || name = "size" then a 
@@ -328,18 +330,31 @@ let translate (vardecls, fdecls, ents, gboard) =
     let ftype = L.function_type (L.pointer_type ent_t) [| |] in
     let func = L.define_function name ftype the_module in
     (StringMap.add name func m, func)
-  in
+  in 
 
   let fill_ent_mem_struct e builder = 
     let mems_t = StringMap.find e.A.ename ent_mem_types in
 
     let mems_struct_ptr = L.build_malloc mems_t ("ent_mems_t_ptr") builder in
 
-    let bool_ptr = L.build_struct_gep mems_struct_ptr 0 ("bool_ptr") builder in
-    ignore (L.build_store (L.const_int i1_t 0) bool_ptr builder);
+    (* loop through entity members, skip clr and size, l.build store for each *)
 
-    let int_ptr = L.build_struct_gep mems_struct_ptr 1 ("int_ptr") builder in
-    ignore (L.build_store (L.const_int i32_t 0) int_ptr builder);
+    let build_store_mem index mem = 
+
+        let ptr = L.build_struct_gep mems_struct_ptr index ("ptr_" ^ (string_of_int index)) builder in
+        ignore (L.build_store (get_init_val (decl_expr mem))  ptr builder)
+    in
+
+    let remove_first l = match l with
+      | [] -> [] 
+      | hd::rest -> rest
+    in
+
+    (* members list without clr and pos *)
+    let members = remove_first e.A.members in
+    let members = remove_first members in
+
+    List.iteri build_store_mem members;
 
     let mems_struct_ptr = L.build_pointercast  mems_struct_ptr (L.pointer_type i8_t) "new" builder in 
 
