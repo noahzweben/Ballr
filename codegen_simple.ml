@@ -162,30 +162,34 @@ let translate (vardecls, fdecls, ents, gboard) =
           L.build_load vec_ptr "v" builder)
 
     | A.Assign (e1, e2) -> 
+      let e' = expr builder m mem_m e2 in
       (match e1 with
-        | A.Id (s) -> let e' = expr builder m mem_m e2 in
-            L.build_store e' (StringMap.find s m) builder
-        | A.Access (s1, s2) -> L.const_int i32_t 0
+        | A.Id (s) -> L.build_store e' (StringMap.find s m) builder
+        | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
+          (match s1 with 
+            | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
+                        let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
+                        let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
+                        let mem_ptr = L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder in  
+                        L.build_store e' mem_ptr builder;
+            | _ -> L.const_int i32_t 0       
+          )
+        (**** FINISH THIS *) 
         | A.ArrayAccess (e1, e2) -> L.const_int i32_t 0
         | _ -> L.const_int i32_t 0
       )
-
-      (* CURRENTLY ONLY FOR SELF. ...*)
-      (* need members struct and index, then load *)
-    | A.Access (s1, s2) ->
+    | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
     (match s1 with 
       | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
                   let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
                   let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
                   let mem_ptr = L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder in  
                   L.build_load mem_ptr s2 builder;
-                  (* L.const_int i32_t 0;               *)
       | _ -> L.const_int i32_t 0 
     ) 
 
-    (**** ACCESS  L.build_load (StringMap.find s m) s builder *)
     (***** ARRAY ACCESS *)
-    (***** ASSIGN *) 
+    
   in
 
   let int_of_bool b = if b then 1 else 0 in 
@@ -355,7 +359,7 @@ let translate (vardecls, fdecls, ents, gboard) =
 
     let mems_t = StringMap.find e.A.ename ent_mem_types in
 
-    (* build a map of member names/pointers *)
+    
     let rec index_of x l = match l with 
       | [] -> 0
       | hd :: tl -> if x = hd then 0 else 1 + index_of x tl
@@ -372,6 +376,9 @@ let translate (vardecls, fdecls, ents, gboard) =
     (* just generate code for var_decls and statements in first event *)
     let event = first e.A.rules in 
     let map = add_locals map mem_map (event_decls event) builder in
+
+    ignore (stmt builder func map mem_map (A.Block (event_stmts event)));
+
     ignore (L.build_ret_void builder);
     map
   in
@@ -395,7 +402,6 @@ let translate (vardecls, fdecls, ents, gboard) =
 
     (* members list without clr and pos *)
     let members = remove_first e.A.members in let members = remove_first members in
-
     List.iteri build_store_mem members;
 
     let mems_struct_ptr = L.build_pointercast mems_struct_ptr (L.pointer_type i8_t) "new" builder in 
