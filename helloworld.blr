@@ -25,6 +25,8 @@ func int test_array_access(){
 entity e1 {
     clr = (255, 0, 255);
     size = (20, 20);
+    bool dog = false;
+    int time = 0;
 }
 
 /* gameboard declaration */

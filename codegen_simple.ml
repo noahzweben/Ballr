@@ -12,7 +12,6 @@ let print_map m =
   in
   StringMap.iter print_key m;;
 
-
 let translate (vardecls, fdecls, ents, gboard) =
   let context = L.global_context () in
   let the_module = L.create_module context "Ballr" in
@@ -32,7 +31,7 @@ let translate (vardecls, fdecls, ents, gboard) =
   let vec_t = L.named_struct_type context "blr_size_t" in
     L.struct_set_body vec_t [|i32_t; i32_t|] false;
   let ent_t = L.named_struct_type context "blr_entity_t" in
-    L.struct_set_body ent_t [|  L.pointer_type i8_t; vec_t; vec_t; clr_t; L.pointer_type (L.function_type (L.void_type context) [| L.pointer_type ent_t |]); L.pointer_type ent_t; ut_hash_handle_t |] false;
+    L.struct_set_body ent_t [|  L.pointer_type i8_t; vec_t; vec_t; clr_t; L.pointer_type (L.function_type (L.void_type context) [| L.pointer_type ent_t |]); L.pointer_type i8_t; L.pointer_type ent_t; ut_hash_handle_t |] false;
   let gb_t = L.named_struct_type context "blr_gameboard_t" in
     L.struct_set_body gb_t [| L.pointer_type i8_t; vec_t; clr_t; L.pointer_type ent_t; L.pointer_type (L.function_type (L.void_type context) [| L.pointer_type gb_t |]);  ut_hash_handle_t |] false;
 
@@ -284,6 +283,32 @@ let translate (vardecls, fdecls, ents, gboard) =
  
   (* ENTITY DECLARATIONS *)
 
+  (* make struct <ename>_mems_t for each entity *)
+  let define_emembers_type e m =
+    
+    let decl_type = function A.VarInit(t,s,e) -> ltype_of_typ(t) in
+
+    let decl_name = function A.VarInit(t,s,e) -> s in
+
+    let add_mem_type a mem = 
+      let name = decl_name mem in
+      if name = "clr" || name = "size" then a 
+      else Array.append a [|(decl_type mem)|] 
+    in
+
+    (* array of member types (not including clr, size) *)
+    let mem_types = List.fold_left add_mem_type [||] e.A.members in
+    (* define named struct *)
+    let mems_t = L.named_struct_type context (e.A.ename ^ "_mems_t") in
+    L.struct_set_body mems_t mem_types false;
+    (* add to map *)
+    StringMap.add e.A.ename mems_t m
+
+  in
+
+  (** make struct name_mems_t structs for each entity and put in a map *)
+  let ent_mem_types = List.fold_left (fun m e -> define_emembers_type e m) StringMap.empty ents in
+
   let ent_frame e m =
     let name = e.A.ename ^ "_frame" in
     let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
@@ -305,7 +330,23 @@ let translate (vardecls, fdecls, ents, gboard) =
     (StringMap.add name func m, func)
   in
 
-  let fill_ent_create_function e m =
+  let fill_ent_mem_struct e builder = 
+    let mems_t = StringMap.find e.A.ename ent_mem_types in
+
+    let mems_struct_ptr = L.build_malloc mems_t ("ent_mems_t_ptr") builder in
+
+    let bool_ptr = L.build_struct_gep mems_struct_ptr 0 ("bool_ptr") builder in
+    ignore (L.build_store (L.const_int i1_t 0) bool_ptr builder);
+
+    let int_ptr = L.build_struct_gep mems_struct_ptr 1 ("int_ptr") builder in
+    ignore (L.build_store (L.const_int i32_t 0) int_ptr builder);
+
+    let mems_struct_ptr = L.build_pointercast  mems_struct_ptr (L.pointer_type i8_t) "new" builder in 
+
+    mems_struct_ptr
+  in
+
+  let fill_ent_create_function m e =
     let (map, func) = ent_create e m in
     let builder = L.builder_at_end context (L.entry_block func) in
     let ent_ptr = L.build_malloc ent_t ("ent_ptr") builder in
@@ -331,8 +372,14 @@ let translate (vardecls, fdecls, ents, gboard) =
     let frame_fn = StringMap.find (e.A.ename ^ "_frame") map in
     ignore (L.build_store frame_fn ent_frame_fn_ptr builder);
 
-    ignore (L.build_ret ent_ptr builder);
-    map
+    (* set members using e mems t stuff *)
+    (* malloc ent_mems struct, link to ent struct, set member values within ent_mems struct *)
+    let mems_t = StringMap.find e.A.ename ent_mem_types in
+    let ent_mems_t_ptr = L.build_struct_gep ent_ptr 5 ("members_ptr") builder in
+    let mems_struct_ptr = fill_ent_mem_struct e builder in
+    ignore (L.build_store mems_struct_ptr ent_mems_t_ptr builder); 
+
+    ignore (L.build_ret ent_ptr builder); map
   in
 
   (* GAMEBOARD DECLARATION *)
@@ -389,9 +436,16 @@ let translate (vardecls, fdecls, ents, gboard) =
     map
   in
 
-  (* ADD FUNCTION AND ENTITY DECLARATIONS TO MAP *)
+  (** make struct name_mems_t structs for each entity and put in a map *)
+  let e_mem_types = List.fold_left (fun m e -> define_emembers_type e m) StringMap.empty ents in
+
+  (* ADD FUNCTION AND ENTITY DECLARATIONS *)
   let fmap = List.fold_left (fun m f -> fill_func_body f m) global_vars fdecls in
-  let fmap = List.fold_left (fun m e -> fill_ent_create_function e m) fmap ents in
+  (* let fmap = List.fold_left (fill_ent_create_function fmap e_mem_types) ents in *)
+  (* let (fmap, e_mem_types) = List.fold_left (fun maps e -> fill_ent_create_function e maps) (fmap, e_mem_types) ents in *)
+  let fmap = List.fold_left (fun m e -> fill_ent_create_function m e) fmap ents in
+
+  (* CREATE GAMEBOARD *)
   let fmap = fill_gb_create_function gboard fmap in
 
   (* DEFINE MAIN FUNCTION: calls gb_create, run_loop, return 0 *)

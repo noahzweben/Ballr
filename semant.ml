@@ -109,8 +109,6 @@ let allEntMembers =
 
 in
 
-
-
   (* check expressions *)
   let rec expr m ent= function
 		Literal _ -> Int
@@ -171,6 +169,7 @@ in
       else 
         if (e_num != Int) then raise (Failure ("Expecting Integer for access index, got " ^ string_of_typ e_num))
         else Int
+
     | Assign (e1,e2) as ex-> let t1 = expr m ent e1 and t2 = expr m ent e2 in
       if t1 == t2 then t1 else raise (Failure ("illegal assignment " ^ string_of_typ t1 ^
              " = " ^ string_of_typ t2 ^ " in " ^ 

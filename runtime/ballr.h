@@ -27,6 +27,7 @@ typedef struct entity {
     blr_pos_t pos;
     blr_color_t color;
     void (*frame_fn)(struct entity *);
+    void *members;
     struct entity *next;
     UT_hash_handle hh;
 } entity_t;
