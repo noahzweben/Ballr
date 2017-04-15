@@ -3,7 +3,13 @@ entity e1 {
     clr = (255, 0, 255);
     size = (20, 20);
     bool dog = false;
-    int time = 0;
+    int time = 10;
+    frame -> { 
+    	int i = 10;
+    	int k = i;
+    	int j = self.time;
+    	self.time = 5;
+    }
 }
 
 /* gameboard declaration */
@@ -11,6 +17,8 @@ gameboard g1{
 	clr = (25,100,100);
 	size = (680,420);
 	init -> {
+		int i = 0;
+		i = i + 5;
 		add(e1, (600, 20));
         add(e1, (20, 300));
 	}
