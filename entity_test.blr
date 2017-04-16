@@ -4,12 +4,13 @@ entity e1 {
     size = (20, 20);
     bool dog = false;
     int time = 10;
+    color my_clr = (50,50,0);
     frame -> { 
-    	int i = 10;
-    	int k = i;
     	int j = self.time;
+    	int i = self.my_clr[1];
     	self.dog = true;
     	self.time = 20;
+    	self.my_clr[1] = 20;
     }
 }
 

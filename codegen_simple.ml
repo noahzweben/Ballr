@@ -175,9 +175,35 @@ let translate (vardecls, fdecls, ents, gboard) =
             | _ -> L.const_int i32_t 0       
           )
         (**** FINISH THIS *) 
-        | A.ArrayAccess (e1, e2) -> L.const_int i32_t 0
+        | A.ArrayAccess (e1', e2') ->      
+          let arr_ptr = 
+          (match e1' with 
+            | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
+              (match s1 with 
+                | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
+                            let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
+                            let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
+                            L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder  
+                | _ -> L.const_int i32_t 0 
+              ) 
+            | _ -> L.const_int i32_t 0
+          ) (* ADD ID ? *)
+
+          in
+
+          let index = 
+            ( match e2' with 
+            | A.Literal i -> i 
+            | _ -> 0
+            )
+          in
+
+          let el_accessed = L.build_struct_gep arr_ptr index ("el_"^string_of_int index) builder in  
+          L.build_store e' el_accessed builder;
+
         | _ -> L.const_int i32_t 0
       )
+    
     | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
     (match s1 with 
       | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
@@ -188,8 +214,32 @@ let translate (vardecls, fdecls, ents, gboard) =
       | _ -> L.const_int i32_t 0 
     ) 
 
-    (***** ARRAY ACCESS *)
-    
+    | A.ArrayAccess (e1, e2) -> 
+
+      let arr_ptr = 
+        (match e1 with 
+          | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
+            (match s1 with 
+              | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
+                          let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
+                          let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
+                          L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder  
+              | _ -> L.const_int i32_t 0 
+            ) 
+          | _ -> L.const_int i32_t 0
+        ) (* ADD ID ? *)
+
+      in
+
+      let index = 
+        ( match e2 with 
+        | A.Literal i -> i 
+        | _ -> 0
+        )
+      in
+
+      let el_accessed = L.build_struct_gep arr_ptr index ("el_"^string_of_int index) builder in  
+      L.build_load el_accessed "ptr" builder;
   in
 
   let int_of_bool b = if b then 1 else 0 in 
@@ -373,10 +423,9 @@ let translate (vardecls, fdecls, ents, gboard) =
     let members = remove_first e.A.members in let members = remove_first members in
     let mem_map = List.fold_left build_mem_map StringMap.empty members in 
 
-    (* just generate code for var_decls and statements in first event *)
+    (* just generate code for var_decls and statements in first event -- to test access/entity member stuff *)
     let event = first e.A.rules in 
     let map = add_locals map mem_map (event_decls event) builder in
-
     ignore (stmt builder func map mem_map (A.Block (event_stmts event)));
 
     ignore (L.build_ret_void builder);
