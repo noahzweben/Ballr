@@ -27,6 +27,7 @@ entity e1 {
     size = (20, 20);
     bool dog = false;
     int time = 0;
+frame -> {}
 }
 
 /* gameboard declaration */
