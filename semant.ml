@@ -157,14 +157,22 @@ in
       if (isNumType(t1) && isNumType(t2)) then Vector
       else raise (Failure ("expected numeric input for type vector"))
 
-    | Call(fname, actuals) as call -> let fd = functionDecl fname in
+    | Call(fname, actuals) as call -> let fd = functionDecl fname in     
        if List.length actuals != List.length fd.formals then
          raise (Failure ("Expecting " ^ string_of_int
            (List.length fd.formals) ^ " arguments in " ^ string_of_expr call))
        else
+        if (fname="add") then ( 
+          let entName = string_of_expr (List.hd actuals) in 
+          if not (StringMap.mem entName allEntMembers) then 
+            raise (Failure(entName ^ " is not a defined entity"))
+            else Int 
+        )
+        else
         (** FIX THIS : Type Ast.typ is not compatible with type Ast.expr -> Ast.typ  *)
-(*           List.iter2 (fun (ft, _) e -> if ft != (expr e) then raise (Failure ("Incorrect actual argument type in " ^ string_of_expr call)))
-          fd.formals actuals;  *)
+         (* let checkSameT t1 t2 = if t1 != t2 then raise (Failure ("Incorrect actual argument type in " ^ string_of_expr call)) in 
+          List.iter2 (fun (ft,_) e -> ignore(checkSameT ft (expr e)) )
+          fd.formals actuals; *)
          fd.typ
     | ArrayAccess(e1, e2) -> let e_type = expr m ent fmap e1 and e_num = expr m ent fmap e2 in 
       if (e_type != Color && e_type != Vector) 

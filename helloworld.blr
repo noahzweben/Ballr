@@ -21,14 +21,14 @@ func int test_array_access(){
 }
 
 /* entity declarations */
-entity e1 {
+entity A {
     clr = (255, 0, 255);
     size = (20, 20);
     bool POOP = false;
     frame -> {}
 }
 
-entity e2 {
+entity B {
     clr = (0, 255, 255);
     size = (20, 20);
     bool dog = false;
@@ -44,8 +44,7 @@ gameboard g1{
         int x = 5;
 		int y = x + 7;
 		test_func(10, 12);
-		add(e1, (600, 20));
-        add(e1, (20, 300));
-        add(e2,(200,200));
+		add(A, (600, 20));
+        add(B, (20, 300));
 	}
 }
