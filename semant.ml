@@ -192,21 +192,7 @@ in
         else
           if (StringMap.mem name m) then raise (Failure ("Cannot access " ^ name))
           else raise (Failure ("Undeclared identifier " ^ name))
-      (* next need to account for accesses in the form of foreach(obstacle o){o.blah} *)
-
-
-
    in
-
-
-(* let type_of_identifier m s =
-      try StringMap.find s m
-      with Not_found ->
-        try StringMap.find s globals
-        with Not_found -> raise (Failure ("Undeclared identifier " ^ s))
-    in
- *)
-
 
   (* check if types in a varinit statement match *)
   let checkVarInit m ent fmap = function
@@ -232,11 +218,11 @@ in
        | [] -> ()
       in checkBlock sl
     | Expr e -> ignore (expr m ent fmap e)
-    | If(p, b1, b2) -> checkBoolExpr p m ent; stmt m ent fmap b1; stmt m ent fmap b2
+    | If(p, b1, b2) -> checkBoolExpr p m ent fmap; stmt m ent fmap b1; stmt m ent fmap b2
     | ForEach(n1, n2, st) -> ignore(checkEntExists n1);
           if StringMap.mem n2 allEntMembers then raise (Failure("May not use entity name for instance alias"));
           stmt m ent (StringMap.add n2 n1 fmap) st
-    | While(p, s) -> checkBoolExpr p m ent; stmt m ent fmap s
+    | While(p, s) -> checkBoolExpr p m ent fmap; stmt m ent fmap s
     | Return e -> () (* NEED TO MAKE SURE ONLY HAVE RETURN STATEMENTS IN FUNCTIONS *)
 
   in
@@ -300,6 +286,9 @@ in
   in
 
   (*** CHECK ENT DECLS ***)
+  let getEntName e = e.ename in
+   reportDuplicate (fun n -> "Duplicate entity " ^ n)
+      (List.map getEntName entdecls);  
 
   (* check for required members, check member types, check event statements *)
   let checkEntDecl e = 

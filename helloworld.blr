@@ -29,7 +29,7 @@ entity e1 {
 }
 
 entity e2 {
-    clr = (255, 0, 255);
+    clr = (0, 255, 255);
     size = (20, 20);
     bool dog = false;
     int time = 0;
@@ -46,5 +46,6 @@ gameboard g1{
 		test_func(10, 12);
 		add(e1, (600, 20));
         add(e1, (20, 300));
+        add(e2,(200,200));
 	}
 }
