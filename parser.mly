@@ -152,7 +152,11 @@ expr:
 
 member:
 	ID  				{ Id($1) } 
+	| CLR 			{ Id("clr") }
+	| SIZE           { Id("size") }
 	| ID PERIOD ID  { Access($1, $3) }
+	| ID PERIOD CLR  { Access($1,"clr") }
+	| ID PERIOD SIZE { Access($1, "size") }
 
 tmember:
 	| member LSQUARE expr RSQUARE 	{ArrayAccess($1,$3)}						
