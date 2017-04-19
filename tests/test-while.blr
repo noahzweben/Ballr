@@ -12,3 +12,4 @@ gameboard g1{
   	print(42);	
 
   	}
+}

@@ -9,3 +9,4 @@ gameboard g1{
 		print(i); 
 		print (y);
 	}
+}
