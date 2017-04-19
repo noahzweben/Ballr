@@ -3,9 +3,11 @@ gameboard g1{
 	size = (680,420);
 	init -> {
 
+		bool b= true;
+
 		int i= 4%2;
-		int y= 9%4; 
-		print(i); 
-		print (y);
+		int y= 9%b; /* Fail: trying to use boolean */ 
+
+
 	}
 }
