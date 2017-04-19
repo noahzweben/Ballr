@@ -43,6 +43,12 @@ let translate (vardecls, fdecls, ents, gboard) =
     | A.Vector -> vec_t
   in
 
+  let keycode_of_keyname name =
+    if name = "key_UP" then 82 else
+    if name = "key_A" then 4 else
+    0
+  in
+
   let printf_t = L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in 
   let printf_func = L.declare_function "printf" printf_t the_module in
 
@@ -54,6 +60,13 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   let add_fn_t = L.function_type (L.void_type context) [| (L.pointer_type ent_t) |] in
   let add_fn = L.declare_function "ent_add" add_fn_t the_module in
+
+  let chk_kp_t = L.function_type i32_t [| i32_t |] in
+  let chk_kp_fn = L.declare_function "chk_keypress" chk_kp_t the_module in
+
+  let coll_callback_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type ent_t |] in
+  let chk_coll_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type i8_t; L.pointer_type coll_callback_t |] in
+  let chk_coll_fn = L.declare_function "chk_collision" chk_coll_t the_module in
 
   let get_decl name decls =
     match List.filter (fun (A.VarInit (t, s, e)) -> s = name) decls with
@@ -389,6 +402,20 @@ let translate (vardecls, fdecls, ents, gboard) =
       | hd::rest -> rest
     in
 
+  let ent_collision e o m =
+    let name = e.A.ename ^ "." ^ o.A.ename ^ ".collision" in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type ent_t |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
+  let ent_keypress e k m =
+    let name = e.A.ename ^ ".keypress" ^ k in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
   let ent_frame e m =
     let name = e.A.ename ^ "_frame" in
     let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
@@ -400,33 +427,90 @@ let translate (vardecls, fdecls, ents, gboard) =
   let event_stmts = function A.Event(e,v,s) -> s in
   let first l = match l with | hd::tl -> hd in
 
-  let fill_ent_frame_function e m =
-
-    let (map, func) = ent_frame e m in
-    let builder = L.builder_at_end context (L.entry_block func) in
-    let ent_ptr = L.param func 0 in
-    let mem_struct_ptr = L.build_struct_gep ent_ptr 5 ("members_ptr") builder in
-
+  let build_mem_map e sp =
     let mems_t = StringMap.find e.A.ename ent_mem_types in
-
     
     let rec index_of x l = match l with 
       | [] -> 0
       | hd :: tl -> if x = hd then 0 else 1 + index_of x tl
     in
 
-    let build_mem_map map mem = 
-        let index = (index_of mem e.A.members) - 2 in StringMap.add (decl_name mem) (mem_struct_ptr, index, mems_t) map;
+    let add_mem map mem = 
+      let index = (index_of mem e.A.members) - 2 in 
+      StringMap.add (decl_name mem) (sp, index, mems_t) map;
     in
 
     (* members list without clr and pos *)
-    let members = remove_first e.A.members in let members = remove_first members in
-    let mem_map = List.fold_left build_mem_map StringMap.empty members in 
+    let members = remove_first e.A.members in 
+    let members = remove_first members in
+    List.fold_left add_mem StringMap.empty members
+  in 
 
+  let fill_ent_collision_func e o m =
+    let (map, func) = ent_collision e o m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let self_ptr = L.param func 0 in
+    let other_ptr = L.param func 1 in
+
+
+
+    ignore (L.build_ret_void builder)
+  in
+
+  let fill_ent_keypress_func e (A.Event(A.KeyPress(k), v, s)) m =
+    (*let kp_func = *)
+
+    let (map, func) = ent_keypress e k m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let self_ptr = L.param func 0 in
+    let mem_struct_ptr = L.build_struct_gep self_ptr 5 ("members_ptr") builder in
+
+    let mem_map = build_mem_map e mem_struct_ptr in
+
+    let map = add_locals map mem_map v builder in
+    ignore (stmt builder func map mem_map (A.Block s));
+    ignore (L.build_ret_void builder);
+    func
+  in
+  
+  let build_event e ep (A.Event(ec,v,s) as ev) m f builder = match ec with
+    | A.Collision(_, s2) -> builder
+      (* let func = fill_end_collision_func *)
+    | A.KeyPress(k) ->
+      let code = keycode_of_keyname k in
+      let pressed = L.build_call chk_kp_fn [| L.const_int i32_t code |] "pressed" builder in
+
+      let true_bb = L.append_block context "true" f in
+      let false_bb = L.append_block context "false" f in
+
+      let func = fill_ent_keypress_func e ev m in
+      let true_builder = L.builder_at_end context true_bb in
+      ignore (L.build_call func [| ep |] "" true_builder);
+      ignore (L.build_br false_bb true_builder);
+
+      let pressed = L.build_icmp L.Icmp.Ne pressed (L.const_int i32_t 0) "pressed" builder in
+      ignore(L.build_cond_br pressed true_bb false_bb builder);
+      
+      L.builder_at_end context false_bb
+    | _  -> builder
+  in 
+
+  let fill_ent_frame_function e m =
+
+    let (map, func) = ent_frame e m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let ent_ptr = L.param func 0 in
+    let mem_struct_ptr = L.build_struct_gep ent_ptr 5 ("members_ptr") builder in
+    
+    let mem_map = build_mem_map e mem_struct_ptr in
+    
+    
     (* just generate code for var_decls and statements in first event -- to test access/entity member stuff *)
     let event = first e.A.rules in 
     let map = add_locals map mem_map (event_decls event) builder in
     ignore (stmt builder func map mem_map (A.Block (event_stmts event)));
+    
+    let builder = List.fold_left (fun b ev -> build_event e ent_ptr ev map func b) builder e.A.rules in
 
     ignore (L.build_ret_void builder);
     map
@@ -564,4 +648,4 @@ let translate (vardecls, fdecls, ents, gboard) =
   ignore (L.build_ret (L.const_int i32_t 0) main_builder);
 
   the_module  
-  
+

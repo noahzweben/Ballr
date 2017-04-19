@@ -9,8 +9,11 @@ entity e1 {
     	int j = self.time;
     	int i = self.my_clr[1];
     	self.dog = true;
-    	self.time = 20;
+    	self.time = self.time + 1;
     	self.my_clr[1] = 20;
+    }
+    key_UP -> {
+        print(self.time);
     }
 }
 

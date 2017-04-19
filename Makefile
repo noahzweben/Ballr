@@ -49,7 +49,7 @@ parser.ml parser.mli : parser.mly
 %.game: ballr %.blr
 	./ballr -c $(*F).blr
 	clang -c $(*F).ll
-	clang $(*F).o -o $(*F) $(LFLAGS)
+	clang -g $(*F).o -o $(*F) $(LFLAGS)
 
 %.test: 
 	./ballr < tests/$(*F).blr > $(*F).ll
