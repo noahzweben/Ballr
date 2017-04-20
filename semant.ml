@@ -98,14 +98,14 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 (* builds a map of each entity and its corresponding available members *)
 
 (* build a map given a list of members *)
-let memTypes memz = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m)
-  StringMap.empty memz
+let memTypes memz = 
+  let map = List.fold_left (fun m (VarInit(t, n, e)) -> StringMap.add n t m) StringMap.empty memz in
+  StringMap.add "pos" Vector map
 in 
 
 let allEntMembers =   
-    let entMems m ent = StringMap.add ent.ename (memTypes ent.members) m 
-    in List.fold_left entMems StringMap.empty entdecls
-
+    let entMems m ent = StringMap.add ent.ename (memTypes ent.members) m in 
+    List.fold_left entMems StringMap.empty entdecls 
 in
  
 let checkEntExists s =

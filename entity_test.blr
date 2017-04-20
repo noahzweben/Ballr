@@ -8,6 +8,8 @@ entity e1 {
     frame -> { 
     	color j = self.clr;
     	int i = self.my_clr[1];
+        self.size = (10,10); 
+        self.pos[0] = self.pos[0] + 1; 
     	self.dog = true;
     	self.time = 20;
     	self.my_clr[1] = 20;
