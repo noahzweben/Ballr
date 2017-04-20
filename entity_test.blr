@@ -6,14 +6,11 @@ entity e1 {
     int time = 10;
     color my_clr = (50,50,0);
     frame -> { 
-    	int j = self.time;
+    	color j = self.clr;
     	int i = self.my_clr[1];
     	self.dog = true;
-    	self.time = self.time + 1;
+    	self.time = 20;
     	self.my_clr[1] = 20;
-    }
-    key_UP -> {
-        print(self.time);
     }
 }
 
