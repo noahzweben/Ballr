@@ -20,7 +20,6 @@ type stmt = Block of stmt list
 		| If of expr * stmt * stmt
 		| While of expr * stmt
 		| Expr of expr
-    | ForEach of string * string * stmt
 		| Return of expr
 
 
@@ -106,7 +105,6 @@ let rec string_of_stmt = function
   | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-  | ForEach(o1,o2,s) -> "foreach (" ^ o1 ^ " " ^ o2 ^ ") " ^ string_of_stmt s
 
 let string_of_typ = function
     Int -> "int"
