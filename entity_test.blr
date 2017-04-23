@@ -1,29 +1,45 @@
 /* entity declarations */
+
 entity e1 {
     clr = (255, 0, 255);
     size = (20, 20);
     bool dog = false;
-    int time = 10;
-    color my_clr = (50,50,0);
+    int time = 0;
+    color my_clr = (0 ,0, 0);
     frame -> { 
-    	color j = self.clr;
-    	int i = self.my_clr[1];
-        self.size = (10,10); 
-        self.pos[0] = self.pos[0] + 1; 
-    	self.dog = true;
-    	self.time = 20;
-    	self.my_clr[1] = 20;
+        self.clr = self.my_clr;
+        self.pos[0] = self.pos[0] + 10; 
+
+        /* PARABOLA FOR ANGRY BIRD */
+    	/* self.time = self.time +1;
+        self.pos[1] = 300 - 30 * self.time + 1*self.time*self.time; */
     }
 }
 
+entity e2 {
+    clr = (0, 0, 255);
+    size = (20, 20);
+    bool dog = false;
+    int time = 10;
+    color my_clr = (0,255,0);
+    frame -> { 
+        self.clr = self.my_clr;
+        self.size = (self.size[0]+1, self.size[1]+1);
+        self.pos[1] = self.pos[1] + 10; 
+        self.dog = true;
+        self.time = 20;
+    }
+}
+
+
 /* gameboard declaration */
 gameboard g1{
-	clr = (25,100,100);
+	clr = (255,255,255);
 	size = (680,420);
 	init -> {
 		int i = 0;
 		i = i + 5;
-		add(e1, (600, 20));
-        add(e1, (20, 300));
+		add(e2, (600, 20));
+        add(e1, (20,300));
 	}
 }
