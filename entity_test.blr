@@ -23,7 +23,7 @@ entity e2 {
     int time = 10;
     color my_clr = (0,255,0);
     frame -> { 
-        self.clr = self.my_clr;
+        self.clr = self.my_clr;g
         self.size = (self.size[0]+1, self.size[1]+1);
         self.pos[1] = self.pos[1] + 10; 
         self.dog = true;
