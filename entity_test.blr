@@ -10,9 +10,8 @@ entity e1 {
         self.clr = self.my_clr;
         self.pos[0] = self.pos[0] + 10; 
 
-        /* PARABOLA FOR ANGRY BIRD */
-    	/* self.time = self.time +1;
-        self.pos[1] = 300 - 30 * self.time + 1*self.time*self.time; */
+    	self.time = self.time +1;
+        self.pos[1] = 300 - 30 * self.time + 1*self.time*self.time;
     }
 }
 
@@ -23,7 +22,7 @@ entity e2 {
     int time = 10;
     color my_clr = (0,255,0);
     frame -> { 
-        self.clr = self.my_clr;g
+        self.clr = self.my_clr;
         self.size = (self.size[0]+1, self.size[1]+1);
         self.pos[1] = self.pos[1] + 10; 
         self.dog = true;
