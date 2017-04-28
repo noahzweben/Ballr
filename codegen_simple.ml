@@ -123,9 +123,6 @@ let translate (vardecls, fdecls, ents, gboard) =
           let (ent_ptr, _, _) = StringMap.find ent mem_m in 
           L.build_call remove_fn [| ent_ptr |] "" builder;
 
-
-      (***** ADD OTHER BUILT IN FUNCTIONS *)
-
     | A.Call (name, args) ->
       let func = StringMap.find name m in
       let arg_arr = Array.of_list (List.map (expr builder m mem_m ent) args) in
@@ -232,8 +229,9 @@ let translate (vardecls, fdecls, ents, gboard) =
                   
                 | _ -> L.const_int i32_t 0 
               ) 
+            | A.Id (s) -> L.build_gep (StringMap.find s m) [|L.const_int i32_t 0|] s builder
             | _ -> L.const_int i32_t 0
-          ) (* ADD ID *)
+          ) 
 
           in
 
@@ -294,8 +292,9 @@ let translate (vardecls, fdecls, ents, gboard) =
 
               | _ -> L.const_int i32_t 0 
             ) 
+          | A.Id (s) -> L.build_gep (StringMap.find s m) [|L.const_int i32_t 0|] s builder 
           | _ -> L.const_int i32_t 0
-        ) (* ADD ID ? *)
+        ) 
 
       in
 
@@ -314,24 +313,24 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   (* BUILD STATEMENTS *)
   let rec stmt builder func m mem_m ent = function
-      A.Block sl -> List.fold_left (fun b s -> stmt b func m mem_m ent s) builder sl (* sl is a block = list of stmts *)
+      A.Block sl -> List.fold_left (fun b s -> stmt b func m mem_m ent s) builder sl 
     | A.Expr e -> ignore (expr builder m mem_m ent e); builder
     | A.Return e -> ignore (L.build_ret (expr builder m mem_m ent e) builder); builder
                 
     | A.If (predicate, then_stmt, else_stmt) ->
-      let bool_val = expr builder m mem_m ent predicate in (* evaluate predicate expression *)
-      let merge_bb = L.append_block context "merge" func in (* append_block c name f creates new basic block named name at end of function f in context c *)
+      let bool_val = expr builder m mem_m ent predicate in 
+      let merge_bb = L.append_block context "merge" func in 
         let then_bb = L.append_block context "then" func in
         add_terminal 
-          (stmt (L.builder_at_end context then_bb) func m mem_m ent then_stmt) (* builder_at_end bb creates instr builder positioned at end of basic block bb *)
-          (L.build_br merge_bb); (* build_br bb b creates a br %bb instr at position specified by b *)
+          (stmt (L.builder_at_end context then_bb) func m mem_m ent then_stmt) 
+          (L.build_br merge_bb); 
 
         let else_bb = L.append_block context "else" func in
         add_terminal 
           (stmt (L.builder_at_end context else_bb) func m mem_m ent else_stmt)
           (L.build_br merge_bb);
 
-      ignore (L.build_cond_br bool_val then_bb else_bb builder); (* build_cond_br cond tbb fbb b creates a br %cond, %tbb, %fbb instr *)
+      ignore (L.build_cond_br bool_val then_bb else_bb builder); 
       L.builder_at_end context merge_bb
 
     | A.While (predicate, body) ->
