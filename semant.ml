@@ -73,6 +73,10 @@ let check (vardecls, funcdecls, entdecls, gboard) =
        (StringMap.singleton "add"
      { typ = Int; fname = "add"; formals = [(Bool, "e") ; (Vector, "pos")]; (* NEED AN ENTITY TYPE ? *)
        locals = []; body = [] }) 
+  in
+  
+  let builtInDecls = StringMap.add "remove"  { typ = Int; fname = "remove"; formals = []; (* NEED AN ENTITY TYPE ? *)
+       locals = []; body = [] } builtInDecls
    in
 
   (* map of all callable functions *)
