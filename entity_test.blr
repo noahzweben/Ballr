@@ -3,17 +3,16 @@
 entity e1 {
     clr = (255, 0, 255);
     size = (20, 20);
-    bool dog = false;
     int time = 0;
-    color my_clr = (0 ,0, 0);
 
-   frame -> {remove();}
-/*    frame -> { 
-        self.clr = self.my_clr;
+    key_A -> { remove();} 
+    key_DOWN -> { self.pos[1] = self.pos[1] + 10; } 
+    key_UP -> { self.pos[1] =  self.pos[1] - 10; } 
+
+    /*frame -> { 
         self.pos[0] = self.pos[0] + 10; 
     	self.time = self.time +1;
         self.pos[1] = 300 - 30 * self.time + 1*self.time*self.time;
-        remove();
     }*/
 }
 
@@ -22,13 +21,13 @@ entity e2 {
     size = (20, 20);
     int time = 0;
     frame -> {
-	self.time = self.time + 1;
+/*	self.time = self.time + 1;
 	if(self.time % 10 == 0){
 		print(self.time);
 	} else {
 		
 	}
-    }
+  */  }
 }
 
 entity e3 {

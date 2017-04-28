@@ -45,6 +45,9 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   let keycode_of_keyname name =
     if name = "key_UP" then 82 else
+    if name = "key_DOWN" then 81 else
+    if name = "key_LEFT" then 80 else
+    if name = "key_RIGHT" then 79 else
     if name = "key_A" then 4 else
     0
   in
@@ -510,14 +513,13 @@ let translate (vardecls, fdecls, ents, gboard) =
   in
 
   let fill_ent_keypress_func e ep (A.Event(A.KeyPress(k), v, s)) m =
-    (*let kp_func = *)
 
     let (map, func) = ent_keypress e k m in
     let builder = L.builder_at_end context (L.entry_block func) in
     let self_ptr = L.param func 0 in
     let mem_struct_ptr = L.build_struct_gep self_ptr 5 ("members_ptr") builder in
 
-    let mem_map = build_mem_map e mem_struct_ptr ep in
+    let mem_map = build_mem_map e mem_struct_ptr self_ptr in
 
     let map = add_locals map mem_map e.A.ename v builder in
     ignore (stmt builder func map mem_map e.A.ename (A.Block s));
@@ -533,15 +535,15 @@ let translate (vardecls, fdecls, ents, gboard) =
       let code = keycode_of_keyname k in
       let pressed = L.build_call chk_kp_fn [| L.const_int i32_t code |] "pressed" builder in
 
-      let true_bb = L.append_block context "true" f in
-      let false_bb = L.append_block context "false" f in
+      let true_bb = L.append_block context ("true_"^k) f in
+      let false_bb = L.append_block context ("false_"^k) f in
 
       let func = fill_ent_keypress_func e ep ev m in
       let true_builder = L.builder_at_end context true_bb in
       ignore (L.build_call func [| ep |] "" true_builder);
       ignore (L.build_br false_bb true_builder);
 
-      let pressed = L.build_icmp L.Icmp.Ne pressed (L.const_int i32_t 0) "pressed" builder in
+      let pressed = L.build_icmp L.Icmp.Ne pressed (L.const_int i32_t 0) ("pressed_"^k) builder in
       ignore(L.build_cond_br pressed true_bb false_bb builder);
       
       L.builder_at_end context false_bb
@@ -563,14 +565,7 @@ let translate (vardecls, fdecls, ents, gboard) =
     
     let mem_map = build_mem_map e mem_struct_ptr ent_ptr in
     
-    (* just generate code for var_decls and statements in first event -- to test access/entity member stuff *)
-    let event = first e.A.rules in 
-    let builder = build_event e ent_ptr event map mem_map func builder in
-
-(*     let map = add_locals map mem_map e.A.ename (event_decls event) builder in
-    ignore (stmt builder func map mem_map e.A.ename (A.Block (event_stmts event))); *)
-    
-    (* let builder = List.fold_left (fun b ev -> build_event e ent_ptr ev map func b) builder e.A.rules in *)
+    let builder = List.fold_left (fun b ev -> build_event e ent_ptr ev map mem_map func b) builder e.A.rules in 
 
     ignore (L.build_ret_void builder);
     map
