@@ -7,7 +7,7 @@ entity e1 {
     int time = 0;
     color my_clr = (0 ,0, 0);
 
-   key_UP -> {remove();}
+   frame -> {remove();}
 /*    frame -> { 
         self.clr = self.my_clr;
         self.pos[0] = self.pos[0] + 10; 
