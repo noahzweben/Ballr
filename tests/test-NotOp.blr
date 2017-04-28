@@ -1,0 +1,15 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		int a= 5; 
+    int b= 1; 
+
+    while (a!=b){
+
+      print (a); 
+
+      a= a-1; 
+    }
+}

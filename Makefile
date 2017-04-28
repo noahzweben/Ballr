@@ -73,3 +73,21 @@ semant.cmo : ast.cmo
 semant.cmx : ast.cmx
 parser.cmi : ast.cmo
 
+
+
+# Building the tarball
+
+TESTS = add1 arith1 compar AndOr GeqLeqEq funcadd global global2 mod operations var while\
+		NotOp	
+
+FAILS = assign compar expr if mod operations 
+
+TESTFILES = $(TESTS:%=test-%.mc) $(TESTS:%=test-%.out) \
+	    $(FAILS:%=fail-%.mc) $(FAILS:%=fail-%.err)
+
+TARFILES = ast.ml codegen_simple.ml Makefile ballr.ml parser.mly README scanner.mll \
+	semant.ml testall.sh $(TESTFILES:%=tests/%)
+
+microc-llvm.tar.gz : $(TARFILES)
+	cd .. && tar czf microc-llvm/microc-llvm.tar.gz \
+		$(TARFILES:%=microc-llvm/%)
