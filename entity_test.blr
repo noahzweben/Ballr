@@ -7,13 +7,13 @@ entity e1 {
     int time = 0;
     color my_clr = (0 ,0, 0);
 
-   key_UP -> {}
+   key_UP -> {remove();}
 /*    frame -> { 
         self.clr = self.my_clr;
         self.pos[0] = self.pos[0] + 10; 
-
     	self.time = self.time +1;
         self.pos[1] = 300 - 30 * self.time + 1*self.time*self.time;
+        remove();
     }*/
 }
 
@@ -31,6 +31,13 @@ entity e2 {
     }
 }
 
+entity e3 {
+    clr = (0, 0, 255);
+    size = (20, 20);
+    frame -> {
+    }
+}
+
 
 /* gameboard declaration */
 gameboard g1{
@@ -41,5 +48,6 @@ gameboard g1{
 		i = i + 5;
 		add(e2, (600, 20));
         add(e1, (20,300));
+        add(e3,(300,300));
 	}
 }

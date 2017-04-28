@@ -61,6 +61,9 @@ let translate (vardecls, fdecls, ents, gboard) =
   let add_fn_t = L.function_type (L.void_type context) [| (L.pointer_type ent_t) |] in
   let add_fn = L.declare_function "ent_add" add_fn_t the_module in
 
+  let remove_fn_t = L.function_type (L.void_type context) [| (L.pointer_type ent_t) |] in
+  let remove_fn = L.declare_function "ent_remove" remove_fn_t the_module in
+
   let chk_kp_t = L.function_type i32_t [| i32_t |] in
   let chk_kp_fn = L.declare_function "chk_keypress" chk_kp_t the_module in
 
@@ -112,6 +115,11 @@ let translate (vardecls, fdecls, ents, gboard) =
           ignore (L.build_call add_fn [| ent_ptr |] "" builder);
           L.const_int i32_t 0
         | _ -> raise (Blr_err "expected identifier"))
+
+    | A.Call ("remove", []) -> 
+          let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+          L.build_call remove_fn [| ent_ptr |] "" builder;
+
 
       (***** ADD OTHER BUILT IN FUNCTIONS *)
 
