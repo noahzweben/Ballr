@@ -43,6 +43,12 @@ let translate (vardecls, fdecls, ents, gboard) =
     | A.Vector -> vec_t
   in
 
+  let keycode_of_keyname name =
+    if name = "key_UP" then 82 else
+    if name = "key_A" then 4 else
+    0
+  in
+
   let printf_t = L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in 
   let printf_func = L.declare_function "printf" printf_t the_module in
 
@@ -54,6 +60,13 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   let add_fn_t = L.function_type (L.void_type context) [| (L.pointer_type ent_t) |] in
   let add_fn = L.declare_function "ent_add" add_fn_t the_module in
+
+  let chk_kp_t = L.function_type i32_t [| i32_t |] in
+  let chk_kp_fn = L.declare_function "chk_keypress" chk_kp_t the_module in
+
+  let coll_callback_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type ent_t |] in
+  let chk_coll_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type i8_t; L.pointer_type coll_callback_t |] in
+  let chk_coll_fn = L.declare_function "chk_collision" chk_coll_t the_module in
 
   let get_decl name decls =
     match List.filter (fun (A.VarInit (t, s, e)) -> s = name) decls with
@@ -76,7 +89,7 @@ let translate (vardecls, fdecls, ents, gboard) =
       | None -> ignore (f builder) in
 
   (* BUILD EXPRESSIONS *)
-  let rec expr builder m mem_m = function
+  let rec expr builder m mem_m ent = function
       A.Literal i -> L.const_int i32_t i
     | A.FLiteral f -> L.const_float flt_t f
     | A.BoolLit b -> L.const_int i1_t (if b then 1 else 0)
@@ -85,11 +98,11 @@ let translate (vardecls, fdecls, ents, gboard) =
 
     | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
       L.build_call printf_func 
-        [| int_format_str builder ; (expr builder m mem_m e) |]
+        [| int_format_str builder ; (expr builder m mem_m ent e) |]
         "printf" builder (* build_call fn args name b creates %name = call %fn(args...) *)
 
     | A.Call ("add", [e1; e2]) ->
-      let e2' = expr builder m mem_m e2 in
+      let e2' = expr builder m mem_m ent e2 in
       (match e1 with
         A.Id (name) ->
           let creat_fn = StringMap.find (name ^ "_create") m in
@@ -104,12 +117,12 @@ let translate (vardecls, fdecls, ents, gboard) =
 
     | A.Call (name, args) ->
       let func = StringMap.find name m in
-      let arg_arr = Array.of_list (List.map (expr builder m mem_m) args) in
+      let arg_arr = Array.of_list (List.map (expr builder m mem_m ent) args) in
       L.build_call func arg_arr name builder
 
     | A.Binop (e1, op, e2) ->
-      let e1' = expr builder m mem_m e1
-      and e2' = expr builder m mem_m e2 in
+      let e1' = expr builder m mem_m ent e1
+      and e2' = expr builder m mem_m ent e2 in
       (match op with
         A.Add     -> L.build_add
       | A.Sub     -> L.build_sub
@@ -127,7 +140,7 @@ let translate (vardecls, fdecls, ents, gboard) =
       ) e1' e2' "tmp" builder 
     
     | A.Unop(op, e) ->
-      let e' = expr builder m mem_m e in
+      let e' = expr builder m mem_m ent e in
       (match op with
           A.Neg     -> L.build_neg
         | A.Not     -> L.build_not) e' "tmp" builder
@@ -136,9 +149,9 @@ let translate (vardecls, fdecls, ents, gboard) =
       (match (clr_lit clr) with
         Some(vals) -> L.const_named_struct clr_t vals
         | None ->
-	  let e1' = expr builder m mem_m e1
-	  and e2' = expr builder m mem_m e2
-          and e3' = expr builder m mem_m e3 in
+	  let e1' = expr builder m mem_m ent e1
+	  and e2' = expr builder m mem_m ent e2
+          and e3' = expr builder m mem_m ent e3 in
           let clr_ptr = L.build_alloca clr_t "tmp" builder in
   	  let r_ptr = L.build_struct_gep clr_ptr 0 "r" builder in
   	  ignore (L.build_store e1' r_ptr builder);
@@ -152,8 +165,8 @@ let translate (vardecls, fdecls, ents, gboard) =
       (match (vec_lit vec) with
         Some(vals) -> L.const_named_struct vec_t vals
         | None ->
-          let e1' = expr builder m mem_m e1
-          and e2' = expr builder m mem_m e2 in
+          let e1' = expr builder m mem_m ent e1
+          and e2' = expr builder m mem_m ent e2 in
           let vec_ptr = L.build_alloca vec_t "tmp" builder in
           let x_ptr = L.build_struct_gep vec_ptr 0 "x" builder in
           ignore (L.build_store e1' x_ptr builder);
@@ -162,32 +175,54 @@ let translate (vardecls, fdecls, ents, gboard) =
           L.build_load vec_ptr "v" builder)
 
     | A.Assign (e1, e2) -> 
-      let e' = expr builder m mem_m e2 in
+      let e' = expr builder m mem_m ent e2 in
       (match e1 with
         | A.Id (s) -> L.build_store e' (StringMap.find s m) builder
-        | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
+        | A.Access (s1, s2) -> 
           (match s1 with 
-            | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
+            | "self" -> 
+              (match s2 with 
+                | "size" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                            let size_ptr = L.build_struct_gep ent_ptr 1 ("ent_size_ptr") builder in  
+                            L.build_store e' size_ptr builder;
+                | "clr" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                            let clr_ptr = L.build_struct_gep ent_ptr 3 ("ent_clr_ptr") builder in  
+                            L.build_store e' clr_ptr builder;
+                | "pos" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                            let pos_ptr = L.build_struct_gep ent_ptr 2 ("ent_pos_ptr") builder in  
+                            L.build_store e' pos_ptr builder;
+                |_ -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
                         let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
                         let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
                         let mem_ptr = L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder in  
                         L.build_store e' mem_ptr builder;
+              )
             | _ -> L.const_int i32_t 0       
           )
-        (**** FINISH THIS *) 
+ 
         | A.ArrayAccess (e1', e2') ->      
           let arr_ptr = 
           (match e1' with 
-            | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
+            | A.Access (s1, s2) -> 
               (match s1 with 
-                | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
-                            let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
-                            let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
-                            L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder  
+                | "self" -> 
+                  ( match s2 with 
+                    | "size" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                                L.build_struct_gep ent_ptr 1 ("ent_size_ptr") builder   
+                    | "clr" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                                L.build_struct_gep ent_ptr 3 ("ent_clr_ptr") builder   
+                    | "pos" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                                L.build_struct_gep ent_ptr 2 ("ent_pos_ptr") builder   
+                    |_ -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
+                          let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
+                          let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
+                          L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder
+                  )
+                  
                 | _ -> L.const_int i32_t 0 
               ) 
             | _ -> L.const_int i32_t 0
-          ) (* ADD ID ? *)
+          ) (* ADD ID *)
 
           in
 
@@ -204,13 +239,25 @@ let translate (vardecls, fdecls, ents, gboard) =
         | _ -> L.const_int i32_t 0
       )
     
-    | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
+    | A.Access (s1, s2) ->
     (match s1 with 
-      | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
+      | "self" -> 
+        (match s2 with 
+          | "size" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                      let size_ptr = L.build_struct_gep ent_ptr 1 ("ent_size_ptr") builder in  
+                      L.build_load size_ptr s2 builder;
+          | "clr" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                      let clr_ptr = L.build_struct_gep ent_ptr 3 ("ent_clr_ptr") builder in  
+                      L.build_load clr_ptr s2 builder;
+          | "pos" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                      let pos_ptr = L.build_struct_gep ent_ptr 2 ("ent_pos_ptr") builder in  
+                      L.build_load pos_ptr s2 builder;
+          |_ -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
                   let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
                   let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
                   let mem_ptr = L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder in  
                   L.build_load mem_ptr s2 builder;
+        )
       | _ -> L.const_int i32_t 0 
     ) 
 
@@ -218,12 +265,22 @@ let translate (vardecls, fdecls, ents, gboard) =
 
       let arr_ptr = 
         (match e1 with 
-          | A.Access (s1, s2) -> (* CURRENTLY ONLY FOR SELF *)
+          | A.Access (s1, s2) ->
             (match s1 with 
-              | "self" -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
+              | "self" -> 
+                (match s2 with 
+                  | "size" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                              L.build_struct_gep ent_ptr 1 ("ent_size_ptr") builder   
+                  | "clr" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                              L.build_struct_gep ent_ptr 3 ("ent_clr_ptr") builder   
+                  | "pos" -> let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+                              L.build_struct_gep ent_ptr 2 ("ent_pos_ptr") builder  
+                  |_ -> let (ent_mem_ptr, index, m_t) = StringMap.find s2 mem_m in
                           let mem_struct_ptr = L.build_load ent_mem_ptr "mem_struct_ptr" builder in
                           let mem_struct_ptr = L.build_pointercast mem_struct_ptr (L.pointer_type m_t) "cast_ptr" builder in 
-                          L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder  
+                          L.build_struct_gep mem_struct_ptr index (s2 ^ "_ptr") builder
+                )
+
               | _ -> L.const_int i32_t 0 
             ) 
           | _ -> L.const_int i32_t 0
@@ -245,22 +302,22 @@ let translate (vardecls, fdecls, ents, gboard) =
   let int_of_bool b = if b then 1 else 0 in 
 
   (* BUILD STATEMENTS *)
-  let rec stmt builder func m mem_m = function
-      A.Block sl -> List.fold_left (fun b s -> stmt b func m mem_m s) builder sl (* sl is a block = list of stmts *)
-    | A.Expr e -> ignore (expr builder m mem_m e); builder
-    | A.Return e -> ignore (L.build_ret (expr builder m mem_m e) builder); builder
+  let rec stmt builder func m mem_m ent = function
+      A.Block sl -> List.fold_left (fun b s -> stmt b func m mem_m ent s) builder sl (* sl is a block = list of stmts *)
+    | A.Expr e -> ignore (expr builder m mem_m ent e); builder
+    | A.Return e -> ignore (L.build_ret (expr builder m mem_m ent e) builder); builder
                 
     | A.If (predicate, then_stmt, else_stmt) ->
-      let bool_val = expr builder m mem_m predicate in (* evaluate predicate expression *)
+      let bool_val = expr builder m mem_m ent predicate in (* evaluate predicate expression *)
       let merge_bb = L.append_block context "merge" func in (* append_block c name f creates new basic block named name at end of function f in context c *)
       let then_bb = L.append_block context "then" func in
       add_terminal 
-        (stmt (L.builder_at_end context then_bb) func m mem_m then_stmt) (* builder_at_end bb creates instr builder positioned at end of basic block bb *)
+        (stmt (L.builder_at_end context then_bb) func m mem_m ent then_stmt) (* builder_at_end bb creates instr builder positioned at end of basic block bb *)
         (L.build_br merge_bb); (* build_br bb b creates a br %bb instr at position specified by b *)
 
       let else_bb = L.append_block context "else" func in
       add_terminal 
-        (stmt (L.builder_at_end context else_bb) func m mem_m else_stmt)
+        (stmt (L.builder_at_end context else_bb) func m mem_m ent else_stmt)
         (L.build_br merge_bb);
 
       ignore (L.build_cond_br bool_val then_bb else_bb builder); (* build_cond_br cond tbb fbb b creates a br %cond, %tbb, %fbb instr *)
@@ -271,11 +328,11 @@ let translate (vardecls, fdecls, ents, gboard) =
       ignore (L.build_br pred_bb builder);
 
       let body_bb = L.append_block context "while_body" func in
-      add_terminal (stmt (L.builder_at_end context body_bb) func m mem_m body)
+      add_terminal (stmt (L.builder_at_end context body_bb) func m mem_m ent body)
           (L.build_br pred_bb);
 
       let pred_builder = L.builder_at_end context pred_bb in
-      let bool_val = expr pred_builder m mem_m predicate in
+      let bool_val = expr pred_builder m mem_m ent predicate in
 
       let merge_bb = L.append_block context "merge" func in
       ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
@@ -285,9 +342,9 @@ let translate (vardecls, fdecls, ents, gboard) =
     
   in
 
-  let add_locals m mem_m decls builder = 
+  let add_locals m mem_m ent decls builder = 
     let add_local m (A.VarInit(t, n, e)) =
-      let e' = expr builder m mem_m e in
+      let e' = expr builder m mem_m ent e in
       let local_var = L.build_alloca (ltype_of_typ t) n builder in
       ignore (L.build_store e' local_var builder);
       StringMap.add n local_var m
@@ -353,8 +410,8 @@ let translate (vardecls, fdecls, ents, gboard) =
             StringMap.add n local m 
       in List.fold_left2 add_formal map f.A.formals (Array.to_list (L.params func))
     in 
-    let map = add_locals map StringMap.empty f.A.locals builder in
-    ignore (stmt builder func map StringMap.empty (A.Block f.A.body)); map
+    let map = add_locals map StringMap.empty "" f.A.locals builder in
+    ignore (stmt builder func map StringMap.empty "" (A.Block f.A.body)); map
   in
  
   (* ENTITY DECLARATIONS *)
@@ -389,6 +446,20 @@ let translate (vardecls, fdecls, ents, gboard) =
       | hd::rest -> rest
     in
 
+  let ent_collision e o m =
+    let name = e.A.ename ^ "." ^ o.A.ename ^ ".collision" in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type ent_t |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
+  let ent_keypress e k m =
+    let name = e.A.ename ^ ".keypress" ^ k in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
   let ent_frame e m =
     let name = e.A.ename ^ "_frame" in
     let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
@@ -400,33 +471,91 @@ let translate (vardecls, fdecls, ents, gboard) =
   let event_stmts = function A.Event(e,v,s) -> s in
   let first l = match l with | hd::tl -> hd in
 
-  let fill_ent_frame_function e m =
-
-    let (map, func) = ent_frame e m in
-    let builder = L.builder_at_end context (L.entry_block func) in
-    let ent_ptr = L.param func 0 in
-    let mem_struct_ptr = L.build_struct_gep ent_ptr 5 ("members_ptr") builder in
-
+  let build_mem_map e sp ep =
     let mems_t = StringMap.find e.A.ename ent_mem_types in
-
     
     let rec index_of x l = match l with 
       | [] -> 0
       | hd :: tl -> if x = hd then 0 else 1 + index_of x tl
     in
 
-    let build_mem_map map mem = 
-        let index = (index_of mem e.A.members) - 2 in StringMap.add (decl_name mem) (mem_struct_ptr, index, mems_t) map;
+    let add_mem map mem = 
+      let index = (index_of mem e.A.members) - 2 in 
+      StringMap.add (decl_name mem) (sp, index, mems_t) map;
     in
 
     (* members list without clr and pos *)
-    let members = remove_first e.A.members in let members = remove_first members in
-    let mem_map = List.fold_left build_mem_map StringMap.empty members in 
+    let members = remove_first e.A.members in 
+    let members = remove_first members in
+    let map = List.fold_left add_mem StringMap.empty members in
+    StringMap.add e.A.ename (ep, 0, mems_t) map
 
+  in 
+
+  let fill_ent_collision_func e o m =
+    let (map, func) = ent_collision e o m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let self_ptr = L.param func 0 in
+    let other_ptr = L.param func 1 in
+
+
+
+    ignore (L.build_ret_void builder)
+  in
+
+  let fill_ent_keypress_func e ep (A.Event(A.KeyPress(k), v, s)) m =
+    (*let kp_func = *)
+
+    let (map, func) = ent_keypress e k m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let self_ptr = L.param func 0 in
+    let mem_struct_ptr = L.build_struct_gep self_ptr 5 ("members_ptr") builder in
+
+    let mem_map = build_mem_map e mem_struct_ptr ep in
+
+    let map = add_locals map mem_map e.A.ename v builder in
+    ignore (stmt builder func map mem_map e.A.ename (A.Block s));
+    ignore (L.build_ret_void builder);
+    func
+  in
+  
+  let build_event e ep (A.Event(ec,v,s) as ev) m f builder = match ec with
+    | A.Collision(_, s2) -> builder
+      (* let func = fill_end_collision_func *)
+    | A.KeyPress(k) ->
+      let code = keycode_of_keyname k in
+      let pressed = L.build_call chk_kp_fn [| L.const_int i32_t code |] "pressed" builder in
+
+      let true_bb = L.append_block context "true" f in
+      let false_bb = L.append_block context "false" f in
+
+      let func = fill_ent_keypress_func e ep ev m in
+      let true_builder = L.builder_at_end context true_bb in
+      ignore (L.build_call func [| ep |] "" true_builder);
+      ignore (L.build_br false_bb true_builder);
+
+      let pressed = L.build_icmp L.Icmp.Ne pressed (L.const_int i32_t 0) "pressed" builder in
+      ignore(L.build_cond_br pressed true_bb false_bb builder);
+      
+      L.builder_at_end context false_bb
+    | _  -> builder
+  in 
+
+  let fill_ent_frame_function e m =
+
+    let (map, func) = ent_frame e m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let ent_ptr = L.param func 0 in
+    let mem_struct_ptr = L.build_struct_gep ent_ptr 5 ("members_ptr") builder in
+    
+    let mem_map = build_mem_map e mem_struct_ptr ent_ptr in
+    
     (* just generate code for var_decls and statements in first event -- to test access/entity member stuff *)
     let event = first e.A.rules in 
-    let map = add_locals map mem_map (event_decls event) builder in
-    ignore (stmt builder func map mem_map (A.Block (event_stmts event)));
+    let map = add_locals map mem_map e.A.ename (event_decls event) builder in
+    ignore (stmt builder func map mem_map e.A.ename (A.Block (event_stmts event)));
+    
+    let builder = List.fold_left (fun b ev -> build_event e ent_ptr ev map func b) builder e.A.rules in
 
     ignore (L.build_ret_void builder);
     map
@@ -469,7 +598,7 @@ let translate (vardecls, fdecls, ents, gboard) =
 
     let ent_size_ptr = L.build_struct_gep ent_ptr 1 ("size_ptr") builder in
     let size_decl_expr = get_decl "size" e.A.members in
-    ignore (L.build_store (expr builder map StringMap.empty size_decl_expr) ent_size_ptr builder);
+    ignore (L.build_store (expr builder map StringMap.empty e.A.ename size_decl_expr) ent_size_ptr builder);
 
     let ent_pos_ptr = L.build_struct_gep ent_ptr 2 ("pos_ptr") builder in
     let pos_zero = [|L.const_int i32_t 0; L.const_int i32_t 0|] in
@@ -477,7 +606,7 @@ let translate (vardecls, fdecls, ents, gboard) =
 
     let ent_color_ptr = L.build_struct_gep ent_ptr 3 ("color_ptr") builder in
     let color_decl_expr = get_decl "clr" e.A.members in
-    ignore (L.build_store (expr builder map StringMap.empty color_decl_expr) ent_color_ptr builder); 
+    ignore (L.build_store (expr builder map StringMap.empty e.A.ename color_decl_expr) ent_color_ptr builder); 
 
     let ent_mems_t_ptr = L.build_struct_gep ent_ptr 5 ("members_ptr") builder in
     let mems_struct_ptr = fill_ent_mem_struct e builder in
@@ -504,8 +633,8 @@ let translate (vardecls, fdecls, ents, gboard) =
     let (map, func) = (gb_init gb m) in
     let builder = L.builder_at_end context (L.entry_block func) in
     
-    let map = add_locals map StringMap.empty gb.A.init_mem builder in
-    let builder = stmt builder func map StringMap.empty (A.Block gb.A.init_body) in
+    let map = add_locals map StringMap.empty "" gb.A.init_mem builder in
+    let builder = stmt builder func map StringMap.empty "" (A.Block gb.A.init_body) in
     ignore (L.build_ret_void builder);
     map    
   in
@@ -529,11 +658,11 @@ let translate (vardecls, fdecls, ents, gboard) =
 
     let gb_size_ptr = L.build_struct_gep gb_ptr 1 ("size_ptr") builder in
     let size_decl_expr = get_decl "size" gb.A.gmembers in
-    ignore (L.build_store (expr builder map StringMap.empty size_decl_expr) gb_size_ptr builder);
+    ignore (L.build_store (expr builder map StringMap.empty "" size_decl_expr) gb_size_ptr builder);
 
     let gb_color_ptr = L.build_struct_gep gb_ptr 2 ("color_ptr") builder in
     let color_decl_expr = get_decl "clr" gb.A.gmembers in
-    ignore (L.build_store (expr builder map StringMap.empty color_decl_expr) gb_color_ptr builder);
+    ignore (L.build_store (expr builder map StringMap.empty "" color_decl_expr) gb_color_ptr builder);
 
     let gb_init_fn_ptr = L.build_struct_gep gb_ptr 4 ("init_fn_ptr") builder in
     let init_fn = StringMap.find (gb.A.gname ^ "_init") map in
@@ -564,4 +693,4 @@ let translate (vardecls, fdecls, ents, gboard) =
   ignore (L.build_ret (L.const_int i32_t 0) main_builder);
 
   the_module  
-  
+

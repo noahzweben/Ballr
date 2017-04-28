@@ -4,7 +4,7 @@
 %token ASSIGN GT LT ISEQ NEQ LEQ GEQ AND OR NOT PERIOD TRUE FALSE IF ELSE 
 %token WHILE INT BOOL FLOAT COLOR VECTOR GBOARD ENT RULES FUNCTION RETURN 
 %token DO COLLIDE EOF SEMI CLR MOV SIZE INIT FUNC LSQUARE RSQUARE
-%token FRAME CLICK FOREACH SELF
+%token FRAME CLICK SELF
 
 %token <float> FLOAT_LITERAL
 %token <int> INT_LITERAL
@@ -116,8 +116,6 @@ stmt:
 	| IF LPAREN expr RPAREN stmt  %prec NOELSE 	{ If($3, $5, Block([])) }
 	| IF LPAREN expr RPAREN stmt ELSE stmt 		{ If($3, $5, $7) }
 	| WHILE LPAREN expr RPAREN stmt 			{ While($3, $5)}
-	| FOREACH LPAREN ID ID RPAREN stmt 		{ ForEach($3, $4, $6)}
-
 
 
 expr: 
