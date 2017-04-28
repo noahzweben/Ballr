@@ -6,27 +6,28 @@ entity e1 {
     bool dog = false;
     int time = 0;
     color my_clr = (0 ,0, 0);
-    frame -> { 
+
+   key_UP -> {}
+/*    frame -> { 
         self.clr = self.my_clr;
         self.pos[0] = self.pos[0] + 10; 
 
     	self.time = self.time +1;
         self.pos[1] = 300 - 30 * self.time + 1*self.time*self.time;
-    }
+    }*/
 }
 
 entity e2 {
     clr = (0, 0, 255);
     size = (20, 20);
-    bool dog = false;
-    int time = 10;
-    color my_clr = (0,255,0);
-    frame -> { 
-        self.clr = self.my_clr;
-        self.size = (self.size[0]+1, self.size[1]+1);
-        self.pos[1] = self.pos[1] + 10; 
-        self.dog = true;
-        self.time = 20;
+    int time = 0;
+    frame -> {
+	self.time = self.time + 1;
+	if(self.time % 10 == 0){
+		print(self.time);
+	} else {
+		
+	}
     }
 }
 
