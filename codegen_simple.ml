@@ -67,10 +67,13 @@ let translate (vardecls, fdecls, ents, gboard) =
   let remove_fn_t = L.function_type (L.void_type context) [| (L.pointer_type ent_t) |] in
   let remove_fn = L.declare_function "ent_remove" remove_fn_t the_module in
 
+  let restart_fn_t = L.function_type (L.void_type context) [| |] in
+  let restart_fn = L.declare_function "restart" restart_fn_t the_module in
+
   let chk_kp_t = L.function_type i32_t [| i32_t |] in
   let chk_kp_fn = L.declare_function "chk_keypress" chk_kp_t the_module in
 
-  let coll_callback_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type ent_t |] in
+  let coll_callback_t = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
   let chk_coll_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type i8_t; L.pointer_type coll_callback_t |] in
   let chk_coll_fn = L.declare_function "chk_collision" chk_coll_t the_module in
 
@@ -121,8 +124,9 @@ let translate (vardecls, fdecls, ents, gboard) =
 
     | A.Call ("remove", []) -> 
           let (ent_ptr, _, _) = StringMap.find ent mem_m in 
-          L.build_call remove_fn [| ent_ptr |] "" builder;
-
+          L.build_call remove_fn [| ent_ptr |] "" builder
+    | A.Call ("restart", []) ->
+          L.build_call restart_fn [||] "" builder
     | A.Call (name, args) ->
       let func = StringMap.find name m in
       let arg_arr = Array.of_list (List.map (expr builder m mem_m ent) args) in
@@ -454,9 +458,9 @@ let translate (vardecls, fdecls, ents, gboard) =
       | hd::rest -> rest
     in
 
-  let ent_collision e o m =
-    let name = e.A.ename ^ "." ^ o.A.ename ^ ".collision" in
-    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type ent_t |] in
+  let ent_collision e oname m =
+    let name = e.A.ename ^ "." ^ oname ^ ".collision" in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
     let func = L.define_function name ftype the_module in
     (StringMap.add name func m, func)
   in
@@ -500,18 +504,21 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   in 
 
-  let fill_ent_collision_func e o m =
-    let (map, func) = ent_collision e o m in
+  let fill_ent_collision_func e (A.Event(A.Collision(name1, name2), v, s))  m =
+    let (map, func) = ent_collision e name2 m in
     let builder = L.builder_at_end context (L.entry_block func) in
     let self_ptr = L.param func 0 in
-    let other_ptr = L.param func 1 in
+    let mem_struct_ptr = L.build_struct_gep self_ptr 5 ("members_ptr") builder in
 
+    let mem_map = build_mem_map e mem_struct_ptr self_ptr in
 
-
-    ignore (L.build_ret_void builder)
+    let map = add_locals map mem_map e.A.ename v builder in
+    ignore (stmt builder func map mem_map e.A.ename (A.Block s));
+    ignore (L.build_ret_void builder);
+    func
   in
 
-  let fill_ent_keypress_func e ep (A.Event(A.KeyPress(k), v, s)) m =
+  let fill_ent_keypress_func e (A.Event(A.KeyPress(k), v, s)) m =
 
     let (map, func) = ent_keypress e k m in
     let builder = L.builder_at_end context (L.entry_block func) in
@@ -527,8 +534,11 @@ let translate (vardecls, fdecls, ents, gboard) =
   in
   
   let build_event e ep (A.Event(ec,v,s) as ev) m mem_map f builder = match ec with
-    | A.Collision(_, s2) -> builder
-      (* let func = fill_end_collision_func *)
+    | A.Collision(_, s2) ->
+      let func = fill_ent_collision_func e ev m in
+      let str_ptr = L.build_global_stringptr s2 "namestr" builder in
+      ignore (L.build_call chk_coll_fn [| ep;  str_ptr; func |] "" builder);
+      builder
     | A.KeyPress(k) ->
     
       let code = keycode_of_keyname k in
@@ -537,7 +547,7 @@ let translate (vardecls, fdecls, ents, gboard) =
       let true_bb = L.append_block context ("true_"^k) f in
       let false_bb = L.append_block context ("false_"^k) f in
 
-      let func = fill_ent_keypress_func e ep ev m in
+      let func = fill_ent_keypress_func e ev m in
       let true_builder = L.builder_at_end context true_bb in
       ignore (L.build_call func [| ep |] "" true_builder);
       ignore (L.build_br false_bb true_builder);
