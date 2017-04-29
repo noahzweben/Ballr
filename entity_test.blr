@@ -7,13 +7,14 @@ entity e1 {
 
     key_A -> { remove();} 
     key_DOWN -> { self.pos[1] = self.pos[1] + 10; } 
-    key_UP -> { self.pos[1] =  self.pos[1] - 10; } 
+    key_UP -> { self.pos[1] =  self.pos[1] - 10; self.time = 0; } 
 
-    /*frame -> { 
-        self.pos[0] = self.pos[0] + 10; 
+    self >< e2 -> { self.time = 0; }
+
+    frame -> { 
     	self.time = self.time +1;
         self.pos[1] = 300 - 30 * self.time + 1*self.time*self.time;
-    }*/
+    }
 }
 
 entity e2 {
