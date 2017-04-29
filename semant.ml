@@ -79,6 +79,10 @@ let check (vardecls, funcdecls, entdecls, gboard) =
        locals = []; body = [] } builtInDecls
    in
 
+  let builtInDecls = StringMap.add "restart"  { typ = Int; fname = "remove"; formals = []; (* NEED AN ENTITY TYPE ? *)
+       locals = []; body = [] } builtInDecls
+   in
+
   (* map of all callable functions *)
   let functionDecls = List.fold_left (fun m fd -> StringMap.add fd.fname fd m)
                          builtInDecls funcdecls
