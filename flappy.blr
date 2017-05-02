@@ -1,0 +1,70 @@
+int rseed = 26854266;
+
+func int rand(int min, int max) {
+    rseed = rseed * 3627 + min;
+    if (rseed < 0) {
+        rseed = -rseed;
+    }
+    return (rseed % (max - min)) + min;
+}
+
+/* entity declarations */
+
+entity bird {
+    clr = (255, 0, 255);
+    size = (20, 20);
+    int yspeed = 0;
+
+    key_A -> { remove();} 
+    key_UP -> { self.yspeed = 20; } 
+
+    self >< wall -> { restart(); }
+
+    frame -> { 
+	self.yspeed = self.yspeed - 2;
+        self.pos[1] = self.pos[1] - self.yspeed;
+        if (self.pos[1] > 400 || self.pos[1] < 0) {
+            restart();            
+        }
+    }
+}
+
+entity wall {
+    clr = (0, 0, 0);
+    size = (20, 420);
+
+    frame -> {
+        self.pos[0] = self.pos[0] - 15;
+    }
+}
+
+entity control {
+    clr = (0, 0, 0);
+    size = (0, 0);
+    int timer = 30;
+
+    frame -> {
+        int gap_size = rand(100, 200);
+        int gap_height = rand(50, 420 - gap_size - 20);
+        self.timer = self.timer - 1;
+        if (self.timer == 0) {
+            print(gap_size);
+            print(gap_height);
+            add(wall, (680, -gap_height - gap_size));
+            add(wall, (680, 420 - gap_height));
+            self.timer = 30;
+        }
+    }
+}
+
+/* gameboard declaration */
+gameboard g1{
+    clr = (255,255,255);
+    size = (680,420);
+    init -> {
+	add(bird, (50,150));
+        add(wall, (680, -250));
+        add(wall, (680, 300));        
+        add(control, (680, 420));
+    }
+}

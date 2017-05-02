@@ -1,0 +1,32 @@
+/* entity declarations */
+
+entity player {
+    clr = (255, 0, 255);
+    size = (20, 20);
+
+    key_A -> { remove();} 
+    key_RIGHT -> { self.pos[0] = self.pos[0] + 10; }
+    key_LEFT -> { self.pos[0] = self.pos[0] - 10; }
+    key_DOWN -> { self.pos[1] = self.pos[1] + 10; } 
+    key_UP -> { self.pos[1] =  self.pos[1] - 10; }
+
+    self >< wall -> { remove(); }
+
+}
+
+entity wall {
+    clr = (0, 0, 255);
+    size = (20, 20);
+    int time = 0;
+}
+
+/* gameboard declaration */
+gameboard g1{
+	clr = (255,255,255);
+	size = (680,420);
+	init -> {
+		add(player, (600, 20));
+	        add(wall, (20,300));
+	}
+
+}

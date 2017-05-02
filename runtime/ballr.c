@@ -2,6 +2,7 @@
 #include "ballr.h"
 
 extern gameboard_t *current_board;
+extern entity_t *to_delete;
 
 void ent_add(entity_t *e) {
     entity_t *elist;
@@ -19,7 +20,7 @@ void ent_remove(entity_t *e) {
     HASH_FIND_STR(current_board->ents, e->name, elist);
     if (elist != NULL) {
         LL_DELETE(elist, e);
-	free(e);
+        LL_APPEND(to_delete, e);
     }
 }
 
@@ -28,9 +29,9 @@ int rect_intersect(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h
         x2 > x1 + w1 ||
         y1 > y2 + h2 ||
         y2 > y1 + h1) {
-        return 1;
-    } else {
         return 0;
+    } else {
+        return 1;
     }
 }
 
@@ -39,7 +40,7 @@ int ents_touching(entity_t *e1, entity_t *e2) {
         e2->pos.x, e2->pos.y, e2->size.w, e2->size.h);
 }
 
-void chk_collision(entity_t *e, const char *other_name, void (*callback)(entity_t *, entity_t *)) {
+void chk_collision(entity_t *e, const char *other_name, void (*callback)(entity_t *)) {
     entity_t *elist;
     HASH_FIND_STR(current_board->ents, other_name, elist);
 
@@ -48,11 +49,11 @@ void chk_collision(entity_t *e, const char *other_name, void (*callback)(entity_
     }
 
     entity_t *tmp, *elt;
-    LL_FOREACH_SAFE(elist, elt, tmp) {
+    LL_FOREACH_SAFE(elist->next, elt, tmp) {
         if (e == elt) {
             continue;
         } else if (ents_touching(e, elt)) {
-            callback(e, elt);
+            callback(e);
         }
     }
 }

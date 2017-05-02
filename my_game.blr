@@ -1,0 +1,46 @@
+int time = 0;
+bool direction = false;
+
+entity player {
+
+    clr = (109, 55, 75);
+    size = (20, 20);
+    
+    frame -> { 
+
+    	time = time + 1;
+
+    	if (time % 100 == 0) {
+
+    		self.clr = (time % 255, time * 3 % 255, time * 7 % 255 );
+
+    		if (direction) {
+
+    			self.pos[0] = self.pos[0] + 10;
+
+    		}
+    		else {
+
+    			self.pos[0] = self.pos[0] - 10;
+
+    		} 
+
+    		direction = !direction;	
+
+    	}
+
+    	print(time);
+
+    }
+}
+
+
+
+/* gameboard declaration */
+gameboard g1{
+	clr = (100,100,100);
+	size = (500,500);
+	init -> {
+		add(player, (250, 250));
+	}
+}

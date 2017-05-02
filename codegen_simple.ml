@@ -45,6 +45,9 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   let keycode_of_keyname name =
     if name = "key_UP" then 82 else
+    if name = "key_DOWN" then 81 else
+    if name = "key_LEFT" then 80 else
+    if name = "key_RIGHT" then 79 else
     if name = "key_A" then 4 else
     0
   in
@@ -61,10 +64,16 @@ let translate (vardecls, fdecls, ents, gboard) =
   let add_fn_t = L.function_type (L.void_type context) [| (L.pointer_type ent_t) |] in
   let add_fn = L.declare_function "ent_add" add_fn_t the_module in
 
+  let remove_fn_t = L.function_type (L.void_type context) [| (L.pointer_type ent_t) |] in
+  let remove_fn = L.declare_function "ent_remove" remove_fn_t the_module in
+
+  let restart_fn_t = L.function_type (L.void_type context) [| |] in
+  let restart_fn = L.declare_function "restart" restart_fn_t the_module in
+
   let chk_kp_t = L.function_type i32_t [| i32_t |] in
   let chk_kp_fn = L.declare_function "chk_keypress" chk_kp_t the_module in
 
-  let coll_callback_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type ent_t |] in
+  let coll_callback_t = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
   let chk_coll_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type i8_t; L.pointer_type coll_callback_t |] in
   let chk_coll_fn = L.declare_function "chk_collision" chk_coll_t the_module in
 
@@ -113,8 +122,11 @@ let translate (vardecls, fdecls, ents, gboard) =
           L.const_int i32_t 0
         | _ -> raise (Blr_err "expected identifier"))
 
-      (***** ADD OTHER BUILT IN FUNCTIONS *)
-
+    | A.Call ("remove", []) -> 
+          let (ent_ptr, _, _) = StringMap.find ent mem_m in 
+          L.build_call remove_fn [| ent_ptr |] "" builder
+    | A.Call ("restart", []) ->
+          L.build_call restart_fn [||] "" builder
     | A.Call (name, args) ->
       let func = StringMap.find name m in
       let arg_arr = Array.of_list (List.map (expr builder m mem_m ent) args) in
@@ -221,8 +233,9 @@ let translate (vardecls, fdecls, ents, gboard) =
                   
                 | _ -> L.const_int i32_t 0 
               ) 
+            | A.Id (s) -> L.build_gep (StringMap.find s m) [|L.const_int i32_t 0|] s builder
             | _ -> L.const_int i32_t 0
-          ) (* ADD ID *)
+          ) 
 
           in
 
@@ -283,8 +296,9 @@ let translate (vardecls, fdecls, ents, gboard) =
 
               | _ -> L.const_int i32_t 0 
             ) 
+          | A.Id (s) -> L.build_gep (StringMap.find s m) [|L.const_int i32_t 0|] s builder 
           | _ -> L.const_int i32_t 0
-        ) (* ADD ID ? *)
+        ) 
 
       in
 
@@ -303,24 +317,24 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   (* BUILD STATEMENTS *)
   let rec stmt builder func m mem_m ent = function
-      A.Block sl -> List.fold_left (fun b s -> stmt b func m mem_m ent s) builder sl (* sl is a block = list of stmts *)
+      A.Block sl -> List.fold_left (fun b s -> stmt b func m mem_m ent s) builder sl 
     | A.Expr e -> ignore (expr builder m mem_m ent e); builder
     | A.Return e -> ignore (L.build_ret (expr builder m mem_m ent e) builder); builder
                 
     | A.If (predicate, then_stmt, else_stmt) ->
-      let bool_val = expr builder m mem_m ent predicate in (* evaluate predicate expression *)
-      let merge_bb = L.append_block context "merge" func in (* append_block c name f creates new basic block named name at end of function f in context c *)
-      let then_bb = L.append_block context "then" func in
-      add_terminal 
-        (stmt (L.builder_at_end context then_bb) func m mem_m ent then_stmt) (* builder_at_end bb creates instr builder positioned at end of basic block bb *)
-        (L.build_br merge_bb); (* build_br bb b creates a br %bb instr at position specified by b *)
+      let bool_val = expr builder m mem_m ent predicate in 
+      let merge_bb = L.append_block context "merge" func in 
+        let then_bb = L.append_block context "then" func in
+        add_terminal 
+          (stmt (L.builder_at_end context then_bb) func m mem_m ent then_stmt) 
+          (L.build_br merge_bb); 
 
-      let else_bb = L.append_block context "else" func in
-      add_terminal 
-        (stmt (L.builder_at_end context else_bb) func m mem_m ent else_stmt)
-        (L.build_br merge_bb);
+        let else_bb = L.append_block context "else" func in
+        add_terminal 
+          (stmt (L.builder_at_end context else_bb) func m mem_m ent else_stmt)
+          (L.build_br merge_bb);
 
-      ignore (L.build_cond_br bool_val then_bb else_bb builder); (* build_cond_br cond tbb fbb b creates a br %cond, %tbb, %fbb instr *)
+      ignore (L.build_cond_br bool_val then_bb else_bb builder); 
       L.builder_at_end context merge_bb
 
     | A.While (predicate, body) ->
@@ -337,8 +351,6 @@ let translate (vardecls, fdecls, ents, gboard) =
       let merge_bb = L.append_block context "merge" func in
       ignore (L.build_cond_br bool_val body_bb merge_bb pred_builder);
         L.builder_at_end context merge_bb
-    
-    (***** FOREACH *)
     
   in
 
@@ -446,9 +458,9 @@ let translate (vardecls, fdecls, ents, gboard) =
       | hd::rest -> rest
     in
 
-  let ent_collision e o m =
-    let name = e.A.ename ^ "." ^ o.A.ename ^ ".collision" in
-    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type ent_t |] in
+  let ent_collision e oname m =
+    let name = e.A.ename ^ "." ^ oname ^ ".collision" in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
     let func = L.define_function name ftype the_module in
     (StringMap.add name func m, func)
   in
@@ -492,26 +504,28 @@ let translate (vardecls, fdecls, ents, gboard) =
 
   in 
 
-  let fill_ent_collision_func e o m =
-    let (map, func) = ent_collision e o m in
+  let fill_ent_collision_func e (A.Event(A.Collision(name1, name2), v, s))  m =
+    let (map, func) = ent_collision e name2 m in
     let builder = L.builder_at_end context (L.entry_block func) in
     let self_ptr = L.param func 0 in
-    let other_ptr = L.param func 1 in
+    let mem_struct_ptr = L.build_struct_gep self_ptr 5 ("members_ptr") builder in
 
+    let mem_map = build_mem_map e mem_struct_ptr self_ptr in
 
-
-    ignore (L.build_ret_void builder)
+    let map = add_locals map mem_map e.A.ename v builder in
+    ignore (stmt builder func map mem_map e.A.ename (A.Block s));
+    ignore (L.build_ret_void builder);
+    func
   in
 
-  let fill_ent_keypress_func e ep (A.Event(A.KeyPress(k), v, s)) m =
-    (*let kp_func = *)
+  let fill_ent_keypress_func e (A.Event(A.KeyPress(k), v, s)) m =
 
     let (map, func) = ent_keypress e k m in
     let builder = L.builder_at_end context (L.entry_block func) in
     let self_ptr = L.param func 0 in
     let mem_struct_ptr = L.build_struct_gep self_ptr 5 ("members_ptr") builder in
 
-    let mem_map = build_mem_map e mem_struct_ptr ep in
+    let mem_map = build_mem_map e mem_struct_ptr self_ptr in
 
     let map = add_locals map mem_map e.A.ename v builder in
     ignore (stmt builder func map mem_map e.A.ename (A.Block s));
@@ -519,26 +533,36 @@ let translate (vardecls, fdecls, ents, gboard) =
     func
   in
   
-  let build_event e ep (A.Event(ec,v,s) as ev) m f builder = match ec with
-    | A.Collision(_, s2) -> builder
-      (* let func = fill_end_collision_func *)
+  let build_event e ep (A.Event(ec,v,s) as ev) m mem_map f builder = match ec with
+    | A.Collision(_, s2) ->
+      let func = fill_ent_collision_func e ev m in
+      let str_ptr = L.build_global_stringptr s2 "namestr" builder in
+      ignore (L.build_call chk_coll_fn [| ep;  str_ptr; func |] "" builder);
+      builder
     | A.KeyPress(k) ->
+    
       let code = keycode_of_keyname k in
       let pressed = L.build_call chk_kp_fn [| L.const_int i32_t code |] "pressed" builder in
 
-      let true_bb = L.append_block context "true" f in
-      let false_bb = L.append_block context "false" f in
+      let true_bb = L.append_block context ("true_"^k) f in
+      let false_bb = L.append_block context ("false_"^k) f in
 
-      let func = fill_ent_keypress_func e ep ev m in
+      let func = fill_ent_keypress_func e ev m in
       let true_builder = L.builder_at_end context true_bb in
       ignore (L.build_call func [| ep |] "" true_builder);
       ignore (L.build_br false_bb true_builder);
 
-      let pressed = L.build_icmp L.Icmp.Ne pressed (L.const_int i32_t 0) "pressed" builder in
+      let pressed = L.build_icmp L.Icmp.Ne pressed (L.const_int i32_t 0) ("pressed_"^k) builder in
       ignore(L.build_cond_br pressed true_bb false_bb builder);
       
       L.builder_at_end context false_bb
-    | _  -> builder
+
+    | A.Frame -> 
+
+      let map = add_locals m mem_map e.A.ename v builder in
+      stmt builder f map mem_map e.A.ename (A.Block s)
+
+    |_  -> builder
   in 
 
   let fill_ent_frame_function e m =
@@ -550,12 +574,7 @@ let translate (vardecls, fdecls, ents, gboard) =
     
     let mem_map = build_mem_map e mem_struct_ptr ent_ptr in
     
-    (* just generate code for var_decls and statements in first event -- to test access/entity member stuff *)
-    let event = first e.A.rules in 
-    let map = add_locals map mem_map e.A.ename (event_decls event) builder in
-    ignore (stmt builder func map mem_map e.A.ename (A.Block (event_stmts event)));
-    
-    let builder = List.fold_left (fun b ev -> build_event e ent_ptr ev map func b) builder e.A.rules in
+    let builder = List.fold_left (fun b ev -> build_event e ent_ptr ev map mem_map func b) builder e.A.rules in 
 
     ignore (L.build_ret_void builder);
     map
