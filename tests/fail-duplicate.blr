@@ -1,0 +1,11 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+		int x=2; 
+
+		int x=4
+
+		print(x);
+	}
+}

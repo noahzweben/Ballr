@@ -1,0 +1,15 @@
+func int add(int x, int y)
+{
+  return x + y;
+
+  int b= 4;
+}
+
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+		print (add(5+4)); 
+	}
+}

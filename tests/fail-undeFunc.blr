@@ -1,0 +1,14 @@
+void bar(int x, bool b){
+	
+}
+
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		foo(4, true); 
+
+	}
+}
