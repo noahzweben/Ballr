@@ -4,6 +4,11 @@ gameboard g1{
 	init -> {
 		if(5>b){
 			print(1);
+
+		else{
+
+		print (2); 
 		}
 	}
+}
 }

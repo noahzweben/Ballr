@@ -3,7 +3,7 @@ gameboard g1{
 	size = (680,420);
 	init -> {
 
-		print (true && false);
+	print (true && false);
     print (true && true); 
     print (false && false); 
     print (true || false); 
