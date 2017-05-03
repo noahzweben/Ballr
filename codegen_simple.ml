@@ -97,6 +97,9 @@ let translate (vardecls, fdecls, ents, gboard) =
       Some _ -> ()
       | None -> ignore (f builder) in
 
+  let ensureInt c = 
+    if L.type_of c = flt_t then (L.const_fptosi c i32_t) else c in
+
   (* BUILD EXPRESSIONS *)
   let rec expr builder m mem_m ent = function
       A.Literal i -> L.const_int i32_t i
@@ -161,9 +164,9 @@ let translate (vardecls, fdecls, ents, gboard) =
       (match (clr_lit clr) with
         Some(vals) -> L.const_named_struct clr_t vals
         | None ->
-	  let e1' = expr builder m mem_m ent e1
-	  and e2' = expr builder m mem_m ent e2
-          and e3' = expr builder m mem_m ent e3 in
+	  let e1' = ensureInt (expr builder m mem_m ent e1)
+	  and e2' = ensureInt (expr builder m mem_m ent e2)
+    and e3' = ensureInt (expr builder m mem_m ent e3) in
           let clr_ptr = L.build_alloca clr_t "tmp" builder in
   	  let r_ptr = L.build_struct_gep clr_ptr 0 "r" builder in
   	  ignore (L.build_store e1' r_ptr builder);
@@ -177,8 +180,8 @@ let translate (vardecls, fdecls, ents, gboard) =
       (match (vec_lit vec) with
         Some(vals) -> L.const_named_struct vec_t vals
         | None ->
-          let e1' = expr builder m mem_m ent e1
-          and e2' = expr builder m mem_m ent e2 in
+          let e1' = ensureInt (expr builder m mem_m ent e1)
+          and e2' = ensureInt (expr builder m mem_m ent e2) in
           let vec_ptr = L.build_alloca vec_t "tmp" builder in
           let x_ptr = L.build_struct_gep vec_ptr 0 "x" builder in
           ignore (L.build_store e1' x_ptr builder);
