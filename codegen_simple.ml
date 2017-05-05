@@ -48,7 +48,11 @@ let translate (vardecls, fdecls, ents, gboard) =
     if name = "key_DOWN" then 81 else
     if name = "key_LEFT" then 80 else
     if name = "key_RIGHT" then 79 else
+    if name = "key_SPACE" then 44 else
     if name = "key_A" then 4 else
+    if name = "key_D" then 7 else
+    if name = "key_S" then 22 else
+    if name = "key_W" then 26 else
     0
   in
 
