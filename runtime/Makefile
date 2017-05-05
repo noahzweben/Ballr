@@ -12,6 +12,10 @@ all: clean lib
 %.o: %.c
 	$(CXX) $(CFLAGS) -c $<
 
+install: lib
+	mkdir -p /usr/local/lib
+	cp build/libblr_rt.a /usr/local/lib
+
 # cleaning everything that can be automatically recreated with "make".
 clean:
 	rm -f $(PROG) *.o	
