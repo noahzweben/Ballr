@@ -48,8 +48,6 @@ entity control {
         int gap_height = rand(50, 420 - gap_size - 20);
         self.timer = self.timer - 1;
         if (self.timer == 0) {
-            print(gap_size);
-            print(gap_height);
             add(wall, (680, -gap_height - gap_size));
             add(wall, (680, 420 - gap_height));
             self.timer = 30;
