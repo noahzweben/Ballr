@@ -1,54 +1,7 @@
-/* entity declarations */
-
-entity e1 {
-    clr = (255, 0, 255);
-    size = (20, 20);
-    int time = 0;
-
-    key_A -> { remove();} 
-    key_DOWN -> { self.pos[1] = self.pos[1] + 10; } 
-    key_UP -> { self.pos[1] =  self.pos[1] - 10; self.time = 0; } 
-
-    self >< e2 -> { self.time = 0; }
-
-    frame -> { 
-    	self.time = self.time +1;
-        self.pos[1] = 300 - 30 * self.time + 1*self.time*self.time;
-    }
-}
-
-entity e2 {
-    clr = (0, 0, 255);
-    size = (20, 20);
-    int time = 0;
-    frame -> {
-/*	self.time = self.time + 1;
-	if(self.time % 10 == 0){
-		print(self.time);
-	} else {
-		
-	}
-  */  }
-}
-
-entity e3 {
-    clr = (0, 0, 255);
-    size = (20, 20);
-}
-
 
 /* gameboard declaration */
 gameboard g1{
-	clr = (255,255,255);
-	size = (680,420);
-	init -> {
-		color my_clr = (1,2,3);
-		print(my_clr[1]);
-		my_clr[1] = 5;
-		print(my_clr[1]);
-		add(e2, (600, 20));
-	        add(e1, (20,300));
-        	add(e3,(300,300));
-	}
-
+	clr = (0.0, 255.0,255.0);
+	size = (680.5,420);
+	init -> {}
 }

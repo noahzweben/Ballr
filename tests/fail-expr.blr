@@ -4,8 +4,7 @@ gameboard g1{
 	init -> {
 		int a= 3;
  		bool x= true; 
-
- 		 print (x+a); /* Fail: expression consists of boolean and integer */
+ 		print (x+a); /* Fail: expression consists of boolean and integer */
          
 	}
 }

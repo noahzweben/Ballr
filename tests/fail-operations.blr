@@ -6,7 +6,6 @@ gameboard g1{
   		print(a - 2);
  		print(c * 2);
   		print(100 / false);
-  		print(hello);
     }
 
  }

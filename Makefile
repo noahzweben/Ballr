@@ -80,7 +80,8 @@ parser.cmi : ast.cmo
 TESTS = add1 arith1 compar AndOr GeqLeqEq funcadd global global2 mod operations var while\
 		NotOp	
 
-FAILS = assign compar expr if mod operations 
+FAILS = assign compar expr if mod operations funcReturn duplicate color Return Returntype undeFunc\
+		vec 
 
 TESTFILES = $(TESTS:%=test-%.mc) $(TESTS:%=test-%.out) \
 	    $(FAILS:%=fail-%.mc) $(FAILS:%=fail-%.err)

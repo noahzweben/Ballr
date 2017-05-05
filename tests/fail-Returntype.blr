@@ -1,14 +1,13 @@
+func int add(int x, int y)
+{
+  return true;
+}
+
+
 gameboard g1{
 	clr = (251,142,74);
 	size = (680,420);
 	init -> {
-		if(5>b){
-			print(1);
-
-		else{
-
-		print (2); 
-		}
+		print (add(5+4)); 
 	}
-}
 }

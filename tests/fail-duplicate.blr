@@ -2,13 +2,10 @@ gameboard g1{
 	clr = (251,142,74);
 	size = (680,420);
 	init -> {
-		if(5>b){
-			print(1);
+		int x=2; 
 
-		else{
+		int x=4
 
-		print (2); 
-		}
+		print(x);
 	}
-}
 }
