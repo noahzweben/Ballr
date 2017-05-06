@@ -291,7 +291,7 @@ in *)
   
   (* check the statements within events *)
   let checkOccurence = function 
-    KeyPress (code) -> if (code != "key_UP" && code != "key_DOWN" && code != "key_LEFT" && code != "key_RIGHT" && code != "key_W" && code != "key_A" && code != "key_S" && code != "key_D" && code != "key_SPACE") then raise (Failure (code ^ " is an undefined keypress type"))
+    KeyPress (code) -> if (not (code = "key_UP" || code = "key_DOWN" || code = "key_LEFT" || code = "key_RIGHT" || code = "key_W" || code = "key_A" || code = "key_S" || code = "key_D" || code = "key_SPACE")) then raise (Failure (code ^ " is an undefined keypress type"))
   | Collision (slf, othr) -> 
       if (slf = "self" ) then () else raise (Failure ("must define collisions against self, not " ^ slf));
       if not (StringMap.mem othr allEntMembers) then 
