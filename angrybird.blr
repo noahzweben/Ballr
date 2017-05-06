@@ -38,7 +38,7 @@ entity bird {
 
 	frame -> {
 		if (self.fly){
-			self.yspeed = self.yspeed - 3;
+			self.yspeed = self.yspeed - 5;
 	    	self.pos = (self.pos[0]+self.xspeed, self.pos[1] - self.yspeed);
 
 	    if (self.pos[0]> 1300) {remove();add(bird,birdPos);}
