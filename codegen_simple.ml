@@ -104,6 +104,9 @@ let translate (vardecls, fdecls, ents, gboard) =
   let ensureInt c = 
     if L.type_of c = flt_t then (L.const_fptosi c i32_t) else c in
 
+  let ensureFloat c = 
+    if L.type_of c = flt_t then c else (L.const_sitofp c flt_t) in
+
   (* BUILD EXPRESSIONS *)
   let rec expr builder m mem_m ent = function
       A.Literal i -> L.const_int i32_t i
@@ -142,6 +145,21 @@ let translate (vardecls, fdecls, ents, gboard) =
     | A.Binop (e1, op, e2) ->
       let e1' = expr builder m mem_m ent e1
       and e2' = expr builder m mem_m ent e2 in
+      if (L.type_of e1' = flt_t || L.type_of e2' = flt_t) then
+        (match op with
+          A.Add     -> L.build_fadd
+        | A.Sub     -> L.build_fsub
+        | A.Mult    -> L.build_fmul
+        | A.Mod     -> L.build_frem
+        | A.Div     -> L.build_fdiv
+        | A.Equal   -> L.build_fcmp L.Fcmp.Oeq
+        | A.Neq     -> L.build_fcmp L.Fcmp.One
+        | A.Less    -> L.build_fcmp L.Fcmp.Olt
+        | A.Leq     -> L.build_fcmp L.Fcmp.Ole
+        | A.Greater -> L.build_fcmp L.Fcmp.Ogt
+        | A.Geq     -> L.build_fcmp L.Fcmp.Oge
+        ) (ensureFloat e1') (ensureFloat e2') "tmp" builder 
+      else
       (match op with
         A.Add     -> L.build_add
       | A.Sub     -> L.build_sub
