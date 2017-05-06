@@ -1,0 +1,63 @@
+entity paddle1 {
+    clr = (255, 255, 255);
+    size = (10, 100);
+
+    key_UP -> {
+        self.pos[1] = self.pos[1] - 10;
+    }
+
+    key_DOWN -> {
+        self.pos[1] = self.pos[1] + 10;
+    }
+
+}
+
+entity paddle2 {
+    clr = (255, 255, 255);
+    size = (10, 100);
+
+    key_W -> {
+        self.pos[1] = self.pos[1] - 10;
+    }
+
+    key_S -> {
+        self.pos[1] = self.pos[1] + 10;
+    }
+
+}
+
+entity ball {
+    clr = (255, 255, 255);
+    size = (10, 10);
+    int xspeed = 7;
+    int yspeed = 7;
+
+    self >< paddle1 -> {
+        self.xspeed = -self.xspeed;
+    }
+    self >< paddle2 -> {
+        self.xspeed = -self.xspeed;
+    }
+
+    frame -> {
+        self.pos[0] = self.pos[0] + self.xspeed;
+        if (self.pos[0] > 600 - self.size[1] || self.pos[0] < 0 ) {
+            restart();
+        }
+        self.pos[1] = self.pos[1] + self.yspeed;
+        if (self.pos[1] > 400 - self.size[1] || self.pos[1] < 0) {
+            self.yspeed = -self.yspeed;
+        }
+    }
+}
+
+gameboard board {
+    clr = (0, 0, 0);
+    size = (600, 400);
+
+    init -> {
+        add(paddle2, (10, 200));
+        add(paddle1, (580, 200));
+        add(ball, (300, 300));
+    }
+}
