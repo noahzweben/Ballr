@@ -16,6 +16,8 @@ const Uint8 *kb_state = NULL;
 gameboard_t *boards = NULL;
 gameboard_t *current_board = NULL;
 
+blr_pos_t click_pos;
+
 entity_t *to_delete = NULL;
 
 int should_restart = 0;
@@ -135,9 +137,13 @@ int run_loop()
     SDL_UpdateWindowSurface( window );
 
     while( !quit ) {
+        click_pos.x = -1;
     	while ( SDL_PollEvent ( &e ) != 0 ) {
-            SDL_PumpEvents();
-
+            if (e.type == SDL_MOUSEBUTTONDOWN) {
+                SDL_MouseButtonEvent mouse_event = e.button;
+                click_pos.x = mouse_event.x;
+                click_pos.y = mouse_event.y;
+            }
             if (e.type == SDL_QUIT) {
                 quit = 1;
             }

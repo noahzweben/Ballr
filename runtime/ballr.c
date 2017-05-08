@@ -3,6 +3,7 @@
 
 extern gameboard_t *current_board;
 extern entity_t *to_delete;
+extern blr_pos_t click_pos;
 
 void ent_add(entity_t *e) {
     entity_t *elist;
@@ -55,6 +56,12 @@ void chk_collision(entity_t *e, const char *other_name, void (*callback)(entity_
         } else if (ents_touching(e, elt)) {
             callback(e);
         }
+    }
+}
+
+void chk_click(entity_t *e, void (*callback)(entity_t *, blr_pos_t *)) {
+    if (click_pos.x != -1) {
+        callback(e, &click_pos);
     }
 }
 

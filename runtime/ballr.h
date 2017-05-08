@@ -47,6 +47,8 @@ void ent_remove(entity_t *e);
 
 void chk_collision(entity_t *e, const char *other_name, void (*callback)(entity_t *));
 
+void chk_click(entity_t *e, void (*callback)(entity_t *, blr_pos_t *));
+
 int chk_keypress(int keycode);
 
 #endif
