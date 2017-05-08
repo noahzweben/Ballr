@@ -39,7 +39,7 @@ let _ =
     fprintf oc "%s\n" (Llvm.string_of_llmodule m);
     close_out oc;
     if exec_name != "" then
-      let cmd = "clang -c " ^ exec_name ^ ".ll && clang -g " ^ exec_name ^ ".o -o " ^ exec_name ^ " -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lSDL2 -L./runtime/build -lblr_rt" in
+      let cmd = "clang -c " ^ exec_name ^ ".ll && clang -g " ^ exec_name ^ ".o -o " ^ exec_name ^ " -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lSDL2 -lblr_rt" in
       print_string (cmd ^ "\n");
       ignore (Sys.command cmd)
     else ()
