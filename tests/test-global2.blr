@@ -1,10 +1,13 @@
-bool x; 
+bool x = true;
+int y = 10;
+
 gameboard g1{
 	clr = (251,142,74);
 	size = (680,420);
 	init -> {
-		int x; 
-		x= 2+2; 
-		print (x);   
+		if(x){
+			print(10);
+		}
+		print (y);   
 	}
 }

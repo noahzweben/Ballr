@@ -3,9 +3,9 @@ gameboard g1{
 	size = (680,420);
 	init -> {
 
-		int i= 4%2;
-		int y= 9%4; 
+		int i = 4%2;
+		int y = 9%4; 
 		print(i); 
-		print (y);
+		print(y);
 	}
 }

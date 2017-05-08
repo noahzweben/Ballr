@@ -7,7 +7,7 @@ gameboard g1{
  		print(1 - 2);
   		print(1 * 2);
   		print(100 / 2);
-  		print(99);
+  		print(50 % 7);
 
   	}
 }

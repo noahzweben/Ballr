@@ -1,5 +1,4 @@
-func int add(int x, int y)
-{
+func int sum(int x, int y) {
   return x + y;
 }
 
@@ -8,6 +7,7 @@ gameboard g1{
 	clr = (251,142,74);
 	size = (680,420);
 	init -> {
-		print (add(5+4)); 
+		int result = sum(5,4);
+		print(result); 
 	}
 }

@@ -2,8 +2,8 @@ gameboard g1{
 	clr = (251,142,74);
 	size = (680,420);
 	init -> {
-		int i= 5+4; 
+		int i = 5+4; 
 		print (i);
-		}
 	}
+}
 

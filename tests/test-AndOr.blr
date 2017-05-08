@@ -3,12 +3,27 @@ gameboard g1{
 	size = (680,420);
 	init -> {
 
-	print (true && false);
-    print (true && true); 
-    print (false && false); 
-    print (true || false); 
-    print (true || true); 
-    print (false || false); 
+        bool t = true;
+        bool f = false;
 
+        if (t && f) {
+            print(50);
+        }
+        if (t && t){
+            print(40);
+        }
+        if (f && f) {
+            print(30);
+        }
+        if (t || f) {
+            print(20);
+        }
+        if (t || t) {
+            print(10);
+        }
+        if (f || f){
+            print(0);
+        }
+        
   	}
 }

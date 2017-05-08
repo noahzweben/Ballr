@@ -3,13 +3,12 @@ gameboard g1{
 	size = (680,420);
 	init -> {
 
-		int i;
-  		i = 5;
-  		while (i > 0) {
-   	      print(i);
-    	  i = i - 1;
-  		}	
+		int i = 5;
+		while (i > 0) {
+ 	      print(i);
+  	    i = i - 1;
+		}	
   	print(42);	
 
-  	}
+  }
 }

@@ -1,5 +1,6 @@
 1
 2
-4
+3
 5
-44
+SDL could not initialize! SDL Error: No available video device
+Window initialization failed.
