@@ -52,7 +52,7 @@ rule token = parse
  	| "func"  { FUNC }
  	| "frame" { FRAME }
  	| "click" { CLICK }
- 	| "key_"(['a'-'z' 'A'-'Z' '0'-'9'] | "UP" | "DOWN" | "LEFT" | "RIGHT") as lxm 	{KEYPRESS(lxm) }
+ 	| "key_"(['a'-'z' 'A'-'Z' '0'-'9'] | "UP" | "DOWN" | "LEFT" | "RIGHT" | "SPACE") as lxm 	{KEYPRESS(lxm) }
  	| ['0'-'9']*'.'['0'-'9']+ | ['0'-'9']+'.'['0'-'9']* as lxm { FLOAT_LITERAL(float_of_string lxm)}
 	| ['0'-'9']+ as lxm { INT_LITERAL(int_of_string lxm) }
 	| ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']* as lxm { ID(lxm) }

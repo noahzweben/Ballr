@@ -142,6 +142,8 @@ in *)
 		 (* forces to be same ugh *)
 	   | Less | Leq | Greater | Geq when t1 = Int && t2 = Int -> Bool
 	   | Less | Leq | Greater | Geq when t1 = Float && t2 = Float -> Bool
+     | Less | Leq | Greater | Geq when t1 = Float && t2 = Int -> Bool
+     | Less | Leq | Greater | Geq when t1 = Int && t2 = Float -> Bool
 
 		 | And | Or when t1 = Bool && t2 = Bool -> Bool
      | _ -> raise (Failure ("illegal binary operator " ^
@@ -288,8 +290,19 @@ in *)
   in
   
   (* check the statements within events *)
+  let checkOccurence = function 
+    KeyPress (code) -> if (not (code = "key_UP" || code = "key_DOWN" || code = "key_LEFT" || code = "key_RIGHT" || code = "key_W" || code = "key_A" || code = "key_S" || code = "key_D" || code = "key_SPACE")) then raise (Failure (code ^ " is an undefined keypress type"))
+  | Collision (slf, othr) -> 
+      if (slf = "self" ) then () else raise (Failure ("must define collisions against self, not " ^ slf));
+      if not (StringMap.mem othr allEntMembers) then 
+            raise (Failure(othr ^ " is not a defined entity"));
+  | _ -> ()
+
+  in
+
   let checkEvent ent = function 
-    Event (_, _, bhvr) ->
+    Event (occurence, _, bhvr) ->
+       checkOccurence occurence;
        stmt StringMap.empty ent (Block bhvr)
   in
 

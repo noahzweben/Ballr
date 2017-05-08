@@ -1,0 +1,137 @@
+int rseed = 26854266;
+vec birdPos = (100,500);
+int maxPigs = 30;
+vec cursorPos = (0,0);
+
+func int rand(int min, int max) {
+    rseed = rseed * 3627 + min;
+    if (rseed < 0) {
+        rseed = -rseed;
+    }
+    return (rseed % (max - min)) + min;
+}
+
+
+func int flicker(int val) {
+	int newVal = val+5;
+	if (newVal > 240) {newVal = 175;}
+	return newVal;
+}
+
+
+
+
+entity bird {
+	size = (20,20);
+	clr = (255,0,0);
+	bool fly = false;
+	int yspeed = 0;
+	int xspeed = 0;
+
+	key_SPACE -> { 
+		self.fly = true;
+		self.yspeed = -1*(cursorPos[1]-self.pos[1])/4;
+		self.xspeed = (cursorPos[0] - self.pos[0])/4;
+	}
+
+	self >< ground -> {remove(); add(bird,birdPos);}
+
+	frame -> {
+		if (self.fly){
+			self.yspeed = self.yspeed - 5;
+	    	self.pos = (self.pos[0]+self.xspeed, self.pos[1] - self.yspeed);
+
+	    if (self.pos[0]> 1300) {remove();add(bird,birdPos);}
+		}
+	}
+}
+
+entity pig {
+	size = (25,25);
+	clr = (0,150,0);
+	self >< bird -> {remove();}
+}
+
+entity cloud {
+	size = (100,50);
+	clr = (255,255,255);
+	frame -> {
+		self.pos[0] = self.pos[0] -10;
+		if (self.pos[0] < -100) remove();
+	}
+
+}
+
+entity sun {
+	size = (100,100);
+	clr = (200,255,0);
+	frame -> {
+		self.clr[1] = flicker(self.clr[1]);
+	}
+}
+
+entity ground {
+	size = (1280,100);
+	clr = (0,255,100);
+}
+
+
+entity graphicController {
+	size = (0,0);
+	clr = (0,0,0);
+	int timer = 20;
+	int cloud_y = 0;
+	frame -> {
+		self.timer = self.timer - 1;
+	 	if (self.timer == 0) {
+	 	 	self.cloud_y = rand(0,300);
+            add(cloud, (1280,self.cloud_y));
+            add(cloud,(1280+50,self.cloud_y-40));
+            self.timer = 20;
+        }
+	}
+}
+
+
+entity aim1 { 
+	size = (20,5);
+	clr = (0,0,255);
+	key_UP -> {self.pos[1]= self.pos[1]-10;}
+	key_DOWN -> {self.pos[1]= self.pos[1]+10;}
+	key_LEFT -> {self.pos[0]= self.pos[0]-10;}
+	key_RIGHT -> {self.pos[0]= self.pos[0]+10;}
+	frame -> {cursorPos = self.pos;}
+}
+entity aim2 { 
+	size = (5,20);
+	clr = (0,0,255);
+	key_UP -> {self.pos[1]= self.pos[1]-10;}
+	key_DOWN -> {self.pos[1]= self.pos[1]+10;}
+	key_LEFT -> {self.pos[0]= self.pos[0]-10;}
+	key_RIGHT -> {self.pos[0]= self.pos[0]+10;}
+}
+
+
+
+gameboard g1{
+	size = (1280,800);
+	clr = (0,200,255);
+	init -> {
+		int pigs = 0;
+		add(graphicController,(-100,-100));
+		add(ground,(0,700));
+		add (sun,(10,10));
+		add (cloud,(-100,-100));
+		add(bird,birdPos);
+		add (aim1, birdPos);
+		add (aim2,(birdPos[0]+7,birdPos[1]-7));
+		while (pigs < maxPigs) {
+			add(pig,(rand(900,1280),rand(500,700)));
+			pigs = pigs + 1;
+		}
+
+
+
+
+	}
+}
