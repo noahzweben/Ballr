@@ -1,0 +1,2 @@
+Fatal error: exception Failure("You haven't defined size")
+make: *** [fail-1.test] Error 2

@@ -119,3 +119,8 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 ./test-while
 diff -b test-while.out tests/test-while.out > test-while.diff
 ###### SUCCESS
+
+###### Testing fail-1
+make fail-1.test 2> fail-1.err 1> /dev/null
+diff -b fail-1.err tests/fail-1.err > fail-1.diff
+###### SUCCESS
