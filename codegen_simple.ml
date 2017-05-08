@@ -81,6 +81,10 @@ let translate (vardecls, fdecls, ents, gboard) =
   let chk_coll_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type i8_t; L.pointer_type coll_callback_t |] in
   let chk_coll_fn = L.declare_function "chk_collision" chk_coll_t the_module in
 
+  let clk_callback_t = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type vec_t |] in
+  let chk_clk_t = L.function_type (L.void_type context) [| L.pointer_type ent_t;  L.pointer_type clk_callback_t |] in
+  let chk_clk_fn = L.declare_function "chk_click" chk_clk_t the_module in
+
   let get_decl name decls =
     match List.filter (fun (A.VarInit (t, s, e)) -> s = name) decls with
       | A.VarInit (t, s, e) :: tl -> e
@@ -378,7 +382,7 @@ let translate (vardecls, fdecls, ents, gboard) =
         L.builder_at_end context merge_bb
     
   in
-
+ 
   let add_locals m mem_m ent decls builder = 
     let add_local m (A.VarInit(t, n, e)) =
       let e' = expr builder m mem_m ent e in
@@ -386,7 +390,7 @@ let translate (vardecls, fdecls, ents, gboard) =
       ignore (L.build_store e' local_var builder);
       StringMap.add n local_var m
     in
-    List.fold_left add_local m decls
+   List.fold_left add_local m decls
   in
 
   let rec get_init_val = function 
@@ -497,6 +501,13 @@ let translate (vardecls, fdecls, ents, gboard) =
     (StringMap.add name func m, func)
   in
 
+  let ent_onclick e m =
+    let name = e.A.ename ^ ".onclick" in
+    let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t; L.pointer_type vec_t |] in
+    let func = L.define_function name ftype the_module in
+    (StringMap.add name func m, func)
+  in
+
   let ent_frame e m =
     let name = e.A.ename ^ "_frame" in
     let ftype = L.function_type (L.void_type context) [| L.pointer_type ent_t |] in
@@ -557,7 +568,27 @@ let translate (vardecls, fdecls, ents, gboard) =
     ignore (L.build_ret_void builder);
     func
   in
-  
+
+  let fill_ent_clk_func e (A.Event(A.Click, v, s)) m =
+    let (map, func) = ent_onclick e m in
+    let builder = L.builder_at_end context (L.entry_block func) in
+    let self_ptr = L.param func 0 in
+    let mem_struct_ptr = L.build_struct_gep self_ptr 5 ("members_ptr") builder in
+
+    let mem_map = build_mem_map e mem_struct_ptr self_ptr in
+
+    let clkpos_ptr = L.param func 1 in
+    let local_clkpos = L.build_alloca vec_t "clickpos" builder in
+    let clkpos_val = L.build_load clkpos_ptr "clkpos_val" builder in
+    ignore (L.build_store clkpos_val local_clkpos builder);
+    let map = StringMap.add "clickpos" local_clkpos map in
+
+    let map = add_locals map mem_map e.A.ename v builder in
+    ignore (stmt builder func map mem_map e.A.ename (A.Block s));
+    ignore (L.build_ret_void builder);
+    func
+  in 
+ 
   let build_event e ep (A.Event(ec,v,s) as ev) m mem_map f builder = match ec with
     | A.Collision(_, s2) ->
       let func = fill_ent_collision_func e ev m in
@@ -581,6 +612,11 @@ let translate (vardecls, fdecls, ents, gboard) =
       ignore(L.build_cond_br pressed true_bb false_bb builder);
       
       L.builder_at_end context false_bb
+
+    | A.Click ->
+      let func = fill_ent_clk_func e ev m in
+      ignore (L.build_call chk_clk_fn [| ep; func |] "" builder);
+      builder
 
     | A.Frame -> 
 
