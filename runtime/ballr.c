@@ -11,6 +11,7 @@ void ent_add(entity_t *e) {
     if (elist == NULL) {
         elist = malloc(sizeof(entity_t));
         elist->name = e->name;
+        elist->next = NULL;
         HASH_ADD_STR(current_board->ents, name, elist);
     }
     LL_APPEND(elist, e);
