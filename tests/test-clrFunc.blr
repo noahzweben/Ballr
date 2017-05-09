@@ -1,4 +1,4 @@
-func vec my_clr_func(){
+func color my_clr_func(){
 	
 	int r = 20;
 	int g = 250;

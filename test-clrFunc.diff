@@ -1,9 +1,0 @@
-1c1,5
-<   ./test-clrFunc failed on ./test-clrFunc
----
-> 20
-> 250
-> 100
-> SDL could not initialize! SDL Error: No available video device
-> Window initialization failed.
-\ No newline at end of file

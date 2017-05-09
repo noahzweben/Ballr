@@ -1,22 +1,23 @@
 int x = 10;
 bool flag = false;
 
-func int my_gbl_func(){
-	if (!flag) {
-		return x;
-	}else{
-		return 0;
+func int my_gbl_func() {
+
+	int toReturn = x;
+
+	if (flag) {
+		toReturn = 0;
 	}
+
+	return toReturn;
 }
 
 gameboard g1{
 	clr = (251,142,74);
 	size = (680,420);
 	init -> {
-
 		print(my_gbl_func());
 		flag = true;
-		print(my_gbl_func());
-        
+		print(my_gbl_func());  
   	}
 }

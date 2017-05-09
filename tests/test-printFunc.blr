@@ -1,4 +1,4 @@
-func bool print(int a, int b, bool c){
+func bool my_print(int a, int b, bool c){
 	print(a);
 	print(b);
 	return c;
@@ -9,7 +9,7 @@ gameboard g1{
 	size = (680,420);
 	init -> {
 
-		bool d = print(5, 10, true);
+		bool d = my_print(5, 10, true);
 		if (d) {
 			print(15);
 		}
