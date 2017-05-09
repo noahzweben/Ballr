@@ -1,0 +1,12 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+		int val1 = 1 + 2 * 3 - 1;
+		print(val1);
+		int val2 = 1 + 10/2 + 5;
+		print(val2);  
+		int neg_val = -1 + 2 * 3 - 1;
+		print(neg_val);
+	}
+}

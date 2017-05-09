@@ -1,0 +1,10 @@
+gameboard gb {
+	clr = (200, 300, 100);
+	size = (400,600);
+	init -> {
+		color my_clr = (255,30,100);
+		print(my_clr[0]);
+		print(my_clr[1]);
+		print(my_clr[2]);
+	}
+}

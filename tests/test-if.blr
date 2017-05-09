@@ -2,8 +2,11 @@ gameboard g1{
 	clr = (251,142,74);
 	size = (680,420);
 	init -> {
-		if(5>4){
-			print(1);
+		if (5 < 4) {
+			print(5);
+		}
+		if (4 < 5) {
+			print(4);
 		}
 	}
 }

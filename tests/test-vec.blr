@@ -1,0 +1,9 @@
+gameboard gb {
+	clr = (200, 300, 100);
+	size = (400,600);
+	init -> {
+		vec my_vec = (50,100);
+		print(my_vec[0]);
+		print(my_vec[1]);
+	}
+}

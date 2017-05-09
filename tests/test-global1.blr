@@ -1,5 +1,8 @@
 bool x = true;
 int y = 10;
+float z = 5.5;
+color my_clr = (300, 100, 200);
+vec my_vec = (40, 80);
 
 gameboard g1{
 	clr = (251,142,74);
@@ -9,5 +12,7 @@ gameboard g1{
 			print(10);
 		}
 		print (y);   
+		print(my_clr[2]);
+		print(my_vec[0]);
 	}
 }

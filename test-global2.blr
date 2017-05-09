@@ -1,0 +1,22 @@
+int x = 10;
+bool flag = false;
+
+func int my_gbl_func(){
+	if (!flag) {
+		return x;
+	}else{
+		return 0;
+	}
+}
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		print(my_gbl_func());
+		flag = true;
+		print(my_gbl_func());
+        
+  	}
+}

@@ -2,7 +2,6 @@ func int sum(int x, int y) {
   return x + y;
 }
 
-
 gameboard g1{
 	clr = (251,142,74);
 	size = (680,420);

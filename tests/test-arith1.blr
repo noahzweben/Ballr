@@ -1,8 +1,0 @@
-gameboard g1{
-	clr = (251,142,74);
-	size = (680,420);
-	init -> {
-		int val = 1 + 2 * 3 - 1;
-		print (val);  
-	}
-}

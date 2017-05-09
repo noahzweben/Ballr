@@ -1,0 +1,20 @@
+func vec my_clr_func(){
+	
+	int r = 20;
+	int g = 250;
+	int b = 100;
+	return (r, g, b);
+}
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		color my_clr = my_clr_func();
+		print(my_clr[0]);
+		print(my_clr[1]);
+		print(my_clr[2]);
+        
+  	}
+}

@@ -1,0 +1,18 @@
+func vec my_vec_func(){
+	
+	int x = 20;
+	int y = 250;
+	return (x, y);
+}
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		vec my_vec = my_vec_func();
+		print(my_vec[0]);
+		print(my_vec[1]);
+        
+  	}
+}

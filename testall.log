@@ -1,112 +1,154 @@
 
-###### Testing test-AndOr
-make test-AndOr.test > /dev/null
+###### Testing test-andOr
+make test-andOr.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-AndOr.o'
+clang: error: no such file or directory: 'tests/test-andOr.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-AndOr
-diff -b test-AndOr.out tests/test-AndOr.out > test-AndOr.diff
+./test-andOr
+diff -b test-andOr.out tests/test-andOr.out > test-andOr.diff
 ###### SUCCESS
 
-###### Testing test-GeqLeqEq
-make test-GeqLeqEq.test > /dev/null
+###### Testing test-arith
+make test-arith.test > /dev/null
+Fatal error: exception Parsing.Parse_error
+make: *** [test-arith.test] Error 2
+./test-arith
+./testall.sh: 1: eval: ./test-arith: not found
+diff -b test-arith.out tests/test-arith.out > test-arith.diff
+FAILED test-arith.out differs from tests/test-arith.out
+###### FAILED
+
+###### Testing test-clr
+make test-clr.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-GeqLeqEq.o'
+clang: error: no such file or directory: 'tests/test-clr.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-GeqLeqEq
-diff -b test-GeqLeqEq.out tests/test-GeqLeqEq.out > test-GeqLeqEq.diff
+./test-clr
+diff -b test-clr.out tests/test-clr.out > test-clr.diff
 ###### SUCCESS
 
-###### Testing test-NotOp
-make test-NotOp.test > /dev/null
+###### Testing test-eqNeq
+make test-eqNeq.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-NotOp.o'
+clang: error: no such file or directory: 'tests/test-eqNeq.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-NotOp
-diff -b test-NotOp.out tests/test-NotOp.out > test-NotOp.diff
+./test-eqNeq
+diff -b test-eqNeq.out tests/test-eqNeq.out > test-eqNeq.diff
 ###### SUCCESS
 
-###### Testing test-add1
-make test-add1.test > /dev/null
+###### Testing test-fibFunc
+make test-fibFunc.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-add1.o'
+clang: error: no such file or directory: 'tests/test-fibFunc.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-add1
-diff -b test-add1.out tests/test-add1.out > test-add1.diff
+./test-fibFunc
+diff -b test-fibFunc.out tests/test-fibFunc.out > test-fibFunc.diff
 ###### SUCCESS
 
-###### Testing test-arith1
-make test-arith1.test > /dev/null
+###### Testing test-gcdFunc
+make test-gcdFunc.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-arith1.o'
+clang: error: no such file or directory: 'tests/test-gcdFunc.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-arith1
-diff -b test-arith1.out tests/test-arith1.out > test-arith1.diff
+./test-gcdFunc
+diff -b test-gcdFunc.out tests/test-gcdFunc.out > test-gcdFunc.diff
 ###### SUCCESS
 
-###### Testing test-compar
-make test-compar.test > /dev/null
+###### Testing test-geqLeq
+make test-geqLeq.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-compar.o'
+clang: error: no such file or directory: 'tests/test-geqLeq.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-compar
-diff -b test-compar.out tests/test-compar.out > test-compar.diff
+./test-geqLeq
+diff -b test-geqLeq.out tests/test-geqLeq.out > test-geqLeq.diff
 ###### SUCCESS
 
-###### Testing test-funcadd
-make test-funcadd.test > /dev/null
+###### Testing test-global1
+make test-global1.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-funcadd.o'
+clang: error: no such file or directory: 'tests/test-global1.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-funcadd
-diff -b test-funcadd.out tests/test-funcadd.out > test-funcadd.diff
+./test-global1
+diff -b test-global1.out tests/test-global1.out > test-global1.diff
 ###### SUCCESS
 
-###### Testing test-global2
-make test-global2.test > /dev/null
+###### Testing test-if
+make test-if.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-global2.o'
+clang: error: no such file or directory: 'tests/test-if.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-global2
-diff -b test-global2.out tests/test-global2.out > test-global2.diff
+./test-if
+diff -b test-if.out tests/test-if.out > test-if.diff
 ###### SUCCESS
 
-###### Testing test-mod
-make test-mod.test > /dev/null
+###### Testing test-ifElse
+make test-ifElse.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-clang: error: no such file or directory: 'tests/test-mod.o'
+clang: error: no such file or directory: 'tests/test-ifElse.o'
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-mod
-diff -b test-mod.out tests/test-mod.out > test-mod.diff
+./test-ifElse
+diff -b test-ifElse.out tests/test-ifElse.out > test-ifElse.diff
 ###### SUCCESS
 
 ###### Testing test-operations
 make test-operations.test > /dev/null
-warning: overriding the module target triple with i386-pc-linux-gnu
-1 warning generated.
-clang: error: no such file or directory: 'tests/test-operations.o'
-warning: overriding the module target triple with i386-pc-linux-gnu
-1 warning generated.
+Fatal error: exception Parsing.Parse_error
+make: *** [test-operations.test] Error 2
 ./test-operations
+./testall.sh: 1: eval: ./test-operations: not found
 diff -b test-operations.out tests/test-operations.out > test-operations.diff
+FAILED test-operations.out differs from tests/test-operations.out
+###### FAILED
+
+###### Testing test-simpleFunc
+make test-simpleFunc.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-simpleFunc.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-simpleFunc
+diff -b test-simpleFunc.out tests/test-simpleFunc.out > test-simpleFunc.diff
+###### SUCCESS
+
+###### Testing test-vars
+make test-vars.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-vars.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-vars
+diff -b test-vars.out tests/test-vars.out > test-vars.diff
+###### SUCCESS
+
+###### Testing test-vec
+make test-vec.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-vec.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-vec
+diff -b test-vec.out tests/test-vec.out > test-vec.diff
 ###### SUCCESS
 
 ###### Testing test-while
