@@ -14,7 +14,7 @@ type expr = Literal of int
 		| ArrayAccess of expr * expr (*p[0]*)
 		| Unop of uop * expr
 		| Call of string * expr list
-		| Noexpr (*do we use this?*)
+		| Noexpr 
 
 type stmt = Block of stmt list
 		| If of expr * stmt * stmt

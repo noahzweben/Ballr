@@ -66,7 +66,6 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
   (*** DONE CHECKING VARDECLS ***)
 
-
   let builtInDecls =  StringMap.add "print" (*** ADD BUILT IN FUNCTIONS ***)
      { typ = Int; fname = "print"; formals = [(Int, "x")];
        locals = []; body = [] } 
@@ -171,10 +170,8 @@ in
             else Int 
         )
         else
-        (** FIX THIS : Type Ast.typ is not compatible with type Ast.expr -> Ast.typ  *)
-         (* let checkSameT t1 t2 = if t1 != t2 then raise (Failure ("Incorrect actual argument type in " ^ string_of_expr call)) in 
-          List.iter2 (fun (ft,_) e -> ignore(checkSameT ft (expr e)) )
-          fd.formals actuals; *)
+         let checkSameT t1 t2 = if t1 != t2 then raise (Failure ("Incorrect actual argument type in " ^ string_of_expr call)) in 
+          List.iter2 (fun (ft,_) e -> let et = expr m ent e in checkSameT ft et ) fd.formals actuals;
          fd.typ
     | ArrayAccess(e1, e2) -> let e_type = expr m ent e1 and e_num = expr m ent e2 in 
       if (e_type != Color && e_type != Vector) 

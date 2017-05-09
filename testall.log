@@ -1,4 +1,26 @@
 
+###### Testing test-add1
+make test-add1.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-add1.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-add1
+diff -b test-add1.out tests/test-add1.out > test-add1.diff
+###### SUCCESS
+
+###### Testing test-add2
+make test-add2.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-add2.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-add2
+diff -b test-add2.out tests/test-add2.out > test-add2.diff
+###### SUCCESS
+
 ###### Testing test-andOr
 make test-andOr.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
@@ -248,6 +270,28 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 diff -b test-printFunc.out tests/test-printFunc.out > test-printFunc.diff
 ###### SUCCESS
 
+###### Testing test-remove
+make test-remove.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-remove.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-remove
+diff -b test-remove.out tests/test-remove.out > test-remove.diff
+###### SUCCESS
+
+###### Testing test-restart
+make test-restart.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-restart.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-restart
+diff -b test-restart.out tests/test-restart.out > test-restart.diff
+###### SUCCESS
+
 ###### Testing test-simpleFunc
 make test-simpleFunc.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
@@ -322,8 +366,7 @@ diff -b fail-assign2.err tests/fail-assign2.err > fail-assign2.diff
 ###### Testing fail-assign3
 make fail-assign3.test 2> fail-assign3.err 1> /dev/null
 diff -b fail-assign3.err tests/fail-assign3.err > fail-assign3.diff
-FAILED fail-assign3.err differs from tests/fail-assign3.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-clrBool
 make fail-clrBool.test 2> fail-clrBool.err 1> /dev/null
@@ -333,8 +376,7 @@ diff -b fail-clrBool.err tests/fail-clrBool.err > fail-clrBool.diff
 ###### Testing fail-compareClrs
 make fail-compareClrs.test 2> fail-compareClrs.err 1> /dev/null
 diff -b fail-compareClrs.err tests/fail-compareClrs.err > fail-compareClrs.diff
-FAILED fail-compareClrs.err differs from tests/fail-compareClrs.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-compareTypes
 make fail-compareTypes.test 2> fail-compareTypes.err 1> /dev/null
@@ -344,8 +386,7 @@ diff -b fail-compareTypes.err tests/fail-compareTypes.err > fail-compareTypes.di
 ###### Testing fail-compareVecs
 make fail-compareVecs.test 2> fail-compareVecs.err 1> /dev/null
 diff -b fail-compareVecs.err tests/fail-compareVecs.err > fail-compareVecs.diff
-FAILED fail-compareVecs.err differs from tests/fail-compareVecs.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-defAdd
 make fail-defAdd.test 2> fail-defAdd.err 1> /dev/null
@@ -440,19 +481,17 @@ diff -b fail-exprTypes6.err tests/fail-exprTypes6.err > fail-exprTypes6.diff
 ###### Testing fail-floatMod
 make fail-floatMod.test 2> fail-floatMod.err 1> /dev/null
 diff -b fail-floatMod.err tests/fail-floatMod.err > fail-floatMod.diff
-FAILED fail-floatMod.err differs from tests/fail-floatMod.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-ifPredicate
 make fail-ifPredicate.test 2> fail-ifPredicate.err 1> /dev/null
 diff -b fail-ifPredicate.err tests/fail-ifPredicate.err > fail-ifPredicate.diff
 ###### SUCCESS
 
-###### Testing fail-noGb
-make fail-noGb.test 2> fail-noGb.err 1> /dev/null
-diff -b fail-noGb.err tests/fail-noGb.err > fail-noGb.diff
-FAILED fail-noGb.err differs from tests/fail-noGb.err
-###### FAILED
+###### Testing fail-invalidCollision
+make fail-invalidCollision.test 2> fail-invalidCollision.err 1> /dev/null
+diff -b fail-invalidCollision.err tests/fail-invalidCollision.err > fail-invalidCollision.diff
+###### SUCCESS
 
 ###### Testing fail-noGbClr
 make fail-noGbClr.test 2> fail-noGbClr.err 1> /dev/null
@@ -478,12 +517,6 @@ diff -b fail-notEnoughArgs.err tests/fail-notEnoughArgs.err > fail-notEnoughArgs
 make fail-returnType.test 2> fail-returnType.err 1> /dev/null
 diff -b fail-returnType.err tests/fail-returnType.err > fail-returnType.diff
 ###### SUCCESS
-
-###### Testing fail-stmtAfterReturn
-make fail-stmtAfterReturn.test 2> fail-stmtAfterReturn.err 1> /dev/null
-diff -b fail-stmtAfterReturn.err tests/fail-stmtAfterReturn.err > fail-stmtAfterReturn.diff
-FAILED fail-stmtAfterReturn.err differs from tests/fail-stmtAfterReturn.err
-###### FAILED
 
 ###### Testing fail-tooManyArgs
 make fail-tooManyArgs.test 2> fail-tooManyArgs.err 1> /dev/null

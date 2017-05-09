@@ -1,0 +1,2 @@
+Fatal error: exception Failure("illegal assignment vec = color in my_vec = my_clr")
+make: *** [fail-assign3.test] Error 2
