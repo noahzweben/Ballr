@@ -1,0 +1,4 @@
+Both operands to a binary operator are not of the same type!
+  %tmp = add i1 %x1, i32 %a2
+LLVM ERROR: Broken module found, compilation aborted!
+make: *** [fail-exprTypes.test] Error 1

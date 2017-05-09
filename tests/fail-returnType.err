@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Return gives bool expected int in true")
+make: *** [fail-returnType.test] Error 2

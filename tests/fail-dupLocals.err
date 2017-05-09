@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Duplicate init function member x in g1")
+make: *** [fail-dupLocals.test] Error 2

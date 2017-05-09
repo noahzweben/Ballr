@@ -226,7 +226,54 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 diff -b test-while.out tests/test-while.out > test-while.diff
 ###### SUCCESS
 
-###### Testing fail-1
-make fail-1.test 2> fail-1.err 1> /dev/null
-diff -b fail-1.err tests/fail-1.err > fail-1.diff
+###### Testing fail-assign
+make fail-assign.test 2> fail-assign.err 1> /dev/null
+diff -b fail-assign.err tests/fail-assign.err > fail-assign.diff
+###### SUCCESS
+
+###### Testing fail-clrBool
+make fail-clrBool.test 2> fail-clrBool.err 1> /dev/null
+diff -b fail-clrBool.err tests/fail-clrBool.err > fail-clrBool.diff
+###### SUCCESS
+
+###### Testing fail-dupLocals
+make fail-dupLocals.test 2> fail-dupLocals.err 1> /dev/null
+diff -b fail-dupLocals.err tests/fail-dupLocals.err > fail-dupLocals.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes
+make fail-exprTypes.test 2> fail-exprTypes.err 1> /dev/null
+diff -b fail-exprTypes.err tests/fail-exprTypes.err > fail-exprTypes.diff
+FAILED fail-exprTypes.err differs from tests/fail-exprTypes.err
+###### FAILED
+
+###### Testing fail-ifPredicate
+make fail-ifPredicate.test 2> fail-ifPredicate.err 1> /dev/null
+diff -b fail-ifPredicate.err tests/fail-ifPredicate.err > fail-ifPredicate.diff
+###### SUCCESS
+
+###### Testing fail-noGbClr
+make fail-noGbClr.test 2> fail-noGbClr.err 1> /dev/null
+diff -b fail-noGbClr.err tests/fail-noGbClr.err > fail-noGbClr.diff
+###### SUCCESS
+
+###### Testing fail-noReturn
+make fail-noReturn.test 2> fail-noReturn.err 1> /dev/null
+diff -b fail-noReturn.err tests/fail-noReturn.err > fail-noReturn.diff
+###### SUCCESS
+
+###### Testing fail-returnType
+make fail-returnType.test 2> fail-returnType.err 1> /dev/null
+diff -b fail-returnType.err tests/fail-returnType.err > fail-returnType.diff
+###### SUCCESS
+
+###### Testing fail-stmtAfterReturn
+make fail-stmtAfterReturn.test 2> fail-stmtAfterReturn.err 1> /dev/null
+diff -b fail-stmtAfterReturn.err tests/fail-stmtAfterReturn.err > fail-stmtAfterReturn.diff
+FAILED fail-stmtAfterReturn.err differs from tests/fail-stmtAfterReturn.err
+###### FAILED
+
+###### Testing fail-undefFunc
+make fail-undefFunc.test 2> fail-undefFunc.err 1> /dev/null
+diff -b fail-undefFunc.err tests/fail-undefFunc.err > fail-undefFunc.diff
 ###### SUCCESS

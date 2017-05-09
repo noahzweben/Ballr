@@ -1,0 +1,2 @@
+Fatal error: exception Failure("expected numeric input for type color")
+make: *** [fail-clrBool.test] Error 2

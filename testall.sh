@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Regression testing script for Ballr
+# Regression testing script for Ballr (modified from MicroC)
 # Step through a list of files
 #  Compile, run, and check the output of each expected-to-work test
 #  Compile and check the error of each expected-to-fail test
