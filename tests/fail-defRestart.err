@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Duplicate function restart")
+make: *** [fail-defRestart.test] Error 2

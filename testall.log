@@ -391,26 +391,22 @@ diff -b fail-compareVecs.err tests/fail-compareVecs.err > fail-compareVecs.diff
 ###### Testing fail-defAdd
 make fail-defAdd.test 2> fail-defAdd.err 1> /dev/null
 diff -b fail-defAdd.err tests/fail-defAdd.err > fail-defAdd.diff
-FAILED fail-defAdd.err differs from tests/fail-defAdd.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-defPrint
 make fail-defPrint.test 2> fail-defPrint.err 1> /dev/null
 diff -b fail-defPrint.err tests/fail-defPrint.err > fail-defPrint.diff
-FAILED fail-defPrint.err differs from tests/fail-defPrint.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-defRemove
 make fail-defRemove.test 2> fail-defRemove.err 1> /dev/null
 diff -b fail-defRemove.err tests/fail-defRemove.err > fail-defRemove.diff
-FAILED fail-defRemove.err differs from tests/fail-defRemove.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-defRestart
 make fail-defRestart.test 2> fail-defRestart.err 1> /dev/null
 diff -b fail-defRestart.err tests/fail-defRestart.err > fail-defRestart.diff
-FAILED fail-defRestart.err differs from tests/fail-defRestart.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-dupEnts
 make fail-dupEnts.test 2> fail-dupEnts.err 1> /dev/null
@@ -425,8 +421,7 @@ diff -b fail-dupFormals.err tests/fail-dupFormals.err > fail-dupFormals.diff
 ###### Testing fail-dupFuncs
 make fail-dupFuncs.test 2> fail-dupFuncs.err 1> /dev/null
 diff -b fail-dupFuncs.err tests/fail-dupFuncs.err > fail-dupFuncs.diff
-FAILED fail-dupFuncs.err differs from tests/fail-dupFuncs.err
-###### FAILED
+###### SUCCESS
 
 ###### Testing fail-dupGlobals
 make fail-dupGlobals.test 2> fail-dupGlobals.err 1> /dev/null
@@ -546,5 +541,4 @@ diff -b fail-whilePredicate.err tests/fail-whilePredicate.err > fail-whilePredic
 ###### Testing fail-wrongArgTypes
 make fail-wrongArgTypes.test 2> fail-wrongArgTypes.err 1> /dev/null
 diff -b fail-wrongArgTypes.err tests/fail-wrongArgTypes.err > fail-wrongArgTypes.diff
-FAILED fail-wrongArgTypes.err differs from tests/fail-wrongArgTypes.err
-###### FAILED
+###### SUCCESS

@@ -82,9 +82,16 @@ let check (vardecls, funcdecls, entdecls, gboard) =
        locals = []; body = [] } builtInDecls
    in
 
-  (* map of all callable functions *)
-  let functionDecls = List.fold_left (fun m fd -> StringMap.add fd.fname fd m)
-                         builtInDecls funcdecls
+  (* map of all callable functions, don't allow duplicates *)
+  let functionDecls = List.fold_left 
+    (fun m fd ->     
+
+      try
+        StringMap.find fd.fname m; raise (Failure ("Duplicate function " ^ fd.fname));
+      with
+        Not_found -> StringMap.add fd.fname fd m
+    )
+    builtInDecls funcdecls
   in
 
   (* find a function given its name *)
@@ -99,8 +106,6 @@ let check (vardecls, funcdecls, entdecls, gboard) =
         try StringMap.find s globals
         with Not_found -> raise (Failure ("Undeclared identifier " ^ s))
     in
-
-
 
 (* builds a map of each entity and its corresponding available members *)
 

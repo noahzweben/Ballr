@@ -1,5 +1,5 @@
 gameboard g1{
-	clr = (251,142,74);
+	size = (200,100);
 	init -> {
 		if(5>4){
 			print(1);

@@ -1,2 +1,2 @@
-Fatal error: exception Failure("You haven't defined clr")
+Fatal error: exception Failure("You haven't defined size")
 make: *** [fail-noGbSize.test] Error 2

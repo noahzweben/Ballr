@@ -1,5 +1,5 @@
 gameboard g1{
-	size = (251,142);
+	clr = (251,142, 300);
 	init -> {
 
 	}
