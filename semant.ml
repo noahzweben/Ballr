@@ -116,13 +116,6 @@ let allEntMembers =
     List.fold_left entMems StringMap.empty entdecls 
 in
 
- (* unnecessary *)
-(* let checkEntExists s =
-  try ignore(StringMap.find s allEntMembers); 
-  with Not_found -> raise (Failure("Entity "^ s ^ " undefined"))
-
-in *)
-
   (* check expressions *)
   let rec expr m ent = function
 		Literal _ -> Int
@@ -133,13 +126,11 @@ in *)
 
     | Binop(e1, op, e2) as e -> let t1 = expr m ent e1 and t2 = expr m ent e2 in
 		(match op with
-			(* do better *)
       Add | Mod | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
 		 |  Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
 		 |  Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
    	 |  Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
 		 | Equal | Neq when t1 = t2 -> Bool
-		 (* forces to be same ugh *)
 	   | Less | Leq | Greater | Geq when t1 = Int && t2 = Int -> Bool
 	   | Less | Leq | Greater | Geq when t1 = Float && t2 = Float -> Bool
      | Less | Leq | Greater | Geq when t1 = Float && t2 = Int -> Bool
