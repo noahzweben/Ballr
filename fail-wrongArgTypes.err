@@ -1,0 +1,5 @@
+Call parameter type does not match function signature!
+i32 5
+ i1  %my_func = call i32 @my_func(i32 5, i1 true)
+LLVM ERROR: Broken module found, compilation aborted!
+make: *** [fail-wrongArgTypes.test] Error 1

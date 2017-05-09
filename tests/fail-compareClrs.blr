@@ -1,0 +1,10 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		color my_clr2 = (1,2);
+		color my_clr2 = (3,4);
+		if ( my_clr1 <= my_clr2 ){}
+	}
+}

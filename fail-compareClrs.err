@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Duplicate init function member my_clr2 in g1")
+make: *** [fail-compareClrs.test] Error 2

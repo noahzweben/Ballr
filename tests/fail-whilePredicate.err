@@ -1,0 +1,2 @@
+Fatal error: exception Failure("expected Boolean expression in 5.3")
+make: *** [fail-whilePredicate.test] Error 2

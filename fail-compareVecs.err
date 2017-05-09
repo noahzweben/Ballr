@@ -1,0 +1,2 @@
+Fatal error: exception Failure("illegal binary operator vec > vec in my_vec1 > my_vec2")
+make: *** [fail-compareVecs.test] Error 2

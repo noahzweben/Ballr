@@ -1,0 +1,8 @@
+gameboard g1{
+	size = (400, 500);
+	clr = (251,142,74);
+	init -> {
+		int x = 5;
+		x = y;
+	}
+}

@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Undeclared identifier y")
+make: *** [fail-undefined.test] Error 2

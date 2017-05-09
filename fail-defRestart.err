@@ -1,0 +1,5 @@
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/fail-defRestart.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
