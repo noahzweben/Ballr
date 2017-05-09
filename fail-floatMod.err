@@ -1,2 +1,0 @@
-Fatal error: exception Failure("illegal binary operator float % float in x % y")
-make: *** [fail-floatMod.test] Error 2
