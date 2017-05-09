@@ -1,0 +1,23 @@
+entity e {
+    clr = (255, 0, 255);
+    size = (20, 20);
+    int speed = 0;
+    bool flag = false;
+    color new_clr = (1,2,3);
+    vec new_vec = (5,10);
+
+    frame -> {
+        int x = self.pos[0];
+        int y = self.clr[2];
+        int z = self.size[1];
+    }
+
+}
+
+gameboard g1 {
+    clr = (5,10,15);
+    size = (4,5);
+    init -> {
+    
+    }
+}

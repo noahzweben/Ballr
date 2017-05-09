@@ -1,0 +1,21 @@
+entity e { 
+	size = (5,20);
+	clr = (0,0,255);
+	key_UP -> {self.pos[1]= self.pos[1]-10;}
+	key_DOWN -> {self.pos[1]= self.pos[1]+10;}
+	key_LEFT -> {self.pos[0]= self.pos[0]-10;}
+	key_RIGHT -> {self.pos[0]= self.pos[0]+10;}
+	key_W -> {}
+	key_A -> {}
+	key_S -> {}
+	key_D -> {}
+	key_SPACE -> {}
+}
+
+gameboard g1 {
+    clr = (5,10,15);
+    size = (4,5);
+    init -> {
+    
+    }
+}

@@ -52,6 +52,61 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 diff -b test-compareFloats.out tests/test-compareFloats.out > test-compareFloats.diff
 ###### SUCCESS
 
+###### Testing test-entAccess
+make test-entAccess.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entAccess.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entAccess
+diff -b test-entAccess.out tests/test-entAccess.out > test-entAccess.diff
+###### SUCCESS
+
+###### Testing test-entArrayAccess
+make test-entArrayAccess.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entArrayAccess.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entArrayAccess
+diff -b test-entArrayAccess.out tests/test-entArrayAccess.out > test-entArrayAccess.diff
+###### SUCCESS
+
+###### Testing test-entCollisionEvent
+make test-entCollisionEvent.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entCollisionEvent.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entCollisionEvent
+diff -b test-entCollisionEvent.out tests/test-entCollisionEvent.out > test-entCollisionEvent.diff
+###### SUCCESS
+
+###### Testing test-entKeyEvents
+make test-entKeyEvents.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entKeyEvents.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entKeyEvents
+diff -b test-entKeyEvents.out tests/test-entKeyEvents.out > test-entKeyEvents.diff
+###### SUCCESS
+
+###### Testing test-entLocals
+make test-entLocals.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entLocals.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entLocals
+diff -b test-entLocals.out tests/test-entLocals.out > test-entLocals.diff
+###### SUCCESS
+
 ###### Testing test-eqNeq
 make test-eqNeq.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
@@ -248,6 +303,12 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 diff -b test-while.out tests/test-while.out > test-while.diff
 ###### SUCCESS
 
+###### Testing fail-addFloatInt
+make fail-addFloatInt.test 2> fail-addFloatInt.err 1> /dev/null
+diff -b fail-addFloatInt.err tests/fail-addFloatInt.err > fail-addFloatInt.diff
+FAILED fail-addFloatInt.err differs from tests/fail-addFloatInt.err
+###### FAILED
+
 ###### Testing fail-assign
 make fail-assign.test 2> fail-assign.err 1> /dev/null
 diff -b fail-assign.err tests/fail-assign.err > fail-assign.diff
@@ -310,6 +371,11 @@ diff -b fail-defRestart.err tests/fail-defRestart.err > fail-defRestart.diff
 FAILED fail-defRestart.err differs from tests/fail-defRestart.err
 ###### FAILED
 
+###### Testing fail-dupEnts
+make fail-dupEnts.test 2> fail-dupEnts.err 1> /dev/null
+diff -b fail-dupEnts.err tests/fail-dupEnts.err > fail-dupEnts.diff
+###### SUCCESS
+
 ###### Testing fail-dupFormals
 make fail-dupFormals.test 2> fail-dupFormals.err 1> /dev/null
 diff -b fail-dupFormals.err tests/fail-dupFormals.err > fail-dupFormals.diff
@@ -329,6 +395,16 @@ diff -b fail-dupGlobals.err tests/fail-dupGlobals.err > fail-dupGlobals.diff
 ###### Testing fail-dupLocals
 make fail-dupLocals.test 2> fail-dupLocals.err 1> /dev/null
 diff -b fail-dupLocals.err tests/fail-dupLocals.err > fail-dupLocals.diff
+###### SUCCESS
+
+###### Testing fail-entNoClr
+make fail-entNoClr.test 2> fail-entNoClr.err 1> /dev/null
+diff -b fail-entNoClr.err tests/fail-entNoClr.err > fail-entNoClr.diff
+###### SUCCESS
+
+###### Testing fail-entNoSize
+make fail-entNoSize.test 2> fail-entNoSize.err 1> /dev/null
+diff -b fail-entNoSize.err tests/fail-entNoSize.err > fail-entNoSize.diff
 ###### SUCCESS
 
 ###### Testing fail-exprTypes
@@ -360,6 +436,12 @@ diff -b fail-exprTypes5.err tests/fail-exprTypes5.err > fail-exprTypes5.diff
 make fail-exprTypes6.test 2> fail-exprTypes6.err 1> /dev/null
 diff -b fail-exprTypes6.err tests/fail-exprTypes6.err > fail-exprTypes6.diff
 ###### SUCCESS
+
+###### Testing fail-floatMod
+make fail-floatMod.test 2> fail-floatMod.err 1> /dev/null
+diff -b fail-floatMod.err tests/fail-floatMod.err > fail-floatMod.diff
+FAILED fail-floatMod.err differs from tests/fail-floatMod.err
+###### FAILED
 
 ###### Testing fail-ifPredicate
 make fail-ifPredicate.test 2> fail-ifPredicate.err 1> /dev/null

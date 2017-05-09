@@ -1,0 +1,2 @@
+Fatal error: exception Failure("bad_ent is not a defined entity")
+make: *** [fail-invalidCollision.test] Error 2
