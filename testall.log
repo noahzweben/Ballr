@@ -17,7 +17,16 @@ make: *** [test-arith.test] Error 2
 ./test-arith
 ./testall.sh: 1: eval: ./test-arith: not found
 diff -b test-arith.out tests/test-arith.out > test-arith.diff
-FAILED test-arith.out differs from tests/test-arith.out
+###### FAILED
+
+###### Testing test-boolFunc
+make test-boolFunc.test > /dev/null
+Fatal error: exception Parsing.Parse_error
+make: *** [test-boolFunc.test] Error 2
+./test-boolFunc
+./testall.sh: 1: eval: ./test-boolFunc: not found
+diff -b test-boolFunc.out tests/test-boolFunc.out > test-boolFunc.diff
+FAILED test-boolFunc.out differs from tests/test-boolFunc.out
 ###### FAILED
 
 ###### Testing test-clr
@@ -30,6 +39,16 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 ./test-clr
 diff -b test-clr.out tests/test-clr.out > test-clr.diff
 ###### SUCCESS
+
+###### Testing test-clrFunc
+make test-clrFunc.test > /dev/null
+Fatal error: exception Failure("Return gives color expected vec in (r, g, b)")
+make: *** [test-clrFunc.test] Error 2
+./test-clrFunc
+./testall.sh: 1: eval: ./test-clrFunc: not found
+diff -b test-clrFunc.out tests/test-clrFunc.out > test-clrFunc.diff
+FAILED test-clrFunc.out differs from tests/test-clrFunc.out
+###### FAILED
 
 ###### Testing test-eqNeq
 make test-eqNeq.test > /dev/null
@@ -86,6 +105,38 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 diff -b test-global1.out tests/test-global1.out > test-global1.diff
 ###### SUCCESS
 
+###### Testing test-global2
+make test-global2.test > /dev/null
+Fatal error: exception Failure("Function must end with return statement")
+make: *** [test-global2.test] Error 2
+./test-global2
+./testall.sh: 1: eval: ./test-global2: not found
+diff -b test-global2.out tests/test-global2.out > test-global2.diff
+FAILED test-global2.out differs from tests/test-global2.out
+###### FAILED
+
+###### Testing test-global3
+make test-global3.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-global3.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-global3
+diff -b test-global3.out tests/test-global3.out > test-global3.diff
+###### SUCCESS
+
+###### Testing test-global4
+make test-global4.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-global4.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-global4
+diff -b test-global4.out tests/test-global4.out > test-global4.diff
+###### SUCCESS
+
 ###### Testing test-if
 make test-if.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
@@ -115,7 +166,16 @@ make: *** [test-operations.test] Error 2
 ./test-operations
 ./testall.sh: 1: eval: ./test-operations: not found
 diff -b test-operations.out tests/test-operations.out > test-operations.diff
-FAILED test-operations.out differs from tests/test-operations.out
+###### FAILED
+
+###### Testing test-printFunc
+make test-printFunc.test > /dev/null
+Fatal error: exception Failure("Expecting 3 arguments in print(a)")
+make: *** [test-printFunc.test] Error 2
+./test-printFunc
+./testall.sh: 1: eval: ./test-printFunc: not found
+diff -b test-printFunc.out tests/test-printFunc.out > test-printFunc.diff
+FAILED test-printFunc.out differs from tests/test-printFunc.out
 ###### FAILED
 
 ###### Testing test-simpleFunc
@@ -149,6 +209,17 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
 ./test-vec
 diff -b test-vec.out tests/test-vec.out > test-vec.diff
+###### SUCCESS
+
+###### Testing test-vecFunc
+make test-vecFunc.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-vecFunc.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-vecFunc
+diff -b test-vecFunc.out tests/test-vecFunc.out > test-vecFunc.diff
 ###### SUCCESS
 
 ###### Testing test-while

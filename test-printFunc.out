@@ -1,5 +1,1 @@
-5
-10
-15
-SDL could not initialize! SDL Error: No available video device
-Window initialization failed.
+  ./test-printFunc failed on ./test-printFunc

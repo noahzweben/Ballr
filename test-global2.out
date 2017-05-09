@@ -1,4 +1,1 @@
-10
-0
-SDL could not initialize! SDL Error: No available video device
-Window initialization failed.
+  ./test-global2 failed on ./test-global2
