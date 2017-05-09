@@ -1,0 +1,2 @@
+Fatal error: exception Failure("illegal assignment int = float in x = y")
+make: *** [fail-assign2.test] Error 2

@@ -1,0 +1,2 @@
+Fatal error: exception Failure("illegal binary operator color - color in my_clr1 - my_clr2")
+make: *** [fail-exprTypes6.test] Error 2

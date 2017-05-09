@@ -1,0 +1,17 @@
+func vec my_vec_func(){
+	return (5, 10);
+}
+
+func vec my_vec_func(){
+	return (10, 15);
+}
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		vec my_vec = my_vec_func();
+        
+  	}
+}

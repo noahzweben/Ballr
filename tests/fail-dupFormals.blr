@@ -1,0 +1,13 @@
+func bool my_func(int x, bool y, int x){
+	return y;
+}
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		my_func(5, true, 10);
+        
+  	}
+}

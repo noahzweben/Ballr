@@ -1,0 +1,11 @@
+bool y = 2; 
+int x = 4;
+bool y = 5;
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+		print(x);
+	}
+}

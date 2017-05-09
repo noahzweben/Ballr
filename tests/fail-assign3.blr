@@ -1,0 +1,10 @@
+gameboard g1 {
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+		clr my_clr = (2, 3, 4);
+		vec my_vec = (5, 4);
+		my_vec = my_clr;
+	}
+
+}

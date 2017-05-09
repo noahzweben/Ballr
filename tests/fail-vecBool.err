@@ -1,0 +1,2 @@
+Fatal error: exception Failure("expected numeric input for type vector")
+make: *** [fail-vecBool.test] Error 2

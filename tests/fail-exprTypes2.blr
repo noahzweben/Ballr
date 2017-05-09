@@ -1,0 +1,9 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+		int a = 3;
+ 		vec my_vec = (10, 5);
+ 		my_vec - a;
+	}
+}

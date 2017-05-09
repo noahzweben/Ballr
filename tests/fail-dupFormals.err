@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Duplicate formal x in my_func")
+make: *** [fail-dupFormals.test] Error 2

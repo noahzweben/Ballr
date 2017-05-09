@@ -231,9 +231,25 @@ make fail-assign.test 2> fail-assign.err 1> /dev/null
 diff -b fail-assign.err tests/fail-assign.err > fail-assign.diff
 ###### SUCCESS
 
+###### Testing fail-assign2
+make fail-assign2.test 2> fail-assign2.err 1> /dev/null
+diff -b fail-assign2.err tests/fail-assign2.err > fail-assign2.diff
+###### SUCCESS
+
+###### Testing fail-assign3
+make fail-assign3.test 2> fail-assign3.err 1> /dev/null
+diff -b fail-assign3.err tests/fail-assign3.err > fail-assign3.diff
+FAILED fail-assign3.err differs from tests/fail-assign3.err
+###### FAILED
+
 ###### Testing fail-clrBool
 make fail-clrBool.test 2> fail-clrBool.err 1> /dev/null
 diff -b fail-clrBool.err tests/fail-clrBool.err > fail-clrBool.diff
+###### SUCCESS
+
+###### Testing fail-dupGlobals
+make fail-dupGlobals.test 2> fail-dupGlobals.err 1> /dev/null
+diff -b fail-dupGlobals.err tests/fail-dupGlobals.err > fail-dupGlobals.diff
 ###### SUCCESS
 
 ###### Testing fail-dupLocals
@@ -244,8 +260,32 @@ diff -b fail-dupLocals.err tests/fail-dupLocals.err > fail-dupLocals.diff
 ###### Testing fail-exprTypes
 make fail-exprTypes.test 2> fail-exprTypes.err 1> /dev/null
 diff -b fail-exprTypes.err tests/fail-exprTypes.err > fail-exprTypes.diff
-FAILED fail-exprTypes.err differs from tests/fail-exprTypes.err
-###### FAILED
+###### SUCCESS
+
+###### Testing fail-exprTypes2
+make fail-exprTypes2.test 2> fail-exprTypes2.err 1> /dev/null
+diff -b fail-exprTypes2.err tests/fail-exprTypes2.err > fail-exprTypes2.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes3
+make fail-exprTypes3.test 2> fail-exprTypes3.err 1> /dev/null
+diff -b fail-exprTypes3.err tests/fail-exprTypes3.err > fail-exprTypes3.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes4
+make fail-exprTypes4.test 2> fail-exprTypes4.err 1> /dev/null
+diff -b fail-exprTypes4.err tests/fail-exprTypes4.err > fail-exprTypes4.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes5
+make fail-exprTypes5.test 2> fail-exprTypes5.err 1> /dev/null
+diff -b fail-exprTypes5.err tests/fail-exprTypes5.err > fail-exprTypes5.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes6
+make fail-exprTypes6.test 2> fail-exprTypes6.err 1> /dev/null
+diff -b fail-exprTypes6.err tests/fail-exprTypes6.err > fail-exprTypes6.diff
+###### SUCCESS
 
 ###### Testing fail-ifPredicate
 make fail-ifPredicate.test 2> fail-ifPredicate.err 1> /dev/null
@@ -276,4 +316,9 @@ FAILED fail-stmtAfterReturn.err differs from tests/fail-stmtAfterReturn.err
 ###### Testing fail-undefFunc
 make fail-undefFunc.test 2> fail-undefFunc.err 1> /dev/null
 diff -b fail-undefFunc.err tests/fail-undefFunc.err > fail-undefFunc.diff
+###### SUCCESS
+
+###### Testing fail-vecBool
+make fail-vecBool.test 2> fail-vecBool.err 1> /dev/null
+diff -b fail-vecBool.err tests/fail-vecBool.err > fail-vecBool.diff
 ###### SUCCESS
