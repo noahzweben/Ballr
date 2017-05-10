@@ -1,0 +1,12 @@
+gameboard g1 {
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		float y = 3.5 + 10;
+		if ( y > 3.5 ){
+			print(10);
+		}
+
+  	}
+}
