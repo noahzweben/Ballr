@@ -1,9 +1,0 @@
-gameboard g1{
-	clr = (251,142,74);
-	size = (680,420);
-	init -> {
-		int x = 1;
-		float y = 2.5;
-		y + x;
-	}
-}

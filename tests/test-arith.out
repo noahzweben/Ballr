@@ -1,1 +1,4 @@
-  ./test-arith failed on ./test-arith
+6
+9
+SDL could not initialize! SDL Error: No available video device
+Window initialization failed.

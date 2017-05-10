@@ -28,7 +28,6 @@
 %type < Ast.program> program
 
 %%
-/* QUESTIONS: time? vec/clr assignment? */
 
 program:	
 		var_decl_list func_decl_list ent_decl_list gboard EOF         
@@ -41,7 +40,6 @@ prim_type:
         | COLOR		{ Color}
         | VECTOR 	{ Vector }
 
-/*arg: prim_type ID 	{  } UNSURE IF NECESSARY */
 
 var_decl_list: 	/* nothing */               	{ [] }
         		| var_decl_list var_decl 		{ $2 :: $1 }
@@ -123,8 +121,8 @@ expr:
 	| FLOAT_LITERAL 				{ FLiteral($1) }
 	| TRUE							{ BoolLit(true) }
 	| FALSE							{ BoolLit(false) }
-	| member 						{ $1 } /* don't understand this*/
-	| tmember 						{ $1 } /* this too */
+	| member 						{ $1 } 
+	| tmember 						{ $1 } 
 	| expr PLUS expr                { Binop($1, Add, $3) }
     | expr MINUS expr               { Binop($1, Sub, $3) }
     | expr TIMES expr 				{ Binop($1, Mult, $3) }

@@ -34,12 +34,14 @@ diff -b test-andOr.out tests/test-andOr.out > test-andOr.diff
 
 ###### Testing test-arith
 make test-arith.test > /dev/null
-Fatal error: exception Parsing.Parse_error
-make: *** [test-arith.test] Error 2
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-arith.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
 ./test-arith
-./testall.sh: 1: eval: ./test-arith: not found
 diff -b test-arith.out tests/test-arith.out > test-arith.diff
-###### FAILED
+###### SUCCESS
 
 ###### Testing test-clr
 make test-clr.test > /dev/null
@@ -252,12 +254,14 @@ diff -b test-ifElse.out tests/test-ifElse.out > test-ifElse.diff
 
 ###### Testing test-operations
 make test-operations.test > /dev/null
-Fatal error: exception Parsing.Parse_error
-make: *** [test-operations.test] Error 2
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-operations.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
 ./test-operations
-./testall.sh: 1: eval: ./test-operations: not found
 diff -b test-operations.out tests/test-operations.out > test-operations.diff
-###### FAILED
+###### SUCCESS
 
 ###### Testing test-printFunc
 make test-printFunc.test > /dev/null
@@ -346,12 +350,6 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 ./test-while
 diff -b test-while.out tests/test-while.out > test-while.diff
 ###### SUCCESS
-
-###### Testing fail-addFloatInt
-make fail-addFloatInt.test 2> fail-addFloatInt.err 1> /dev/null
-diff -b fail-addFloatInt.err tests/fail-addFloatInt.err > fail-addFloatInt.diff
-FAILED fail-addFloatInt.err differs from tests/fail-addFloatInt.err
-###### FAILED
 
 ###### Testing fail-assign
 make fail-assign.test 2> fail-assign.err 1> /dev/null

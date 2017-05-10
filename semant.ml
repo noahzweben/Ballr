@@ -226,7 +226,7 @@ in
     | Expr e -> ignore (expr m ent e)
     | If(p, b1, b2) -> checkBoolExpr p m ent ; stmt m ent  b1; stmt m ent  b2
     | While(p, s) -> checkBoolExpr p m ent ; stmt m ent  s
-    | Return e -> () (* NEED TO MAKE SURE ONLY HAVE RETURN STATEMENTS IN FUNCTIONS *)
+    | Return e -> () 
 
   in
 

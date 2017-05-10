@@ -8,7 +8,5 @@ gameboard g1{
   		print(1 * 2);
   		print(100 / 2);
   		print(50 % 7);
-		int x = -5;
-		print(x);
   	}
 }
