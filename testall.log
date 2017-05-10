@@ -21,6 +21,17 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 diff -b test-add2.out tests/test-add2.out > test-add2.diff
 ###### SUCCESS
 
+###### Testing test-addIntToFloat
+make test-addIntToFloat.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-addIntToFloat.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-addIntToFloat
+diff -b test-addIntToFloat.out tests/test-addIntToFloat.out > test-addIntToFloat.diff
+###### SUCCESS
+
 ###### Testing test-andOr
 make test-andOr.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
@@ -41,6 +52,17 @@ warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
 ./test-arith
 diff -b test-arith.out tests/test-arith.out > test-arith.diff
+###### SUCCESS
+
+###### Testing test-clickEvent
+make test-clickEvent.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-clickEvent.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-clickEvent
+diff -b test-clickEvent.out tests/test-clickEvent.out > test-clickEvent.diff
 ###### SUCCESS
 
 ###### Testing test-clr

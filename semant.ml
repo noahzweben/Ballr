@@ -57,6 +57,10 @@ let check (vardecls, funcdecls, entdecls, gboard) =
     in List.fold_left global_var StringMap.empty vardecls
   in 
 
+  let globals =
+    StringMap.add "clickpos" Vector globals
+  in
+
   (* check assignment types *)
   List.iter (checkGlobalVarInit globals) vardecls; 
 
