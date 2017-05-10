@@ -1,0 +1,15 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		float x = 1.2;
+		float y = 3.5;
+
+		x + y;
+ 		y - x;
+ 		x * y;
+ 		y / x;
+  		
+  	}
+}

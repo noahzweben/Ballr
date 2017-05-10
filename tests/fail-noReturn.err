@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Empty function")
+make: *** [fail-noReturn.test] Error 2

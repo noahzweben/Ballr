@@ -1,0 +1,8 @@
+gameboard g1{
+	size = (200,100);
+	init -> {
+		if(5>4){
+			print(1);
+		}
+	}
+}

@@ -1,0 +1,2 @@
+Fatal error: exception Failure("illegal binary operator vec + color in my_vec + my_clr")
+make: *** [fail-exprTypes4.test] Error 2

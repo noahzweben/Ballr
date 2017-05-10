@@ -1,0 +1,14 @@
+int x = 10;
+
+func int my_overwrite_func(int x){
+	
+	return x;
+}
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+		print(my_overwrite_func(20));		 
+  	}
+}

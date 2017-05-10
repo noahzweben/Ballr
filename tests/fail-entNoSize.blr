@@ -1,0 +1,11 @@
+entity e1{
+	clr = (1, 2, 3);
+}
+
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+	}
+}

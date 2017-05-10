@@ -122,7 +122,7 @@ let translate (vardecls, fdecls, ents, gboard) =
     | A.Call ("print", [e]) | A.Call ("printb", [e]) ->
       L.build_call printf_func 
         [| int_format_str builder ; (expr builder m mem_m ent e) |]
-        "printf" builder (* build_call fn args name b creates %name = call %fn(args...) *)
+        "printf" builder 
 
     | A.Call ("add", [e1; e2]) ->
       let e2' = expr builder m mem_m ent e2 in

@@ -1,0 +1,2 @@
+Fatal error: exception Failure("expected Boolean expression in 5")
+make: *** [fail-ifPredicate.test] Error 2

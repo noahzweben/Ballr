@@ -1,0 +1,2 @@
+Fatal error: exception Failure("illegal binary operator vec - int in my_vec - a")
+make: *** [fail-exprTypes2.test] Error 2

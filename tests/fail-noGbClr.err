@@ -1,0 +1,2 @@
+Fatal error: exception Failure("You haven't defined clr")
+make: *** [fail-noGbClr.test] Error 2

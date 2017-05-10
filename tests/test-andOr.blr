@@ -1,0 +1,29 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+        bool t = true;
+        bool f = false;
+
+        if (t && f) {
+            print(50);
+        }
+        if (t && t){
+            print(40);
+        }
+        if (f && f) {
+            print(30);
+        }
+        if (t || f) {
+            print(20);
+        }
+        if (t || t) {
+            print(10);
+        }
+        if (f || f){
+            print(0);
+        }
+        
+  	}
+}

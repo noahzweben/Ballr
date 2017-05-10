@@ -1,0 +1,2 @@
+Fatal error: exception Failure("You haven't defined clr")
+make: *** [fail-entNoClr.test] Error 2

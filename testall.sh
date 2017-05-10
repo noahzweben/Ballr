@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Regression testing script for Ballr
+# Regression testing script for Ballr (modified from MicroC)
 # Step through a list of files
 #  Compile, run, and check the output of each expected-to-work test
 #  Compile and check the error of each expected-to-fail test
@@ -76,7 +76,7 @@ Check() {
 
     generatedfiles=""
 
-    generatedfiles="$generatedfiles ${basename}.ll ${basename}.o ${basename} ${basename}.out" &&
+    generatedfiles="$generatedfiles tests/${basename}.ll ${basename}.o ${basename} ${basename}.out" &&
     Run "make ${basename}.test > /dev/null"
     Run "./${basename}" > "${basename}.out" 
     Compare ${basename}.out ${reffile}.out ${basename}.diff
@@ -95,7 +95,6 @@ Check() {
     fi
 }
 
-# NEED TO MODIFY THIS WHEN WE ADD ERROR MESSAGES
 CheckFail() {
     error=0
     basename=`echo $1 | sed 's/.*\\///
@@ -110,7 +109,7 @@ CheckFail() {
 
     generatedfiles=""
 
-    generatedfiles="$generatedfiles ${basename}.ll ${basename}.o ${basename} ${basename}.err" &&
+    generatedfiles="$generatedfiles tests/${basename}.ll ${basename}.o ${basename} ${basename}.err" &&
     RunFail "make ${basename}.test 2> ${basename}.err 1> /dev/null"
     Compare ${basename}.err ${reffile}.err ${basename}.diff
 
@@ -145,7 +144,7 @@ if [ $# -ge 1 ]
 then
     files=$@
 else
-    files="tests/test-*.blr tests/fail-*.blr"
+     files="tests/test-*.blr tests/fail-*.blr"
 fi
 
 for file in $files

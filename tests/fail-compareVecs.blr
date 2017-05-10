@@ -1,0 +1,10 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+
+		vec my_vec1 = (1,2);
+		vec my_vec2 = (3,4);
+		if ( my_vec1 > my_vec2 ){}
+	}
+}

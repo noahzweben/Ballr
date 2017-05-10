@@ -1,0 +1,22 @@
+entity e {
+	
+	clr = (2,3,4);
+	size = (1,2);
+
+	self >< e2 -> { 1; }
+	
+}
+
+entity e2 {
+	clr = (2,3,4);
+	size = (1,2);
+}
+
+gameboard g1 {
+    clr = (5,10,15);
+    size = (4,5);
+    init -> {
+    
+    }
+}
+

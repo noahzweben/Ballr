@@ -1,0 +1,9 @@
+gameboard g1{
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+		int a = 3;
+ 		color my_clr = (10, 5, 15);
+ 		my_clr * a;
+	}
+}

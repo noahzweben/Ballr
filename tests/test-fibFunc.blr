@@ -1,0 +1,18 @@
+func int fib(int x)
+{
+  if (x < 2) return 1;
+  return fib(x-1) + fib(x-2);
+}
+
+gameboard g1 {
+	clr = (251,142,74);
+	size = (680,420);
+	init -> {
+ 		print(fib(0));
+ 		print(fib(1));
+ 		print(fib(2));
+  		print(fib(3));
+    	print(fib(4));
+    	print(fib(5));
+	}
+}

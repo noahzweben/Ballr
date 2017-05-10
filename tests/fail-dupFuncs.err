@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Duplicate function my_vec_func")
+make: *** [fail-dupFuncs.test] Error 2

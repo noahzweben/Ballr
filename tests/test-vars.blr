@@ -1,0 +1,10 @@
+gameboard gb {
+	clr = (200, 300, 100);
+	size = (400,600);
+	init -> {
+		int a = 5; 
+	    bool b = false;
+	    float f = 3.2;
+	    print(a);
+    }
+}

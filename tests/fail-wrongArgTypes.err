@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Incorrect actual argument type in my_func(5, true)")
+make: *** [fail-wrongArgTypes.test] Error 2

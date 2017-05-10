@@ -10,11 +10,11 @@ type expr = Literal of int
 		| Id of string
 		| Binop of expr * op * expr
 		| Assign of expr * expr
-		| Access of string * string (* p.name *)
-		| ArrayAccess of expr * expr (*p[0]*)
+		| Access of string * string
+		| ArrayAccess of expr * expr
 		| Unop of uop * expr
 		| Call of string * expr list
-		| Noexpr (*do we use this?*)
+		| Noexpr 
 
 type stmt = Block of stmt list
 		| If of expr * stmt * stmt

@@ -1,0 +1,2 @@
+Fatal error: exception Failure("illegal binary operator int != bool in 6 != false")
+make: *** [fail-compareTypes.test] Error 2

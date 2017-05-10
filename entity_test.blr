@@ -1,8 +1,10 @@
+
 entity e1 {
 	clr = (10,10,10);
 	size = (10,10);
-	self >< e1  -> {}
-
+	click  -> {
+		print(clickpos[0]);
+	}
 
 }
 
@@ -12,7 +14,7 @@ gameboard g1{
 	clr = (0.0, 255.0,255.0);
 	size = (680.5,420);
 	init -> {
-        float x = 10.0+5.1;
-        if (4.01 > 4) {print(100);}
+		int x  = 6;
+        if (4 < 65) {print(100);}
     }
 }

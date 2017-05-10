@@ -1,0 +1,28 @@
+entity e {
+	clr = (2,3,4);
+	size = (1,2);
+}
+
+entity e2 {
+	clr = (2,3,4);
+	size = (1,2);
+    int i = 0;
+    bool removed = false;
+
+    frame -> {
+        self.i = self.i + 1;
+        if(self.i % 20 == 0 && !self.removed){
+            remove();
+            self.removed = true;
+        }
+    }
+}
+
+gameboard g1 {
+    clr = (5,10,15);
+    size = (4,5);
+    init -> {
+    	add(e2, (20, 30));
+        add(e, (10, 20));
+    }
+}

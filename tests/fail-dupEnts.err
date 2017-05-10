@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Duplicate entity e1")
+make: *** [fail-dupEnts.test] Error 2

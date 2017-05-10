@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Duplicate function print")
+make: *** [fail-defPrint.test] Error 2

@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Expecting 2 arguments in my_func(true)")
+make: *** [fail-notEnoughArgs.test] Error 2

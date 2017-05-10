@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Duplicate function add")
+make: *** [fail-defAdd.test] Error 2

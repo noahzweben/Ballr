@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Inconsistent types in global declaration y 2")
+make: *** [fail-dupGlobals.test] Error 2

@@ -1,9 +1,18 @@
-gameboard g1{
-	clr = (251,142,74);
-	size = (680,420);
-	init -> {
-		int i= 5+4; 
-		print (i);
-		}
-	}
+entity e {
+	clr = (2,3,4);
+	size = (1,2);
+}
 
+entity e2 {
+	clr = (2,3,4);
+	size = (1,2);
+}
+
+gameboard g1 {
+    clr = (5,10,15);
+    size = (4,5);
+    init -> {
+    	add(e, (5, 10));
+    	add(e2, (20, 30));
+    }
+}

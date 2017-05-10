@@ -1,8 +1,542 @@
 
-###### Testing test-1
-make test-1.test > /dev/null
+###### Testing test-add1
+make test-add1.test > /dev/null
 warning: overriding the module target triple with i386-pc-linux-gnu
 1 warning generated.
-./test-1
-diff -b test-1.out tests/test-1.out > test-1.diff
+clang: error: no such file or directory: 'tests/test-add1.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-add1
+diff -b test-add1.out tests/test-add1.out > test-add1.diff
+###### SUCCESS
+
+###### Testing test-add2
+make test-add2.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-add2.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-add2
+diff -b test-add2.out tests/test-add2.out > test-add2.diff
+###### SUCCESS
+
+###### Testing test-andOr
+make test-andOr.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-andOr.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-andOr
+diff -b test-andOr.out tests/test-andOr.out > test-andOr.diff
+###### SUCCESS
+
+###### Testing test-arith
+make test-arith.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-arith.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-arith
+diff -b test-arith.out tests/test-arith.out > test-arith.diff
+###### SUCCESS
+
+###### Testing test-clr
+make test-clr.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-clr.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-clr
+diff -b test-clr.out tests/test-clr.out > test-clr.diff
+###### SUCCESS
+
+###### Testing test-clrFunc
+make test-clrFunc.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-clrFunc.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-clrFunc
+diff -b test-clrFunc.out tests/test-clrFunc.out > test-clrFunc.diff
+###### SUCCESS
+
+###### Testing test-compareFloats
+make test-compareFloats.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-compareFloats.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-compareFloats
+diff -b test-compareFloats.out tests/test-compareFloats.out > test-compareFloats.diff
+###### SUCCESS
+
+###### Testing test-entAccess
+make test-entAccess.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entAccess.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entAccess
+diff -b test-entAccess.out tests/test-entAccess.out > test-entAccess.diff
+###### SUCCESS
+
+###### Testing test-entArrayAccess
+make test-entArrayAccess.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entArrayAccess.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entArrayAccess
+diff -b test-entArrayAccess.out tests/test-entArrayAccess.out > test-entArrayAccess.diff
+###### SUCCESS
+
+###### Testing test-entCollisionEvent
+make test-entCollisionEvent.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entCollisionEvent.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entCollisionEvent
+diff -b test-entCollisionEvent.out tests/test-entCollisionEvent.out > test-entCollisionEvent.diff
+###### SUCCESS
+
+###### Testing test-entKeyEvents
+make test-entKeyEvents.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entKeyEvents.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entKeyEvents
+diff -b test-entKeyEvents.out tests/test-entKeyEvents.out > test-entKeyEvents.diff
+###### SUCCESS
+
+###### Testing test-entLocals
+make test-entLocals.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-entLocals.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-entLocals
+diff -b test-entLocals.out tests/test-entLocals.out > test-entLocals.diff
+###### SUCCESS
+
+###### Testing test-eqNeq
+make test-eqNeq.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-eqNeq.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-eqNeq
+diff -b test-eqNeq.out tests/test-eqNeq.out > test-eqNeq.diff
+###### SUCCESS
+
+###### Testing test-fibFunc
+make test-fibFunc.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-fibFunc.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-fibFunc
+diff -b test-fibFunc.out tests/test-fibFunc.out > test-fibFunc.diff
+###### SUCCESS
+
+###### Testing test-floatOps
+make test-floatOps.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-floatOps.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-floatOps
+diff -b test-floatOps.out tests/test-floatOps.out > test-floatOps.diff
+###### SUCCESS
+
+###### Testing test-gcdFunc
+make test-gcdFunc.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-gcdFunc.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-gcdFunc
+diff -b test-gcdFunc.out tests/test-gcdFunc.out > test-gcdFunc.diff
+###### SUCCESS
+
+###### Testing test-geqLeq
+make test-geqLeq.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-geqLeq.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-geqLeq
+diff -b test-geqLeq.out tests/test-geqLeq.out > test-geqLeq.diff
+###### SUCCESS
+
+###### Testing test-global1
+make test-global1.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-global1.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-global1
+diff -b test-global1.out tests/test-global1.out > test-global1.diff
+###### SUCCESS
+
+###### Testing test-global2
+make test-global2.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-global2.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-global2
+diff -b test-global2.out tests/test-global2.out > test-global2.diff
+###### SUCCESS
+
+###### Testing test-global3
+make test-global3.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-global3.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-global3
+diff -b test-global3.out tests/test-global3.out > test-global3.diff
+###### SUCCESS
+
+###### Testing test-global4
+make test-global4.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-global4.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-global4
+diff -b test-global4.out tests/test-global4.out > test-global4.diff
+###### SUCCESS
+
+###### Testing test-if
+make test-if.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-if.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-if
+diff -b test-if.out tests/test-if.out > test-if.diff
+###### SUCCESS
+
+###### Testing test-ifElse
+make test-ifElse.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-ifElse.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-ifElse
+diff -b test-ifElse.out tests/test-ifElse.out > test-ifElse.diff
+###### SUCCESS
+
+###### Testing test-operations
+make test-operations.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-operations.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-operations
+diff -b test-operations.out tests/test-operations.out > test-operations.diff
+###### SUCCESS
+
+###### Testing test-printFunc
+make test-printFunc.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-printFunc.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-printFunc
+diff -b test-printFunc.out tests/test-printFunc.out > test-printFunc.diff
+###### SUCCESS
+
+###### Testing test-remove
+make test-remove.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-remove.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-remove
+diff -b test-remove.out tests/test-remove.out > test-remove.diff
+###### SUCCESS
+
+###### Testing test-restart
+make test-restart.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-restart.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-restart
+diff -b test-restart.out tests/test-restart.out > test-restart.diff
+###### SUCCESS
+
+###### Testing test-simpleFunc
+make test-simpleFunc.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-simpleFunc.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-simpleFunc
+diff -b test-simpleFunc.out tests/test-simpleFunc.out > test-simpleFunc.diff
+###### SUCCESS
+
+###### Testing test-vars
+make test-vars.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-vars.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-vars
+diff -b test-vars.out tests/test-vars.out > test-vars.diff
+###### SUCCESS
+
+###### Testing test-vec
+make test-vec.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-vec.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-vec
+diff -b test-vec.out tests/test-vec.out > test-vec.diff
+###### SUCCESS
+
+###### Testing test-vecFunc
+make test-vecFunc.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-vecFunc.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-vecFunc
+diff -b test-vecFunc.out tests/test-vecFunc.out > test-vecFunc.diff
+###### SUCCESS
+
+###### Testing test-while
+make test-while.test > /dev/null
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+clang: error: no such file or directory: 'tests/test-while.o'
+warning: overriding the module target triple with i386-pc-linux-gnu
+1 warning generated.
+./test-while
+diff -b test-while.out tests/test-while.out > test-while.diff
+###### SUCCESS
+
+###### Testing fail-assign
+make fail-assign.test 2> fail-assign.err 1> /dev/null
+diff -b fail-assign.err tests/fail-assign.err > fail-assign.diff
+###### SUCCESS
+
+###### Testing fail-assign2
+make fail-assign2.test 2> fail-assign2.err 1> /dev/null
+diff -b fail-assign2.err tests/fail-assign2.err > fail-assign2.diff
+###### SUCCESS
+
+###### Testing fail-assign3
+make fail-assign3.test 2> fail-assign3.err 1> /dev/null
+diff -b fail-assign3.err tests/fail-assign3.err > fail-assign3.diff
+###### SUCCESS
+
+###### Testing fail-clrBool
+make fail-clrBool.test 2> fail-clrBool.err 1> /dev/null
+diff -b fail-clrBool.err tests/fail-clrBool.err > fail-clrBool.diff
+###### SUCCESS
+
+###### Testing fail-compareClrs
+make fail-compareClrs.test 2> fail-compareClrs.err 1> /dev/null
+diff -b fail-compareClrs.err tests/fail-compareClrs.err > fail-compareClrs.diff
+###### SUCCESS
+
+###### Testing fail-compareTypes
+make fail-compareTypes.test 2> fail-compareTypes.err 1> /dev/null
+diff -b fail-compareTypes.err tests/fail-compareTypes.err > fail-compareTypes.diff
+###### SUCCESS
+
+###### Testing fail-compareVecs
+make fail-compareVecs.test 2> fail-compareVecs.err 1> /dev/null
+diff -b fail-compareVecs.err tests/fail-compareVecs.err > fail-compareVecs.diff
+###### SUCCESS
+
+###### Testing fail-defAdd
+make fail-defAdd.test 2> fail-defAdd.err 1> /dev/null
+diff -b fail-defAdd.err tests/fail-defAdd.err > fail-defAdd.diff
+###### SUCCESS
+
+###### Testing fail-defPrint
+make fail-defPrint.test 2> fail-defPrint.err 1> /dev/null
+diff -b fail-defPrint.err tests/fail-defPrint.err > fail-defPrint.diff
+###### SUCCESS
+
+###### Testing fail-defRemove
+make fail-defRemove.test 2> fail-defRemove.err 1> /dev/null
+diff -b fail-defRemove.err tests/fail-defRemove.err > fail-defRemove.diff
+###### SUCCESS
+
+###### Testing fail-defRestart
+make fail-defRestart.test 2> fail-defRestart.err 1> /dev/null
+diff -b fail-defRestart.err tests/fail-defRestart.err > fail-defRestart.diff
+###### SUCCESS
+
+###### Testing fail-dupEnts
+make fail-dupEnts.test 2> fail-dupEnts.err 1> /dev/null
+diff -b fail-dupEnts.err tests/fail-dupEnts.err > fail-dupEnts.diff
+###### SUCCESS
+
+###### Testing fail-dupFormals
+make fail-dupFormals.test 2> fail-dupFormals.err 1> /dev/null
+diff -b fail-dupFormals.err tests/fail-dupFormals.err > fail-dupFormals.diff
+###### SUCCESS
+
+###### Testing fail-dupFuncs
+make fail-dupFuncs.test 2> fail-dupFuncs.err 1> /dev/null
+diff -b fail-dupFuncs.err tests/fail-dupFuncs.err > fail-dupFuncs.diff
+###### SUCCESS
+
+###### Testing fail-dupGlobals
+make fail-dupGlobals.test 2> fail-dupGlobals.err 1> /dev/null
+diff -b fail-dupGlobals.err tests/fail-dupGlobals.err > fail-dupGlobals.diff
+###### SUCCESS
+
+###### Testing fail-dupLocals
+make fail-dupLocals.test 2> fail-dupLocals.err 1> /dev/null
+diff -b fail-dupLocals.err tests/fail-dupLocals.err > fail-dupLocals.diff
+###### SUCCESS
+
+###### Testing fail-entNoClr
+make fail-entNoClr.test 2> fail-entNoClr.err 1> /dev/null
+diff -b fail-entNoClr.err tests/fail-entNoClr.err > fail-entNoClr.diff
+###### SUCCESS
+
+###### Testing fail-entNoSize
+make fail-entNoSize.test 2> fail-entNoSize.err 1> /dev/null
+diff -b fail-entNoSize.err tests/fail-entNoSize.err > fail-entNoSize.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes
+make fail-exprTypes.test 2> fail-exprTypes.err 1> /dev/null
+diff -b fail-exprTypes.err tests/fail-exprTypes.err > fail-exprTypes.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes2
+make fail-exprTypes2.test 2> fail-exprTypes2.err 1> /dev/null
+diff -b fail-exprTypes2.err tests/fail-exprTypes2.err > fail-exprTypes2.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes3
+make fail-exprTypes3.test 2> fail-exprTypes3.err 1> /dev/null
+diff -b fail-exprTypes3.err tests/fail-exprTypes3.err > fail-exprTypes3.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes4
+make fail-exprTypes4.test 2> fail-exprTypes4.err 1> /dev/null
+diff -b fail-exprTypes4.err tests/fail-exprTypes4.err > fail-exprTypes4.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes5
+make fail-exprTypes5.test 2> fail-exprTypes5.err 1> /dev/null
+diff -b fail-exprTypes5.err tests/fail-exprTypes5.err > fail-exprTypes5.diff
+###### SUCCESS
+
+###### Testing fail-exprTypes6
+make fail-exprTypes6.test 2> fail-exprTypes6.err 1> /dev/null
+diff -b fail-exprTypes6.err tests/fail-exprTypes6.err > fail-exprTypes6.diff
+###### SUCCESS
+
+###### Testing fail-floatMod
+make fail-floatMod.test 2> fail-floatMod.err 1> /dev/null
+diff -b fail-floatMod.err tests/fail-floatMod.err > fail-floatMod.diff
+###### SUCCESS
+
+###### Testing fail-ifPredicate
+make fail-ifPredicate.test 2> fail-ifPredicate.err 1> /dev/null
+diff -b fail-ifPredicate.err tests/fail-ifPredicate.err > fail-ifPredicate.diff
+###### SUCCESS
+
+###### Testing fail-invalidCollision
+make fail-invalidCollision.test 2> fail-invalidCollision.err 1> /dev/null
+diff -b fail-invalidCollision.err tests/fail-invalidCollision.err > fail-invalidCollision.diff
+###### SUCCESS
+
+###### Testing fail-noGbClr
+make fail-noGbClr.test 2> fail-noGbClr.err 1> /dev/null
+diff -b fail-noGbClr.err tests/fail-noGbClr.err > fail-noGbClr.diff
+###### SUCCESS
+
+###### Testing fail-noGbSize
+make fail-noGbSize.test 2> fail-noGbSize.err 1> /dev/null
+diff -b fail-noGbSize.err tests/fail-noGbSize.err > fail-noGbSize.diff
+###### SUCCESS
+
+###### Testing fail-noReturn
+make fail-noReturn.test 2> fail-noReturn.err 1> /dev/null
+diff -b fail-noReturn.err tests/fail-noReturn.err > fail-noReturn.diff
+###### SUCCESS
+
+###### Testing fail-notEnoughArgs
+make fail-notEnoughArgs.test 2> fail-notEnoughArgs.err 1> /dev/null
+diff -b fail-notEnoughArgs.err tests/fail-notEnoughArgs.err > fail-notEnoughArgs.diff
+###### SUCCESS
+
+###### Testing fail-returnType
+make fail-returnType.test 2> fail-returnType.err 1> /dev/null
+diff -b fail-returnType.err tests/fail-returnType.err > fail-returnType.diff
+###### SUCCESS
+
+###### Testing fail-tooManyArgs
+make fail-tooManyArgs.test 2> fail-tooManyArgs.err 1> /dev/null
+diff -b fail-tooManyArgs.err tests/fail-tooManyArgs.err > fail-tooManyArgs.diff
+###### SUCCESS
+
+###### Testing fail-undefFunc
+make fail-undefFunc.test 2> fail-undefFunc.err 1> /dev/null
+diff -b fail-undefFunc.err tests/fail-undefFunc.err > fail-undefFunc.diff
+###### SUCCESS
+
+###### Testing fail-undefined
+make fail-undefined.test 2> fail-undefined.err 1> /dev/null
+diff -b fail-undefined.err tests/fail-undefined.err > fail-undefined.diff
+###### SUCCESS
+
+###### Testing fail-vecBool
+make fail-vecBool.test 2> fail-vecBool.err 1> /dev/null
+diff -b fail-vecBool.err tests/fail-vecBool.err > fail-vecBool.diff
+###### SUCCESS
+
+###### Testing fail-whilePredicate
+make fail-whilePredicate.test 2> fail-whilePredicate.err 1> /dev/null
+diff -b fail-whilePredicate.err tests/fail-whilePredicate.err > fail-whilePredicate.diff
+###### SUCCESS
+
+###### Testing fail-wrongArgTypes
+make fail-wrongArgTypes.test 2> fail-wrongArgTypes.err 1> /dev/null
+diff -b fail-wrongArgTypes.err tests/fail-wrongArgTypes.err > fail-wrongArgTypes.diff
 ###### SUCCESS

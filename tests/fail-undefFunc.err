@@ -1,0 +1,2 @@
+Fatal error: exception Failure("Unrecognized function foo")
+make: *** [fail-undefFunc.test] Error 2

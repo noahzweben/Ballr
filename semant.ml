@@ -66,7 +66,6 @@ let check (vardecls, funcdecls, entdecls, gboard) =
 
   (*** DONE CHECKING VARDECLS ***)
 
-
   let builtInDecls =  StringMap.add "print" (*** ADD BUILT IN FUNCTIONS ***)
      { typ = Int; fname = "print"; formals = [(Int, "x")];
        locals = []; body = [] } 
@@ -83,9 +82,16 @@ let check (vardecls, funcdecls, entdecls, gboard) =
        locals = []; body = [] } builtInDecls
    in
 
-  (* map of all callable functions *)
-  let functionDecls = List.fold_left (fun m fd -> StringMap.add fd.fname fd m)
-                         builtInDecls funcdecls
+  (* map of all callable functions, don't allow duplicates *)
+  let functionDecls = List.fold_left 
+    (fun m fd ->     
+
+      try
+        StringMap.find fd.fname m; raise (Failure ("Duplicate function " ^ fd.fname));
+      with
+        Not_found -> StringMap.add fd.fname fd m
+    )
+    builtInDecls funcdecls
   in
 
   (* find a function given its name *)
@@ -101,8 +107,6 @@ let check (vardecls, funcdecls, entdecls, gboard) =
         with Not_found -> raise (Failure ("Undeclared identifier " ^ s))
     in
 
-
-
 (* builds a map of each entity and its corresponding available members *)
 
 (* build a map given a list of members *)
@@ -116,13 +120,6 @@ let allEntMembers =
     List.fold_left entMems StringMap.empty entdecls 
 in
 
- (* unnecessary *)
-(* let checkEntExists s =
-  try ignore(StringMap.find s allEntMembers); 
-  with Not_found -> raise (Failure("Entity "^ s ^ " undefined"))
-
-in *)
-
   (* check expressions *)
   let rec expr m ent = function
 		Literal _ -> Int
@@ -133,13 +130,11 @@ in *)
 
     | Binop(e1, op, e2) as e -> let t1 = expr m ent e1 and t2 = expr m ent e2 in
 		(match op with
-			(* do better *)
       Add | Mod | Sub | Mult | Div when t1 = Int && t2 = Int -> Int
 		 |  Add | Sub | Mult | Div when t1 = Int && t2 = Float -> Float
 		 |  Add | Sub | Mult | Div when t1 = Float && t2 = Int -> Float
    	 |  Add | Sub | Mult | Div when t1 = Float && t2 = Float -> Float
 		 | Equal | Neq when t1 = t2 -> Bool
-		 (* forces to be same ugh *)
 	   | Less | Leq | Greater | Geq when t1 = Int && t2 = Int -> Bool
 	   | Less | Leq | Greater | Geq when t1 = Float && t2 = Float -> Bool
      | Less | Leq | Greater | Geq when t1 = Float && t2 = Int -> Bool
@@ -180,10 +175,8 @@ in *)
             else Int 
         )
         else
-        (** FIX THIS : Type Ast.typ is not compatible with type Ast.expr -> Ast.typ  *)
-         (* let checkSameT t1 t2 = if t1 != t2 then raise (Failure ("Incorrect actual argument type in " ^ string_of_expr call)) in 
-          List.iter2 (fun (ft,_) e -> ignore(checkSameT ft (expr e)) )
-          fd.formals actuals; *)
+         let checkSameT t1 t2 = if t1 != t2 then raise (Failure ("Incorrect actual argument type in " ^ string_of_expr call)) in 
+          List.iter2 (fun (ft,_) e -> let et = expr m ent e in checkSameT ft et ) fd.formals actuals;
          fd.typ
     | ArrayAccess(e1, e2) -> let e_type = expr m ent e1 and e_num = expr m ent e2 in 
       if (e_type != Color && e_type != Vector) 
@@ -233,7 +226,7 @@ in *)
     | Expr e -> ignore (expr m ent e)
     | If(p, b1, b2) -> checkBoolExpr p m ent ; stmt m ent  b1; stmt m ent  b2
     | While(p, s) -> checkBoolExpr p m ent ; stmt m ent  s
-    | Return e -> () (* NEED TO MAKE SURE ONLY HAVE RETURN STATEMENTS IN FUNCTIONS *)
+    | Return e -> () 
 
   in
 
@@ -296,7 +289,9 @@ in *)
       if (slf = "self" ) then () else raise (Failure ("must define collisions against self, not " ^ slf));
       if not (StringMap.mem othr allEntMembers) then 
             raise (Failure(othr ^ " is not a defined entity"));
-  | _ -> ()
+  | Frame -> ()
+  | Click -> ()
+  | _ -> raise (Failure ("Not a valid entity event"))
 
   in
 
