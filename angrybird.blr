@@ -20,7 +20,6 @@ func int flicker(int val) {
 
 
 
-
 entity bird {
 	size = (20,20);
 	clr = (255,0,0);
@@ -30,8 +29,8 @@ entity bird {
 
 	key_SPACE -> { 
 		self.fly = true;
-		self.yspeed = -1*(cursorPos[1]-self.pos[1])/4;
-		self.xspeed = (cursorPos[0] - self.pos[0])/4;
+		self.yspeed = -1*(cursorPos[1]-self.pos[1])/5;
+		self.xspeed = (cursorPos[0] - self.pos[0])/5;
 	}
 
 	self >< ground -> {remove(); add(bird,birdPos);}
@@ -41,7 +40,7 @@ entity bird {
 			self.yspeed = self.yspeed - 5;
 	    	self.pos = (self.pos[0]+self.xspeed, self.pos[1] - self.yspeed);
 
-	    if (self.pos[0]> 1300) {remove();add(bird,birdPos);}
+	    if (self.pos[0]> 900) {remove();add(bird,birdPos);}
 		}
 	}
 }
@@ -63,7 +62,7 @@ entity cloud {
 }
 
 entity sun {
-	size = (100,100);
+	size = (70,70);
 	clr = (200,255,0);
 	frame -> {
 		self.clr[1] = flicker(self.clr[1]);
@@ -71,7 +70,7 @@ entity sun {
 }
 
 entity ground {
-	size = (1280,100);
+	size = (860,50);
 	clr = (0,255,100);
 }
 
@@ -84,9 +83,9 @@ entity graphicController {
 	frame -> {
 		self.timer = self.timer - 1;
 	 	if (self.timer == 0) {
-	 	 	self.cloud_y = rand(0,300);
-            add(cloud, (1280,self.cloud_y));
-            add(cloud,(1280+50,self.cloud_y-40));
+	 	 	self.cloud_y = rand(0,200);
+            add(cloud, (900,self.cloud_y));
+            add(cloud,(900+50,self.cloud_y-40));
             self.timer = 20;
         }
 	}
@@ -114,24 +113,20 @@ entity aim2 {
 
 
 gameboard g1{
-	size = (1280,800);
+	size = (860,600);
 	clr = (0,200,255);
 	init -> {
 		int pigs = 0;
 		add(graphicController,(-100,-100));
-		add(ground,(0,700));
+		add(ground,(0,550));
 		add (sun,(10,10));
-		add (cloud,(-100,-100));
 		add(bird,birdPos);
 		add (aim1, birdPos);
 		add (aim2,(birdPos[0]+7,birdPos[1]-7));
 		while (pigs < maxPigs) {
-			add(pig,(rand(900,1280),rand(500,700)));
+			add(pig,(rand(500,860),rand(350,550)));
 			pigs = pigs + 1;
 		}
-
-
-
 
 	}
 }

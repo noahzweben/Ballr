@@ -289,7 +289,9 @@ in
       if (slf = "self" ) then () else raise (Failure ("must define collisions against self, not " ^ slf));
       if not (StringMap.mem othr allEntMembers) then 
             raise (Failure(othr ^ " is not a defined entity"));
-  | _ -> ()
+  | Frame -> ()
+  | Click -> ()
+  | _ -> raise (Failure ("Not a valid entity event"))
 
   in
 
