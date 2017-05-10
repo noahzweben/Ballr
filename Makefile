@@ -24,7 +24,7 @@ clean :
 
 # More detailed: build using ocamlc/ocamlopt + ocamlfind to locate LLVM
 
- OBJS = ast.cmx codegen_simple.cmx parser.cmx scanner.cmx semant.cmx ballr.cmx
+ OBJS = ast.cmx codegen.cmx parser.cmx scanner.cmx semant.cmx ballr.cmx
 # OBJS = ast.cmo codegen_simple.cmo parser.cmo scanner.cmo ballr.cmo
 
 ballr : clean $(OBJS)

@@ -1,10 +1,3 @@
-(* 
-let _ =
-  let lexbuf = Lexing.from_channel stdin in
-  let ast = Parser.program Scanner.token lexbuf in
-  print_string (Ast.string_of_program ast)
-   *)
-
 open Printf
 
 type action = Ast | LLVM_IR | Compile
@@ -33,8 +26,8 @@ let _ =
   Semant.check ast;
     match action with
     Ast -> print_string (Ast.string_of_program ast)
-  | LLVM_IR -> print_string (Llvm.string_of_llmodule (Codegen_simple.translate ast))
-  | Compile -> let m = Codegen_simple.translate ast in
+  | LLVM_IR -> print_string (Llvm.string_of_llmodule (Codegen.translate ast))
+  | Compile -> let m = Codegen.translate ast in
     Llvm_analysis.assert_valid_module m;
     fprintf oc "%s\n" (Llvm.string_of_llmodule m);
     close_out oc;
