@@ -1,6 +1,8 @@
 # Ballr
 A simple 2D game language
 
+This Readme was generated via AI
+
 
 To test Pretty Printing:
 
