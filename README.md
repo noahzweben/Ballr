@@ -1,51 +1,42 @@
 # Ballr
+
 A simple 2D game language
 
+## Building
 
-To test Pretty Printing:
+To build a Ballr game, from the root directory type `make <filename>.game`.
 
-(if change anything) 
-sh run.bat
+This will:
+1. Build the compiler if it has changed
+2. Look for a file called `<filename>.blr`
+3. Use the `ballr` executable to compile this to LLVM
+4. Build the LLVM file and link it with the runtime located at `runtime/build`
 
+## SSH
 
-./ballr < Ballr\_helloworld/helloworld.blr 
+If ssh-ing into a virtual machine, make sure to use `-X` to enable X-forwarding. This will allow the screen to be displayed.
 
-SSH
--------
-If ssh-ing into virtual machine, make sure to use -X to enable X-forwarding. Will allow screen to be displayed
+## Codegen
 
-Building 
----------
-To build a Ballr game, from the root directory type `make <filename>.game  `.
-This will build the compiler if it has changed, look for a file called
-`<filename>`.blr, use the `ballr` executable to compile this to LLVM, and then
-build this LLVM file and link it with the runtime located at runtime/build.
+Codegen is broken down into the following steps:
 
+### Entities
 
-Codegen 
---------
-Codegen should be broken down into the following steps:
+To generate the code for entities, each needs a create function and a frame function.
 
-* entites: To generate the code for entities, each needs a create function and
-  a frame function. The create function will take a pointer to the entity as an
-  argument, and is responsible for setting the entities given values for size,
-  color, et cetera. The frame function is what the events compile to. Every
-  frame, the runtime will call each entity's frame function, which checks for
-  event conditions and executes the code if needed.
+- **Create function**: Takes a pointer to the entity as an argument and is responsible for setting the entity's given values for size, color, etc.
+- **Frame function**: What the events compile to. Every frame, the runtime will call each entity's frame function, which checks for event conditions and executes the code if needed.
 
-* gameboards: Each gameboard should have a create function and an init
-  function. The create function behaves the same as the entity's create func,
-  while the init function corresponds directly to the code after the `init =>`
-  block in the `gameboard` definition. 
+### Gameboards
 
-* main(): when generating the main method, we basically create each gameboard
-  using that board's create funciton. Then, register\_gb lets the runtime build
-  a list of boards keyed by name, so that later (for functions like load()) we
-  just refer to boards by their name. After creating the game boards, main()
-  calls run\_loop() to start the execution of the game.
+Each gameboard has a create function and an init function.
 
+- **Create function**: Behaves the same as the entity's create function
+- **Init function**: Corresponds directly to the code after the `init =>` block in the `gameboard` definition
 
-Currently, no errors found 
----------------------------
+### Main
 
-
+When generating the main method, we:
+1. Create each gameboard using that board's create function
+2. Use `register_gb` to let the runtime build a list of boards keyed by name, so that later (for functions like `load()`) we can refer to boards by their name
+3. Call `run_loop()` to start the execution of the game
