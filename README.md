@@ -49,3 +49,10 @@ Currently, no errors found
 ---------------------------
 
 
+---
+
+## Joke of the Day
+
+Why do Java developers wear glasses?
+
+Because they don't C#.
