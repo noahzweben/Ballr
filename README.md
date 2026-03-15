@@ -45,7 +45,15 @@ Codegen should be broken down into the following steps:
   calls run\_loop() to start the execution of the game.
 
 
-Currently, no errors found 
+Currently, no errors found
 ---------------------------
+
+---
+
+**Joke of the day:**
+
+Why did the basketball player bring a ladder to the game?
+
+Because they heard the stakes were high! 🏀
 
 
