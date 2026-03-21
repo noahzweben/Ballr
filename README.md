@@ -49,3 +49,10 @@ Currently, no errors found
 ---------------------------
 
 
+---
+
+## Joke of the Day
+
+Why did the game developer go broke?
+
+Because he used up all his lives.
