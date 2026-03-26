@@ -49,3 +49,8 @@ Currently, no errors found
 ---------------------------
 
 
+Team Joke
+---------
+Why did the programmer quit his job?
+
+Because he didn't get arrays.
