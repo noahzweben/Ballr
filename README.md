@@ -45,7 +45,14 @@ Codegen should be broken down into the following steps:
   calls run\_loop() to start the execution of the game.
 
 
-Currently, no errors found 
+Currently, no errors found
 ---------------------------
 
 
+---
+
+## Joke of the Day
+
+Why do programmers prefer dark mode?
+
+Because light attracts bugs!
