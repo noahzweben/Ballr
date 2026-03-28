@@ -45,7 +45,14 @@ Codegen should be broken down into the following steps:
   calls run\_loop() to start the execution of the game.
 
 
-Currently, no errors found 
+Currently, no errors found
 ---------------------------
 
 
+---
+
+**Joke of the README**
+
+Why do programmers always mix up Halloween and Christmas?
+
+Because Oct 31 == Dec 25.
