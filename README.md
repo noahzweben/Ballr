@@ -51,8 +51,8 @@ Currently, no errors found
 
 ---
 
-## Joke of the Day
+Joke of the Day
+---------------
+Why do programmers always mix up Halloween and Christmas?
 
-Why did the basketball player go to jail?
-
-Because he shot the ball.
+Because Oct 31 == Dec 25.
