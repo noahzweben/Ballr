@@ -54,3 +54,7 @@ Jokes
 Why do programmers prefer dark mode?
 
 Because light attracts bugs.
+
+Why did the basketball player bring a pencil to the game?
+
+Because he wanted to draw a foul.
