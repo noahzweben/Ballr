@@ -58,3 +58,7 @@ Because light attracts bugs.
 Why did the basketball player bring a pencil to the game?
 
 Because he wanted to draw a foul.
+
+Why don't scientists trust atoms?
+
+Because they make up everything.
