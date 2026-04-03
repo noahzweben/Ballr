@@ -66,3 +66,7 @@ Because they make up everything.
 Why did the compiler break up with the interpreter?
 
 Because it couldn't handle all the expressions.
+
+Why did the scarecrow win an award?
+
+Because he was outstanding in his field.
