@@ -49,8 +49,9 @@ Currently, no errors found
 ---------------------------
 
 
-Joke of the Day
----------------
+---
+
+## Joke of the Day
 
 Why do programmers prefer dark mode?
 
