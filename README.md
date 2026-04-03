@@ -49,3 +49,24 @@ Currently, no errors found
 ---------------------------
 
 
+Jokes
+-----
+Why do programmers prefer dark mode?
+
+Because light attracts bugs.
+
+Why did the basketball player bring a pencil to the game?
+
+Because he wanted to draw a foul.
+
+Why don't scientists trust atoms?
+
+Because they make up everything.
+
+Why did the compiler break up with the interpreter?
+
+Because it couldn't handle all the expressions.
+
+Why did the scarecrow win an award?
+
+Because he was outstanding in his field.
