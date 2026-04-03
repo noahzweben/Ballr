@@ -62,3 +62,7 @@ Because he wanted to draw a foul.
 Why don't scientists trust atoms?
 
 Because they make up everything.
+
+Why did the compiler break up with the interpreter?
+
+Because it couldn't handle all the expressions.
