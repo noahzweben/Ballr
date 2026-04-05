@@ -80,3 +80,9 @@ Because he used up all his cache.
 Why was the compiler bad at sports?
 
 Because it kept throwing exceptions.
+
+---
+
+Why do programmers always mix up Halloween and Christmas?
+
+Because Oct 31 == Dec 25.
