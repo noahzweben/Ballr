@@ -68,3 +68,9 @@ Because he didn't get arrays.
 Why do Java developers wear glasses?
 
 Because they don't C#.
+
+---
+
+Why did the Ballr developer go broke?
+
+Because he used up all his cache.
