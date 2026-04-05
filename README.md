@@ -74,3 +74,9 @@ Because they don't C#.
 Why did the Ballr developer go broke?
 
 Because he used up all his cache.
+
+---
+
+Why was the compiler bad at sports?
+
+Because it kept throwing exceptions.
