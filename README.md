@@ -49,3 +49,40 @@ Currently, no errors found
 ---------------------------
 
 
+---
+
+## Jokes of the Day
+
+Why do programmers prefer dark mode?
+
+Because light attracts bugs.
+
+---
+
+Why did the programmer quit his job?
+
+Because he didn't get arrays.
+
+---
+
+Why do Java developers wear glasses?
+
+Because they don't C#.
+
+---
+
+Why did the Ballr developer go broke?
+
+Because he used up all his cache.
+
+---
+
+Why was the compiler bad at sports?
+
+Because it kept throwing exceptions.
+
+---
+
+Why do programmers always mix up Halloween and Christmas?
+
+Because Oct 31 == Dec 25.
