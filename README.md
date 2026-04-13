@@ -1,5 +1,5 @@
 # Ballr
-A simple 2D game language
+A simple 2D game language.
 
 
 To test Pretty Printing:
@@ -47,5 +47,6 @@ Codegen should be broken down into the following steps:
 
 Currently, no errors found 
 ---------------------------
+Test
 
 
