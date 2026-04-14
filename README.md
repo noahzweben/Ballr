@@ -1,5 +1,5 @@
 # Ballr
-A simple 2D game language
+A simple 3D game language
 
 
 To test Pretty Printing:
