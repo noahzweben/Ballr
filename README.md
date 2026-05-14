@@ -49,3 +49,8 @@ Currently, no errors found
 ---------------------------
 
 
+Obligatory Joke
+---------------
+Why did the Ballr entity break up with the gameboard?
+
+Because every frame it kept checking for events, but nothing ever collided. 🏀
