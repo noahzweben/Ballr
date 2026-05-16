@@ -49,8 +49,12 @@ Currently, no errors found
 ---------------------------
 
 
-Obligatory Joke
----------------
+Obligatory Jokes
+----------------
 Why did the Ballr entity break up with the gameboard?
 
 Because every frame it kept checking for events, but nothing ever collided. 🏀
+
+How does a Ballr developer fix a flat tire?
+
+They just call `create()` again — it's faster than patching the runtime. 🛞
