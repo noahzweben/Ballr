@@ -58,3 +58,7 @@ Because every frame it kept checking for events, but nothing ever collided. 🏀
 How does a Ballr developer fix a flat tire?
 
 They just call `create()` again — it's faster than patching the runtime. 🛞
+
+Why did `pong.blr` go to therapy?
+
+Years of being stuck in a `run_loop()`, just bouncing between the same two paddles. 🏓
