@@ -62,3 +62,7 @@ They just call `create()` again — it's faster than patching the runtime. 🛞
 Why did `pong.blr` go to therapy?
 
 Years of being stuck in a `run_loop()`, just bouncing between the same two paddles. 🏓
+
+Why did the LLVM backend refuse to play `flappy.blr`?
+
+It took one look at the codegen and said "I'm not touching that — it's *un-optimizable*." 🐦
