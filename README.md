@@ -66,3 +66,7 @@ Years of being stuck in a `run_loop()`, just bouncing between the same two paddl
 Why did the LLVM backend refuse to play `flappy.blr`?
 
 It took one look at the codegen and said "I'm not touching that — it's *un-optimizable*." 🐦
+
+What's a Ballr entity's least favorite pickup line?
+
+"Are you a bounding box? Because I feel a collision coming on." 💥
