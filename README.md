@@ -70,3 +70,7 @@ It took one look at the codegen and said "I'm not touching that — it's *un-opt
 What's a Ballr entity's least favorite pickup line?
 
 "Are you a bounding box? Because I feel a collision coming on." 💥
+
+Why was this joke committed directly to master?
+
+Because the repo already has more `add-readme-joke-*` branches than entities, and the punchlines kept failing to merge. 🌳
