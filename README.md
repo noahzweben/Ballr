@@ -75,3 +75,7 @@ What's a Ballr entity's least favorite pickup line?
 Why was this joke committed directly to master?
 
 Because the repo already has more `add-readme-joke-*` branches than entities, and the punchlines kept failing to merge. 🌳
+
+Why don't Ballr gameboards ever win at poker?
+
+Because every single frame, all their entities show their `create()` functions — they literally can't stop revealing their hands. 🃏
