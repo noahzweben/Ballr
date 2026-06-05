@@ -79,3 +79,7 @@ Because the repo already has more `add-readme-joke-*` branches than entities, an
 Why don't Ballr gameboards ever win at poker?
 
 Because every single frame, all their entities show their `create()` functions — they literally can't stop revealing their hands. 🃏
+
+Why did the Ballr entity get kicked out of the gym?
+
+It refused to do anything but `frame` functions — 60 reps per second, zero rest days. 💪
