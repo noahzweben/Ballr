@@ -83,3 +83,7 @@ Because every single frame, all their entities show their `create()` functions �
 Why did the Ballr entity get kicked out of the gym?
 
 It refused to do anything but `frame` functions — 60 reps per second, zero rest days. 💪
+
+Why do Ballr entities make terrible secret agents?
+
+Because the moment anything happens, they broadcast it as an event — and the whole gameboard gets called about it next frame. 🕵️
