@@ -87,3 +87,7 @@ It refused to do anything but `frame` functions — 60 reps per second, zero res
 Why do Ballr entities make terrible secret agents?
 
 Because the moment anything happens, they broadcast it as an event — and the whole gameboard gets called about it next frame. 🕵️
+
+Why did the Ballr compiler get invited to every party?
+
+Because it always brings the whole runtime — and it never `make`s a scene unless something changed. 🎉
