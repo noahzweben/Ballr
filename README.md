@@ -95,3 +95,7 @@ Because it always brings the whole runtime — and it never `make`s a scene unle
 Why did the Ballr scanner fail its eye exam?
 
 It could only read one token at a time — and it kept seeing things that weren't in the grammar. 👓
+
+Why did the Ballr parser get passed over for the promotion?
+
+Every time leadership gave it something ambiguous, it just shifted instead of reducing. 📉
