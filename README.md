@@ -99,3 +99,7 @@ It could only read one token at a time — and it kept seeing things that weren'
 Why did the Ballr parser get passed over for the promotion?
 
 Every time leadership gave it something ambiguous, it just shifted instead of reducing. 📉
+
+Why did the semantic analyzer get banned from the comedy club?
+
+It kept stopping every joke halfway through to point out the type errors in the setup. 🎤
