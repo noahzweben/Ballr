@@ -103,3 +103,7 @@ Every time leadership gave it something ambiguous, it just shifted instead of re
 Why did the semantic analyzer get banned from the comedy club?
 
 It kept stopping every joke halfway through to point out the type errors in the setup. 🎤
+
+Why does the Ballr codegen never get lost on road trips?
+
+Because no matter where it's going, it always follows the IR — and if the route looks rough, it just lets LLVM optimize it away. 🗺️
