@@ -107,3 +107,7 @@ It kept stopping every joke halfway through to point out the type errors in the 
 Why does the Ballr codegen never get lost on road trips?
 
 Because no matter where it's going, it always follows the IR — and if the route looks rough, it just lets LLVM optimize it away. 🗺️
+
+Why is the Ballr linker so popular at office parties?
+
+It's great at resolving everyone's external conflicts — as long as each one is defined exactly once. 🔗
