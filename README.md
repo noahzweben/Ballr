@@ -111,3 +111,7 @@ Because no matter where it's going, it always follows the IR — and if the rout
 Why is the Ballr linker so popular at office parties?
 
 It's great at resolving everyone's external conflicts — as long as each one is defined exactly once. 🔗
+
+Why does the Ballr runtime never get any sleep?
+
+Because the moment it finally settles down, some gameboard yells "next frame!" — sixty times a second, every second, forever. 😴
