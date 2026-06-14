@@ -115,3 +115,7 @@ It's great at resolving everyone's external conflicts — as long as each one is
 Why does the Ballr runtime never get any sleep?
 
 Because the moment it finally settles down, some gameboard yells "next frame!" — sixty times a second, every second, forever. 😴
+
+Why did the Ballr entity refuse to leave the couch?
+
+It heard there was a `load()` involved, and it wasn't about to switch gameboards for that. 🛋️
