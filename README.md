@@ -119,3 +119,7 @@ Because the moment it finally settles down, some gameboard yells "next frame!" �
 Why did the Ballr entity refuse to leave the couch?
 
 It heard there was a `load()` involved, and it wasn't about to switch gameboards for that. 🛋️
+
+Why did the Ballr collision detector make a terrible roommate?
+
+No matter how much space you gave it, it always insisted your bounding boxes were overlapping. 📦
