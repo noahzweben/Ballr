@@ -123,3 +123,7 @@ It heard there was a `load()` involved, and it wasn't about to switch gameboards
 Why did the Ballr collision detector make a terrible roommate?
 
 No matter how much space you gave it, it always insisted your bounding boxes were overlapping. 📦
+
+Why does the Ballr AST never get invited to family reunions?
+
+Every time someone asks about its children, it insists on a full depth-first traversal — and won't stop until it's visited every single leaf. 🌲
