@@ -127,3 +127,7 @@ No matter how much space you gave it, it always insisted your bounding boxes wer
 Why does the Ballr AST never get invited to family reunions?
 
 Every time someone asks about its children, it insists on a full depth-first traversal — and won't stop until it's visited every single leaf. 🌲
+
+Why did `testall.sh` get fired from QA?
+
+It dumped every single failure into a 20KB log file — and then turned around and reported "Currently, no errors found." 📋
