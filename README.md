@@ -131,3 +131,7 @@ Every time someone asks about its children, it insists on a full depth-first tra
 Why did `testall.sh` get promoted to management?
 
 It never writes any code itself — it just watches everyone else run and reports who failed. 📋
+
+Why do Ballr entities make the best improv partners?
+
+Whatever happens, they always respond in the same frame — and they never break character, because `create()` only runs once. 🎭
