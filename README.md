@@ -135,3 +135,7 @@ It never writes any code itself — it just watches everyone else run and report
 Why do Ballr entities make the best improv partners?
 
 Whatever happens, they always respond in the same frame — and they never break character, because `create()` only runs once. 🎭
+
+Why did the Ballr garbage collector get kicked out of the museum?
+
+It kept insisting that anything without a reference was trash. 🗑️
