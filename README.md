@@ -139,3 +139,7 @@ Whatever happens, they always respond in the same frame — and they never break
 Why did the Ballr garbage collector get kicked out of the museum?
 
 It kept insisting that anything without a reference was trash. 🗑️
+
+Why does the Ballr symbol table make the best bartender?
+
+It never forgets a name — but the second you leave its scope, it acts like it's never seen you before. 🍸
