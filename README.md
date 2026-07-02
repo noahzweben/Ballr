@@ -143,3 +143,7 @@ It kept insisting that anything without a reference was trash. 🗑️
 Why does the Ballr symbol table make the best bartender?
 
 It never forgets a name — but the second you leave its scope, it acts like it's never seen you before. 🍸
+
+Why did the Ballr lexer break up with its keyboard?
+
+Too many unrecognized characters in the relationship. ⌨️
