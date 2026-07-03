@@ -147,3 +147,7 @@ It never forgets a name — but the second you leave its scope, it acts like it'
 Why did the Ballr lexer break up with its keyboard?
 
 Too many unrecognized characters in the relationship. ⌨️
+
+Why did the Ballr Makefile go to couples counseling?
+
+Because every time its partner changed even a little, it rebuilt everything from scratch instead of talking about it. 🔨
