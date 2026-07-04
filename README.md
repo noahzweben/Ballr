@@ -151,3 +151,7 @@ Too many unrecognized characters in the relationship. ⌨️
 Why did the Ballr Makefile go to couples counseling?
 
 Because every time its partner changed even a little, it rebuilt everything from scratch instead of talking about it. 🔨
+
+Why do Ballr developers always ssh with `-X`?
+
+Because without X-forwarding, playtesting is just staring at a terminal and taking the collision detector's word for it. 🖥️
