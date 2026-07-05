@@ -155,3 +155,7 @@ Because every time its partner changed even a little, it rebuilt everything from
 Why do Ballr developers always ssh with `-X`?
 
 Because without X-forwarding, playtesting is just staring at a terminal and taking the collision detector's word for it. 🖥️
+
+Why did the Ballr parser refuse to go on a second date?
+
+It hit an unexpected token and couldn't recover. 💔
