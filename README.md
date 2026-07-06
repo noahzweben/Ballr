@@ -159,3 +159,7 @@ Because without X-forwarding, playtesting is just staring at a terminal and taki
 Why did the Ballr parser refuse to go on a second date?
 
 It hit an unexpected token and couldn't recover. 💔
+
+Why did the Ballr entity fail its driving test?
+
+It only knows how to move once per frame — and it treats every stop sign as a collision event. 🚗
