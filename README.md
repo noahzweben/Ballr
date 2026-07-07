@@ -163,3 +163,7 @@ It hit an unexpected token and couldn't recover. 💔
 Why did the Ballr entity fail its driving test?
 
 It only knows how to move once per frame — and it treats every stop sign as a collision event. 🚗
+
+Why did `angrybird.blr` never pass code review?
+
+Because its entire architecture was just one entity getting launched at a wall until something broke. 🐤
