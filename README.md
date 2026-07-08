@@ -167,3 +167,7 @@ It only knows how to move once per frame — and it treats every stop sign as a 
 Why did `angrybird.blr` never pass code review?
 
 Because its entire architecture was just one entity getting launched at a wall until something broke. 🐤
+
+Why did this joke land on a feature branch instead of master?
+
+Because even comedy needs code review — direct pushes to master are how you end up with an unexpected token in production. 🎫
