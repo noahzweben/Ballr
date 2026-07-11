@@ -175,3 +175,7 @@ It's the only one on the team whose whole job is making everyone else's code loo
 Why did the Ballr type checker get hired as a nightclub bouncer?
 
 Because nothing gets past it without exactly the right kind of ID. 🪪
+
+Why is `main()` the laziest function in every Ballr game?
+
+It creates the gameboards, registers them, hands everything off to `run_loop()` — and then takes credit for the whole game. 🏆
