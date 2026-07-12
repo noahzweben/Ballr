@@ -179,3 +179,7 @@ Because nothing gets past it without exactly the right kind of ID. 🪪
 Why is `main()` the laziest function in every Ballr game?
 
 It creates the gameboards, registers them, hands everything off to `run_loop()` — and then takes credit for the whole game. 🏆
+
+Why did the Ballr codebase apply for a loan?
+
+Because after all these jokes, the README finally had too much *comedic interest* — and the compiler warned it about unhandled *punchline overflow*. 💸
