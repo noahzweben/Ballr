@@ -179,3 +179,7 @@ Because nothing gets past it without exactly the right kind of ID. 🪪
 Why is `main()` the laziest function in every Ballr game?
 
 It creates the gameboards, registers them, hands everything off to `run_loop()` — and then takes credit for the whole game. 🏆
+
+Why is the Ballr collision detector terrible at parties?
+
+It can't be in the same place as anyone else without making it everyone's problem. 💥
