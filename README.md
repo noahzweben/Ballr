@@ -183,3 +183,7 @@ It creates the gameboards, registers them, hands everything off to `run_loop()` 
 Why is the Ballr collision detector terrible at parties?
 
 It can't be in the same place as anyone else without making it everyone's problem. 💥
+
+Why did `helloworld.blr` get stage fright?
+
+It's been the opening act for every compiler demo since day one, and it still only knows one line. 🎬
