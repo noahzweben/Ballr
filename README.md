@@ -187,3 +187,7 @@ It can't be in the same place as anyone else without making it everyone's proble
 Why did `helloworld.blr` get stage fright?
 
 It's been the opening act for every compiler demo since day one, and it still only knows one line. 🎬
+
+Why did the Ballr compiler go to therapy?
+
+It had trouble expressing its feelings at a high level — everything kept coming out as LLVM IR. 🛋️
