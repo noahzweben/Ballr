@@ -187,3 +187,7 @@ It can't be in the same place as anyone else without making it everyone's proble
 Why did `helloworld.blr` get stage fright?
 
 It's been the opening act for every compiler demo since day one, and it still only knows one line. 🎬
+
+Why does the Ballr compiler never lose an argument?
+
+It's written in OCaml — every case you bring up, it has already matched, and it warns you about the ones you forgot. 🐫
