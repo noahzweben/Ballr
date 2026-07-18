@@ -187,3 +187,7 @@ It can't be in the same place as anyone else without making it everyone's proble
 Why did `helloworld.blr` get stage fright?
 
 It's been the opening act for every compiler demo since day one, and it still only knows one line. 🎬
+
+Why do Ballr gameboards never worry about first impressions?
+
+Because `init =>` only runs once — after that, they get sixty chances a second to make up for it. 🎞️
