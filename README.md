@@ -191,3 +191,7 @@ It's been the opening act for every compiler demo since day one, and it still on
 Why did the Ballr event listener win the award for patience?
 
 It spent its entire career waiting for conditions that might never come true — and still checked again every frame, just in case. ⏳
+
+Why did `my_game.blr` develop an identity crisis?
+
+Because every time someone asked what it was really about, the answer depended entirely on which gameboard was loaded. 🎮
