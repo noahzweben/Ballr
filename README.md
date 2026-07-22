@@ -195,3 +195,7 @@ It spent its entire career waiting for conditions that might never come true —
 Why did `my_game.blr` develop an identity crisis?
 
 Because every time someone asked what it was really about, the answer depended entirely on which gameboard was loaded. 🎮
+
+Why did `register_gb` get promoted to office receptionist?
+
+Because it knows every gameboard by name — and nobody gets loaded without going through it first. 📇
