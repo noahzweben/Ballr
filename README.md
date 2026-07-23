@@ -199,3 +199,7 @@ Because every time someone asked what it was really about, the answer depended e
 Why did `register_gb` get promoted to office receptionist?
 
 Because it knows every gameboard by name — and nobody gets loaded without going through it first. 📇
+
+Why does the Ballr scanner make a terrible therapist?
+
+Because no matter what you tell it, it just breaks everything you say into tiny pieces and hands your problems off to the parser. 🛋️
