@@ -203,3 +203,7 @@ Because it knows every gameboard by name — and nobody gets loaded without goin
 Why does the Ballr scanner make a terrible therapist?
 
 Because no matter what you tell it, it just breaks everything you say into tiny pieces and hands your problems off to the parser. 🛋️
+
+Why did the LLVM optimizer get reported to HR?
+
+It kept deleting everyone's hard work and filing it under "dead code elimination." 🪦
