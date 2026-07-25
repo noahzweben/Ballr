@@ -92,6 +92,10 @@ Why did the Ballr compiler get invited to every party?
 
 Because it always brings the whole runtime — and it never `make`s a scene unless something changed. 🎉
 
+Why did the Ballr type checker fail its driving test?
+
+It refused to move until every single argument was declared — even the parallel parking. 🚗
+
 Why did the Ballr scanner fail its eye exam?
 
 It could only read one token at a time — and it kept seeing things that weren't in the grammar. 👓
