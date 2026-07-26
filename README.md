@@ -152,6 +152,10 @@ Why did the Ballr lexer break up with its keyboard?
 
 Too many unrecognized characters in the relationship. ⌨️
 
+Why did the Ballr pretty printer get hired as a wedding planner?
+
+It can take the messiest family tree you've ever seen and make every branch line up beautifully — with exactly the right amount of nesting. 💒
+
 Why did the Ballr Makefile go to couples counseling?
 
 Because every time its partner changed even a little, it rebuilt everything from scratch instead of talking about it. 🔨
