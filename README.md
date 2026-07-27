@@ -215,3 +215,7 @@ Because no matter what you tell it, it just breaks everything you say into tiny 
 Why did the LLVM optimizer get reported to HR?
 
 It kept deleting everyone's hard work and filing it under "dead code elimination." 🪦
+
+Why did the Ballr event queue fail as a therapist?
+
+Every time someone brought up an issue, it just said "we'll deal with that next frame" — and then broadcast it to everyone in the room. 🛎️
