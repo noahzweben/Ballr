@@ -219,3 +219,7 @@ It kept deleting everyone's hard work and filing it under "dead code elimination
 Why did the Ballr event queue fail as a therapist?
 
 Every time someone brought up an issue, it just said "we'll deal with that next frame" — and then broadcast it to everyone in the room. 🛎️
+
+Why does `run.bat` have an identity crisis?
+
+It was born a Windows batch file, but everyone in this repo insists on running it with `sh`. 🪟
