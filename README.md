@@ -223,3 +223,7 @@ Every time someone brought up an issue, it just said "we'll deal with that next 
 Why does `run.bat` have an identity crisis?
 
 It was born a Windows batch file, but everyone in this repo insists on running it with `sh`. 🪟
+
+Why did the Ballr bug report come back empty?
+
+Because the repo's official issue tracker is a README heading that says "Currently, no errors found" — and nobody has the heart to update it. 🐛
