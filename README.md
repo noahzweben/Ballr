@@ -231,3 +231,7 @@ Because the repo's official issue tracker is a README heading that says "Current
 Why do Ballr function calls make terrible gossips?
 
 Whatever happens in a stack frame stays in the stack frame — and the moment they return, they forget all of it anyway. 🤐
+
+Why are off-by-one errors the scariest bugs in Ballr?
+
+Because one pixel is the difference between a near miss and a collision event — and the collision detector never forgives. 📏
