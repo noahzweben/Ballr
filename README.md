@@ -235,3 +235,7 @@ Whatever happens in a stack frame stays in the stack frame — and the moment th
 Why are off-by-one errors the scariest bugs in Ballr?
 
 Because one pixel is the difference between a near miss and a collision event — and the collision detector never forgives. 📏
+
+Why does the Ballr compiler never lose an argument?
+
+It's written in OCaml — it pattern matches every case you could possibly raise, and if you forget even one, the whole discussion fails to build. 🐫
