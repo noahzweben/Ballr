@@ -239,3 +239,7 @@ Because one pixel is the difference between a near miss and a collision event �
 Why does the Ballr compiler never lose an argument?
 
 It's written in OCaml — it pattern matches every case you could possibly raise, and if you forget even one, the whole discussion fails to build. 🐫
+
+Why don't Ballr programmers ever explain recursion jokes?
+
+Because to get one, you first have to get one — and the type checker won't let you start until you've declared a base case. 🔄
