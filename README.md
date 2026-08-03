@@ -243,3 +243,7 @@ It's written in OCaml — it pattern matches every case you could possibly raise
 Why don't Ballr programmers ever explain recursion jokes?
 
 Because to get one, you first have to get one — and the type checker won't let you start until you've declared a base case. 🔄
+
+Why do Ballr games make the best employees?
+
+They hit every single deadline — sixty of them per second, whether the entities are ready or not. ⏰
