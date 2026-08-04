@@ -247,3 +247,7 @@ Because to get one, you first have to get one — and the type checker won't let
 Why do Ballr games make the best employees?
 
 They hit every single deadline — sixty of them per second, whether the entities are ready or not. ⏰
+
+Why did the Ballr linker get sent to couples therapy?
+
+Too many unresolved external issues — and every session, it just kept dragging in old symbols. 🔗
