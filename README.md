@@ -251,3 +251,7 @@ They hit every single deadline — sixty of them per second, whether the entitie
 Why did the Ballr linker get sent to couples therapy?
 
 Too many unresolved external issues — and every session, it just kept dragging in old symbols. 🔗
+
+Why did the Ballr game blame its segfault on its parents?
+
+Because it dereferenced a pointer it inherited without ever asking where it came from. 🧬
