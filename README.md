@@ -251,3 +251,7 @@ They hit every single deadline — sixty of them per second, whether the entitie
 Why did the Ballr linker get sent to couples therapy?
 
 Too many unresolved external issues — and every session, it just kept dragging in old symbols. 🔗
+
+Why did `collision_test.blr` never get promoted?
+
+Every single review, all it ever demonstrated was that two things ran into each other — leadership wanted to see it dodge something for once. 🎯
