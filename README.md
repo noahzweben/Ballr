@@ -255,3 +255,7 @@ Too many unresolved external issues — and every session, it just kept dragging
 Why did the Ballr game blame its segfault on its parents?
 
 Because it dereferenced a pointer it inherited without ever asking where it came from. 🧬
+
+Why is the Ballr type checker the strictest bouncer in town?
+
+It checks everyone's type at the door, and no amount of arguing will turn a declared int into a float. 🪪
