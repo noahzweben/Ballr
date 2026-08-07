@@ -255,3 +255,7 @@ Too many unresolved external issues — and every session, it just kept dragging
 Why did the Ballr game blame its segfault on its parents?
 
 Because it dereferenced a pointer it inherited without ever asking where it came from. 🧬
+
+Why is the Ballr compiler such a good listener?
+
+Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
