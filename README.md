@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why does the Ballr test suite read like a cry for help?
+
+Because half of `tests/` is named `fail-something`, and `testall.log` cheerfully stamps `###### SUCCESS` under every single one of them. ✅
