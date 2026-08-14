@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why does the Ballr compiler never leave comments in the generated LLVM?
+
+Because it already spent all its opinions in `semant.ml` — by the time codegen runs, it has nothing left to say. 💬
