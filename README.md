@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr garbage collector never get invited back?
+
+There isn't one — every entity you allocate is yours to clean up, and the game has been holding a grudge (and a heap) ever since. 🗑️
