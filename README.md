@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr gameboard refuse to take out a loan?
+
+It heard the interest compounded every frame — and at 60 frames a second, even the collision detector couldn't handle that kind of impact. 🏦
