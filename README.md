@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why does the Ballr build always start with `make clean`?
+
+Because every Ballr developer knows the fastest way to fix a bug is to pretend you've never seen the code before — and then rebuild it exactly the same way. 🧹
