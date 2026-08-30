@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why is `testall.log` checked into the repo?
+
+Because in Ballr, a test only counts as passing if there's a receipt — and nobody trusts `testall.sh` to remember on its own. 🧾
