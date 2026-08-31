@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did `parser.mly` get kicked off the debate team?
+
+Every time the other side made a point, it couldn't decide whether to shift or reduce — so it just picked one, and called the conflict "resolved by default." ⚖️
