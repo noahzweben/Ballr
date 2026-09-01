@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr gameboard refuse to go on vacation?
+
+Every time it tried to `load()` a new one, it got called right back to `init` — nobody else knows where the entities are supposed to be. 🧳
