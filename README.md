@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr compiler and LLVM stop writing letters to each other?
+
+Because every reply came back in three-address form with all the friendly names stripped out — and was still somehow better optimized than the original. 🔤
