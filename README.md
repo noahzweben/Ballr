@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr ball never quite touch the paddle?
+
+Its position was a `float` — it kept adding 0.1 + 0.2 and arriving at 0.30000000000000004, just close enough to look like a hit and just far enough for the collision detector to call it a miss. 🏓
