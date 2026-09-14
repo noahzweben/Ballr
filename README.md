@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why are Ballr entities so bad at hide-and-seek?
+
+Because the runtime redraws every one of them sixty times a second — sooner or later, somebody's going to notice. 🙈
