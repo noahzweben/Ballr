@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why does `testall.log` know all of the team's secrets?
+
+Because it was there for every single failure — and unlike the developers, it actually wrote them down. 📜
