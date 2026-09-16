@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why is `run_loop()` the worst dinner guest in all of Ballr?
+
+Because once `main()` invites it in, it never leaves — it just keeps going around the table asking every entity what's new this frame. 🍽️
