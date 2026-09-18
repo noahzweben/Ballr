@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why are the `fail-*.blr` tests the most well-adjusted files in the repo?
+
+Because failing is literally their job — and every time they blow up exactly as expected, `testall.sh` tells them they passed. 🏆
