@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr collision detector skip the office party?
+
+It had already seen too many overlapping bounding boxes in the break room, and it wasn't ready for another awkward contact event. 💥
