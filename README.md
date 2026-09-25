@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr garbage collector skip the team retro?
+
+It already knew which objects nobody was referencing anymore — and it did not want to be the one to bring it up. 🗑️
