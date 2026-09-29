@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why does `testall.log` make a terrible diary?
+
+Every entry is about somebody else's failures — and it gets wiped clean the moment anyone runs the tests again. 📓
