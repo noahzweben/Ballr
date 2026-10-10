@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr README never win a spelling bee?
+
+It confidently wrote "create funciton" in the codegen docs — and got away with it, because nobody runs `semant.ml` on Markdown. ✏️
