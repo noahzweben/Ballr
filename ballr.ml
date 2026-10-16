@@ -5,9 +5,13 @@ type action = Ast | LLVM_IR | Compile
 let _ =
   let action = 
   if Array.length Sys.argv > 1 then 
-    List.assoc Sys.argv.(1) [ ("-a", Ast);	(* Print the AST only *)
-			                        ("-l", LLVM_IR);  (* Generate LLVM, don't check *)
-			                        ("-c", Compile) ] (* Generate, check LLVM IR *)
+    (try
+      List.assoc Sys.argv.(1) [ ("-a", Ast);	(* Print the AST only *)
+			                          ("-l", LLVM_IR);  (* Generate LLVM, don't check *)
+			                          ("-c", Compile) ] (* Generate, check LLVM IR *)
+    with Not_found ->
+      eprintf "Usage: ballr [-a|-l|-c] [file.blr]\n";
+      exit 1)
   else 
     Compile
   in
@@ -31,7 +35,7 @@ let _ =
     Llvm_analysis.assert_valid_module m;
     fprintf oc "%s\n" (Llvm.string_of_llmodule m);
     close_out oc;
-    if exec_name != "" then
+    if exec_name <> "" then
       let cmd = "clang -c " ^ exec_name ^ ".ll && clang -g " ^ exec_name ^ ".o -o " ^ exec_name ^ " -L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lSDL2 -lblr_rt" in
       print_string (cmd ^ "\n");
       ignore (Sys.command cmd)
