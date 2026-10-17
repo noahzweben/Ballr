@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr parser break up with the scanner?
+
+It kept getting mixed signals — every conversation ended in a shift/reduce conflict, and neither one would back down. 💔
