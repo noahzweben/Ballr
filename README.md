@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr physics code fail its accounting audit?
+
+Every position it reported was off by 0.00000001 — and when questioned, it insisted that was just how floats behave. 🧮
