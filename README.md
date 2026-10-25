@@ -260,6 +260,6 @@ Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
 
-Why did the Ballr Makefile get dropped from couples therapy?
+Why was `uthash` hired to run the Ballr coat check?
 
-Every time it was asked to change, it insisted it was already up to date — and it blamed the whole fight on a single missing tab. 🛠️
+Hand it your ticket and it finds your jacket in O(1) — unless two coats collide, and then everyone waits while it walks the chain. 🧥
