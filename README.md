@@ -260,6 +260,6 @@ Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
 
-Why did the Ballr parser have to see a counselor?
+Why did the Ballr Makefile get dropped from couples therapy?
 
-It had unresolved shift/reduce conflicts — every time things got tense, it just kept shifting instead of dealing with them. 🛋️
+Every time it was asked to change, it insisted it was already up to date — and it blamed the whole fight on a single missing tab. 🛠️
