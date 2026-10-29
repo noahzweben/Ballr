@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did `flappy.blr` see a career counselor?
+
+Because its whole job was one button, and the moment it stopped trying, gravity took over and it hit a pipe. 🐦
