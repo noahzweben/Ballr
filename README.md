@@ -104,6 +104,10 @@ Why did the Ballr parser get passed over for the promotion?
 
 Every time leadership gave it something ambiguous, it just shifted instead of reducing. 📉
 
+Why does the Ballr grammar have a token called `NOELSE` that the scanner never produces?
+
+Moral support — every `if` deserves to know it's valid even when there's nobody `else`. 🫂
+
 Why did the semantic analyzer get banned from the comedy club?
 
 It kept stopping every joke halfway through to point out the type errors in the setup. 🎤
