@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why is the Ballr compiler so bad at fishing?
+
+It throws a perfectly good `Parse_error` every time you forget a semicolon, and it hasn't caught a single one yet. 🎣
