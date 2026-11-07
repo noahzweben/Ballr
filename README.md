@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why does `uthash` never pay rent in the Ballr runtime?
+
+Because it's header-only — it just moves into every translation unit it's invited to and expands. 🏠
