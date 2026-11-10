@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did `.gitignore` get written up by the Ballr team?
+
+Because every time someone mentioned the `*.o` files piling up in the repo, it looked them straight in the eye and insisted it saw nothing. 🙈
