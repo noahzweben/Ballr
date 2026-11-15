@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why does `NOELSE` have the loneliest job in the Ballr parser?
+
+Its only purpose is to lose a precedence fight to `ELSE` — it's not even a real token, it just shows up so somebody else can win. 🥈
