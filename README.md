@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did the Ballr comment never start a family?
+
+It opened up with `/*`, but nested comments aren't supported — the first `*/` that came along ended everything. 💔
