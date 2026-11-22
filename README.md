@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why do Ballr entity types make such tense roommates?
+
+According to `entity_notes.txt` their members all share one `union` — so there's only room for one of them at a time, and whoever moves in last overwrites everybody else's stuff. 🏘️
