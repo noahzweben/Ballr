@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why did Ballr's restart() builtin go into witness protection?
+
+Because semant.ml already has it living under the name "remove", and every time someone calls, it wipes the board and acts like nothing ever happened. 🕶️
