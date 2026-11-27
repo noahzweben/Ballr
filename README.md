@@ -259,3 +259,7 @@ Because it dereferenced a pointer it inherited without ever asking where it came
 Why is the Ballr compiler such a good listener?
 
 Because it takes everything you pipe at it through stdin, never interrupts until you're done, and only then tells you everything you got wrong. 🎧
+
+Why does `clickpos` get invited to every Ballr game?
+
+Nobody ever has to declare it, it's always global, and it can point to exactly where things started going wrong. 🖱️
